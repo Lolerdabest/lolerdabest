@@ -75,14 +75,14 @@ export function OrderSummary() {
   };
 
   return (
-    <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card max-h-[calc(100vh-8rem)]">
-       <CardHeader>
-        <CardTitle className="text-2xl font-headline flex items-center gap-2 animate-text-glow">
-          <ShoppingCart />
-          Order Summary
-        </CardTitle>
-      </CardHeader>
-      <ScrollArea className="h-full">
+    <ScrollArea className="h-full">
+      <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card">
+        <CardHeader>
+          <CardTitle className="text-2xl font-headline flex items-center gap-2 animate-text-glow">
+            <ShoppingCart />
+            Order Summary
+          </CardTitle>
+        </CardHeader>
         <CardContent>
           {cart.length === 0 ? (
             <p className="text-muted-foreground text-center py-8">Your cart is empty.</p>
@@ -213,7 +213,7 @@ export function OrderSummary() {
             </form>
           </CardFooter>
         )}
-      </ScrollArea>
-    </Card>
+      </Card>
+    </ScrollArea>
   );
 }
