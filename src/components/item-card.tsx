@@ -10,53 +10,12 @@ import { Label } from './ui/label';
 import { useState, useMemo, useEffect } from 'react';
 import { Separator } from './ui/separator';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
-import { exclusiveEnchantmentGroups } from '@/lib/enchantments';
 import { MinusCircle, PlusCircle } from 'lucide-react';
 import { Input } from './ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { parseEnchantment, processEnchantments } from '@/lib/enchantment-utils';
+import { numberToRoman } from '@/lib/roman-utils';
 
-interface ItemCardProps {
-  item: Item;
-}
-
-const romanToNumber = (roman: string): number => {
-  if (!roman || typeof roman !== 'string') return 1;
-  const romanMap: { [key: string]: number } = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
-  let result = 0;
-  for (let i = 0; i < roman.length; i++) {
-    const current = romanMap[roman[i]];
-    const next = romanMap[roman[i + 1]];
-    if (next && current < next) {
-      result -= current;
-    } else {
-      result += current;
-    }
-  }
-  return result;
-};
-
-const numberToRoman = (num: number): string => {
-  const romanMap: { [key: string]: number } = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
-  let roman = '';
-  for (const key in romanMap) {
-    while (num >= romanMap[key]) {
-      roman += key;
-      num -= romanMap[key];
-    }
-  }
-  return roman;
-};
-
-const parseEnchantment = (enchantmentString: string): Enchantment | null => {
-  if (enchantmentString.startsWith('Full') || enchantmentString.startsWith('All items')) {
-    return null;
-  }
-  const parts = enchantmentString.split(' ');
-  const levelRoman = parts.pop() || 'I';
-  const level = romanToNumber(levelRoman);
-  const name = parts.join(' ');
-  return { name, level, cost: 180 }; // Example cost
-};
 
 export function ItemCard({ item }: ItemCardProps) {
   const { addToCart } = useCart();
@@ -84,26 +43,8 @@ export function ItemCard({ item }: ItemCardProps) {
   );
   
   const { exclusiveGroups, nonExclusiveEnchantments } = useMemo(() => {
-    const exclusive: { groupName: string; enchantments: Enchantment[] }[] = Object.entries(exclusiveEnchantmentGroups).map(([groupName, enchantmentsInGroup]) => {
-        const groupEnchantments = allEnchantmentOptions.filter(opt =>
-            enchantmentsInGroup.some(enchantmentString => {
-                const parts = enchantmentString.split(' ');
-                parts.pop(); // remove level
-                const name = parts.join(' ');
-                return opt.name === name;
-            })
-        ).filter(opt => enchantmentsInGroup.includes(`${opt.name} ${numberToRoman(opt.level)}`));
-
-        return { groupName, enchantments: groupEnchantments };
-    }).filter(g => g.enchantments.length > 0);
-
-    const allExclusiveEnchantmentStrings = Object.values(exclusiveEnchantmentGroups).flat();
-    const nonExclusive = allEnchantmentOptions.filter(opt => 
-        !allExclusiveEnchantmentStrings.includes(`${opt.name} ${numberToRoman(opt.level)}`)
-    );
-    
-    return { exclusiveGroups: exclusive, nonExclusiveEnchantments: nonExclusive };
-}, [allEnchantmentOptions]);
+    return processEnchantments(allEnchantmentOptions);
+  }, [allEnchantmentOptions]);
 
 
   const descriptiveEnchantments = useMemo(() =>
@@ -135,12 +76,7 @@ export function ItemCard({ item }: ItemCardProps) {
   };
   
   const handleExclusiveEnchantmentChange = (groupName: string, enchantmentValue: string) => {
-    const parts = enchantmentValue.split(' ');
-    const levelRoman = parts.pop();
-    const name = parts.join(' ');
-    const level = romanToNumber(levelRoman || 'I');
-
-    const enchantment = allEnchantmentOptions.find(e => e.name === name && e.level === level);
+    const enchantment = allEnchantmentOptions.find(e => `${e.name} ${numberToRoman(e.level)}` === enchantmentValue);
     
     if (enchantment) {
       setSelectedExclusiveEnchantments(prev => ({
