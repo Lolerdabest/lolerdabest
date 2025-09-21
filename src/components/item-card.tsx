@@ -21,7 +21,7 @@ export function ItemCard({ item }: { item: Item }) {
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [selectedEnchantments, setSelectedEnchantments] = useState<Enchantment[]>([]);
-  const [selectedExclusiveEnchantments, setSelectedExclusiveEnchantments] = useState<{ [group: string]: Enchantment }>({});
+  const [selectedExclusiveEnchantments, setSelectedExclusiveEnchantments] = useState<{ [group: string]: string }>({});
   const [upgradeToNetherite, setUpgradeToNetherite] = useState(false);
   const [quantity, setQuantity] = useState(1);
   
@@ -36,15 +36,21 @@ export function ItemCard({ item }: { item: Item }) {
 
   const currentPrice = useMemo(() => {
     let newPrice = item.price;
-    const allSelected = [...selectedEnchantments, ...Object.values(selectedExclusiveEnchantments)];
-    allSelected.forEach(enchantment => {
+    const allSelectedRegular = [...selectedEnchantments];
+    
+    const allSelectedExclusive = Object.values(selectedExclusiveEnchantments)
+      .map(enchantmentValue => allEnchantmentOptions.find(e => `${e.name} ${numberToRoman(e.level)}` === enchantmentValue))
+      .filter((e): e is Enchantment => e !== undefined);
+
+    [...allSelectedRegular, ...allSelectedExclusive].forEach(enchantment => {
       newPrice += enchantment.cost;
     });
+
     if (upgradeToNetherite) {
       newPrice += 150;
     }
     return newPrice;
-  }, [item.price, selectedEnchantments, selectedExclusiveEnchantments, upgradeToNetherite]);
+  }, [item.price, selectedEnchantments, selectedExclusiveEnchantments, upgradeToNetherite, allEnchantmentOptions]);
 
   const descriptiveEnchantments = useMemo(() =>
     item.enchantments.filter(e => e.startsWith('Full') || e.startsWith('All items')),
@@ -53,7 +59,13 @@ export function ItemCard({ item }: { item: Item }) {
   
   const handleAddToCart = () => {
     let finalItem = { ...item };
-    const allSelected = [...selectedEnchantments, ...Object.values(selectedExclusiveEnchantments)];
+    
+    const allSelectedRegular = [...selectedEnchantments];
+    const allSelectedExclusive = Object.values(selectedExclusiveEnchantments)
+      .map(enchantmentValue => allEnchantmentOptions.find(e => `${e.name} ${numberToRoman(e.level)}` === enchantmentValue))
+      .filter((e): e is Enchantment => e !== undefined);
+
+    const allSelected = [...allSelectedRegular, ...allSelectedExclusive];
 
     if (upgradeToNetherite) {
       finalItem.name = `Netherite ${item.name.split(' ').slice(1).join(' ')}`;
@@ -74,15 +86,11 @@ export function ItemCard({ item }: { item: Item }) {
   };
   
   const handleExclusiveEnchantmentChange = useCallback((groupName: string, enchantmentValue: string) => {
-      const enchantment = allEnchantmentOptions.find(e => `${e.name} ${numberToRoman(e.level)}` === enchantmentValue);
-      
-      if (enchantment) {
-        setSelectedExclusiveEnchantments(prev => ({
-          ...prev,
-          [groupName]: enchantment
-        }));
-      }
-  }, [allEnchantmentOptions]);
+      setSelectedExclusiveEnchantments(prev => ({
+        ...prev,
+        [groupName]: enchantmentValue
+      }));
+  }, []);
   
   const handleQuantityChange = (amount: number) => {
     setQuantity(prev => Math.max(1, prev + amount));
@@ -108,7 +116,9 @@ export function ItemCard({ item }: { item: Item }) {
                 <>
                   {exclusiveGroups.map(group => (
                     <div key={group.groupName} className="p-3 rounded-md border border-dashed border-primary/50 space-y-2">
-                       <RadioGroup onValueChange={(value) => handleExclusiveEnchantmentChange(group.groupName, value)}>
+                       <RadioGroup 
+                          value={selectedExclusiveEnchantments[group.groupName]}
+                          onValueChange={(value) => handleExclusiveEnchantmentChange(group.groupName, value)}>
                         {group.enchantments.map(enchantment => {
                           const value = `${enchantment.name} ${numberToRoman(enchantment.level)}`;
                           return (
@@ -176,5 +186,3 @@ export function ItemCard({ item }: { item: Item }) {
     </Card>
   );
 }
-
-    
