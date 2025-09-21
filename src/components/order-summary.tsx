@@ -141,7 +141,6 @@ export function OrderSummary() {
                 <Input
                   id="coupon"
                   name="coupon"
-                  placeholder="lolerhustler"
                   value={coupon}
                   onChange={(e) => setCoupon(e.target.value)}
                   className="w-full"
