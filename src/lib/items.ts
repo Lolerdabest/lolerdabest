@@ -37,7 +37,7 @@ export const items: Item[] = PlaceHolderImages.map((placeholder) => {
     availableEnchantments = [...new Set([...availableEnchantments, ...enchantments.weapon])];
   }
   if (details.name.toLowerCase().includes('boots')) {
-    availableEnchantments = [...new Set([...availableEnchantments, ...enchantments.boots])];
+    availableEnchantments = [...new Set([...enchantments.armor, ...enchantments.boots])];
   }
   if (details.name.toLowerCase().includes('elytra')) {
     availableEnchantments = [...new Set([...availableEnchantments, ...enchantments.elytra])];

@@ -30,6 +30,13 @@ export const enchantments = {
     "Feather Falling IV",
     "Depth Strider III",
     "Soul Speed III",
+    "Protection IV",
+    "Fire Protection IV",
+    "Blast Protection IV",
+    "Projectile Protection IV",
+    "Thorns III",
+    "Unbreaking III",
+    "Mending I"
   ],
   elytra: [
     "Unbreaking III",
