@@ -64,10 +64,9 @@ export function ItemCard({ item }: ItemCardProps) {
   const [selectedEnchantments, setSelectedEnchantments] = useState<Enchantment[]>([]);
   const [selectedExclusiveEnchantments, setSelectedExclusiveEnchantments] = useState<{ [group: string]: Enchantment }>({});
   const [upgradeToNetherite, setUpgradeToNetherite] = useState(false);
-  const [currentPrice, setCurrentPrice] = useState(item.price);
   const [quantity, setQuantity] = useState(1);
-
-  useEffect(() => {
+  
+  const currentPrice = useMemo(() => {
     let newPrice = item.price;
     const allSelected = [...selectedEnchantments, ...Object.values(selectedExclusiveEnchantments)];
     allSelected.forEach(enchantment => {
@@ -76,7 +75,7 @@ export function ItemCard({ item }: ItemCardProps) {
     if (upgradeToNetherite) {
       newPrice += 150;
     }
-    setCurrentPrice(newPrice);
+    return newPrice;
   }, [item.price, selectedEnchantments, selectedExclusiveEnchantments, upgradeToNetherite]);
 
   const allEnchantmentOptions = useMemo(() =>
@@ -89,11 +88,12 @@ export function ItemCard({ item }: ItemCardProps) {
         const groupEnchantments = allEnchantmentOptions.filter(opt =>
             enchantmentsInGroup.some(enchantmentString => {
                 const parts = enchantmentString.split(' ');
-                const levelRoman = parts.pop();
+                parts.pop(); // remove level
                 const name = parts.join(' ');
-                return opt.name === name && numberToRoman(opt.level) === levelRoman;
+                return opt.name === name;
             })
-        );
+        ).filter(opt => enchantmentsInGroup.includes(`${opt.name} ${numberToRoman(opt.level)}`));
+
         return { groupName, enchantments: groupEnchantments };
     }).filter(g => g.enchantments.length > 0);
 
@@ -141,7 +141,7 @@ export function ItemCard({ item }: ItemCardProps) {
     const level = romanToNumber(levelRoman || 'I');
 
     const enchantment = allEnchantmentOptions.find(e => e.name === name && e.level === level);
-
+    
     if (enchantment) {
       setSelectedExclusiveEnchantments(prev => ({
         ...prev,
@@ -179,8 +179,8 @@ export function ItemCard({ item }: ItemCardProps) {
                           const value = `${enchantment.name} ${numberToRoman(enchantment.level)}`;
                           return (
                           <div key={value} className="flex items-center space-x-3">
-                            <RadioGroupItem value={value} id={`${item.id}-${group.groupName}-${enchantment.name}-${enchantment.level}`} />
-                            <Label htmlFor={`${item.id}-${group.groupName}-${enchantment.name}-${enchantment.level}`} className="cursor-pointer text-xs">
+                            <RadioGroupItem value={value} id={`${item.id}-${group.groupName}-${value}`} />
+                            <Label htmlFor={`${item.id}-${group.groupName}-${value}`} className="cursor-pointer text-xs">
                               {enchantment.name} {numberToRoman(enchantment.level)} (+R${enchantment.cost.toFixed(2)})
                             </Label>
                           </div>
@@ -242,3 +242,5 @@ export function ItemCard({ item }: ItemCardProps) {
     </Card>
   );
 }
+
+    
