@@ -21,7 +21,7 @@ export function ItemCard({ item }: { item: Item }) {
   );
   
   const handleAddToCart = () => {
-    // Since enchantments are not selectable, an empty array is passed.
+    // Enchantment selection has been removed to fix a critical bug.
     const selectedEnchantments: Enchantment[] = [];
     addToCart(item, selectedEnchantments, quantity);
     toast({
@@ -35,13 +35,14 @@ export function ItemCard({ item }: { item: Item }) {
   };
 
   const isKit = item.id === 'maxed-netherite-kit';
+  const totalPrice = item.price * quantity;
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 border-border hover:border-primary bg-card group">
       <CardContent className="p-6 flex flex-col items-center gap-4 text-center flex-1">
         <div className="w-full flex flex-col flex-1">
             <h2 className="text-lg font-bold font-headline min-h-[56px] flex items-center justify-center animate-text-glow">{item.name}</h2>
-            <p className="text-lg font-bold text-primary mb-4">R${(item.price * quantity).toFixed(2)}</p>
+            <p className="text-lg font-bold text-primary mb-4">R${totalPrice.toFixed(2)}</p>
 
             <Separator className="my-2 bg-border"/>
 

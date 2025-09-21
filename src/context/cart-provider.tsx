@@ -19,28 +19,29 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
   const addToCart = (item: Item, selectedEnchantments: Enchantment[], quantity: number) => {
+    // Since enchantments are not selectable, the cartId can be simplified.
+    const cartId = `${item.id}-${item.name}`;
+
     setCart((prevCart) => {
-      // Create a unique ID for the cart item based on the item and its enchantments
-      const enchantmentString = selectedEnchantments.map(e => `${e.name}${e.level}`).sort().join('-');
-      const cartId = `${item.id}-${item.name}-${enchantmentString}`;
-      
-      const existingItem = prevCart.find((cartItem) => cartItem.cartId === cartId);
-      
-      if (existingItem) {
-        return prevCart.map((cartItem) =>
-          cartItem.cartId === cartId
-            ? { ...cartItem, quantity: cartItem.quantity + quantity }
-            : cartItem
-        );
+      const existingItemIndex = prevCart.findIndex((cartItem) => cartItem.cartId === cartId);
+
+      if (existingItemIndex > -1) {
+        const newCart = [...prevCart];
+        const existingItem = newCart[existingItemIndex];
+        newCart[existingItemIndex] = {
+          ...existingItem,
+          quantity: existingItem.quantity + quantity,
+        };
+        return newCart;
+      } else {
+        const newItem: CartItem = {
+          ...item,
+          cartId,
+          quantity,
+          selectedEnchantments,
+        };
+        return [...prevCart, newItem];
       }
-      
-      const newItem: CartItem = { 
-        ...item, 
-        cartId, 
-        quantity, 
-        selectedEnchantments 
-      };
-      return [...prevCart, newItem];
     });
   };
 

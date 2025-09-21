@@ -10,10 +10,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { MinusCircle, PlusCircle, ShoppingCart, Trash2 } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
 import { placeOrderAction, type FormState } from '@/app/actions';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from './ui/badge';
-import { useActionState } from 'react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -54,7 +53,7 @@ export function OrderSummary() {
   const [state, formAction] = useActionState(placeOrderAction, initialState);
   
   useEffect(() => {
-    if(state.message) {
+    if (state.message) {
       toast({
         title: state.success ? 'Success!' : 'Error',
         description: state.message,
@@ -82,10 +81,7 @@ export function OrderSummary() {
           <p className="text-muted-foreground text-center py-8">Your cart is empty.</p>
         ) : (
           <div className="space-y-4">
-            {cart.map((item) => {
-              const itemTotalPrice = item.price * item.quantity;
-
-              return (
+            {cart.map((item) => (
               <div key={item.cartId} className="flex items-start gap-4">
                 <div className="flex-grow">
                   <p className="font-semibold">{item.name}</p>
@@ -105,13 +101,13 @@ export function OrderSummary() {
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="font-semibold">R${itemTotalPrice.toFixed(2)}</p>
+                  <p className="font-semibold">R${(item.price * item.quantity).toFixed(2)}</p>
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.cartId)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
-            )})}
+            ))}
             <Separator />
             <div className="space-y-2">
               <div className="flex justify-between">
