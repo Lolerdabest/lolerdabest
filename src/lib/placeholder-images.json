@@ -47,6 +47,60 @@
       "description": "A rare aquatic weapon that can be thrown or used in melee.",
       "imageUrl": "https://picsum.photos/seed/108/400/400",
       "imageHint": "trident weapon"
+    },
+    {
+      "id": "netherite-sword",
+      "description": "The ultimate sword, forged from netherite.",
+      "imageUrl": "https://picsum.photos/seed/109/400/400",
+      "imageHint": "netherite sword"
+    },
+    {
+      "id": "netherite-pickaxe",
+      "description": "The ultimate pickaxe for mining.",
+      "imageUrl": "https://picsum.photos/seed/110/400/400",
+      "imageHint": "netherite pickaxe"
+    },
+    {
+      "id": "netherite-axe",
+      "description": "A powerful axe for combat and chopping.",
+      "imageUrl": "https://picsum.photos/seed/111/400/400",
+      "imageHint": "netherite axe"
+    },
+    {
+      "id": "netherite-shovel",
+      "description": "The most durable shovel.",
+      "imageUrl": "https://picsum.photos/seed/112/400/400",
+      "imageHint": "netherite shovel"
+    },
+    {
+      "id": "netherite-hoe",
+      "description": "For the most discerning farmer.",
+      "imageUrl": "https://picsum.photos/seed/113/400/400",
+      "imageHint": "netherite hoe"
+    },
+    {
+      "id": "netherite-helmet",
+      "description": "The best protection for your head.",
+      "imageUrl": "https://picsum.photos/seed/114/400/400",
+      "imageHint": "netherite helmet"
+    },
+    {
+      "id": "netherite-chestplate",
+      "description": "Maximum protection for your torso.",
+      "imageUrl": "https://picsum.photos/seed/115/400/400",
+      "imageHint": "netherite chestplate"
+    },
+    {
+      "id": "netherite-leggings",
+      "description": "Superior leg protection.",
+      "imageUrl": "https://picsum.photos/seed/116/400/400",
+      "imageHint": "netherite leggings"
+    },
+    {
+      "id": "netherite-boots",
+      "description": "The finest boots for any terrain.",
+      "imageUrl": "https://picsum.photos/seed/117/400/400",
+      "imageHint": "netherite boots"
     }
   ]
 }
