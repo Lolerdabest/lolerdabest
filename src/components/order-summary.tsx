@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { MinusCircle, PlusCircle, ShoppingCart, Trash2 } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
 import { placeOrderAction, type FormState } from '@/app/actions';
-import { useEffect, useRef, useState, useActionState } from 'react';
+import { useEffect, useRef, useState, useActionState, ChangeEvent } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { formatEnchantment } from '@/lib/enchantment-utils';
@@ -30,6 +30,8 @@ export function OrderSummary() {
   const { toast } = useToast();
   const [coupon, setCoupon] = useState('');
   const [discount, setDiscount] = useState(0);
+  const [paymentProof, setPaymentProof] = useState<File | null>(null);
+  const [paymentProofName, setPaymentProofName] = useState<string>('');
 
   const discountedTotal = totalPrice - totalPrice * discount;
 
@@ -57,9 +59,19 @@ export function OrderSummary() {
         clearCart();
         setCoupon('');
         setDiscount(0);
+        setPaymentProof(null);
+        setPaymentProofName('');
       }
     }
   }, [state, toast, clearCart]);
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPaymentProof(file);
+      setPaymentProofName(file.name);
+    }
+  };
 
   return (
     <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card">
@@ -76,7 +88,11 @@ export function OrderSummary() {
           <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2">
             {cart.map((item) => (
               <div key={item.cartId} className="flex items-start gap-4">
-                <Image src={item.image} alt={item.name} width={40} height={40} className="pixelated rounded-md bg-muted p-1" />
+                 <div className="relative w-10 h-10 animated-gradient overflow-hidden flex items-center justify-center p-1 rounded-md">
+                    <p className="font-headline text-[10px] text-primary text-center animate-text-glow break-words leading-tight">
+                        {item.name}
+                    </p>
+                 </div>
                 <div className="flex-grow">
                   <p className="font-semibold leading-tight">{item.name}</p>
                    {item.selectedEnchantments.length > 0 && (
@@ -143,7 +159,7 @@ export function OrderSummary() {
             </div>
           <Separator />
 
-          <form action={formAction} ref={formRef} className="w-full space-y-6">
+          <form action={formAction} ref={formRef} className="w-full space-y-6" encType="multipart/form-data">
              <input type="hidden" name="cart" value={JSON.stringify(cart.map(({image, imageHint, description, enchantments, ...rest}) => rest))} />
             <input type="hidden" name="finalPrice" value={discountedTotal.toFixed(2)} />
 
@@ -172,6 +188,25 @@ export function OrderSummary() {
                 </div>
             </div>
             
+             <div className="space-y-2">
+              <Label htmlFor="paymentProof">Payment Proof</Label>
+              <Input 
+                id="paymentProof" 
+                name="paymentProof" 
+                type="file" 
+                className="hidden" 
+                onChange={handleFileChange}
+                accept="image/*"
+                required
+              />
+              <Button asChild variant="outline">
+                <label htmlFor="paymentProof" className="cursor-pointer w-full">
+                  {paymentProofName ? 'Change Proof' : 'Upload Screenshot'}
+                </label>
+              </Button>
+              {paymentProofName && <p className="text-xs text-muted-foreground">Selected: {paymentProofName}</p>}
+            </div>
+
             <SubmitButton />
           </form>
         </CardFooter>
