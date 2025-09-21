@@ -3,12 +3,14 @@
 import { z } from 'zod';
 import { getItemRecommendations } from '@/ai/flows/personalized-item-recommendations';
 import { items } from '@/lib/items';
+import type { CartItem } from '@/lib/types';
 
 const orderSchema = z.object({
   minecraftUsername: z.string().min(3, { message: "Username must be at least 3 characters." }),
   discordTag: z.string().regex(/^.{3,32}#[0-9]{4}$/, { message: "Invalid Discord tag format (e.g., user#1234)." }),
   notes: z.string().optional(),
   cart: z.string(),
+  finalPrice: z.string(),
 });
 
 export type FormState = {
@@ -26,6 +28,7 @@ export async function placeOrderAction(
       discordTag: formData.get('discordTag'),
       notes: formData.get('notes'),
       cart: formData.get('cart'),
+      finalPrice: formData.get('finalPrice'),
     });
 
     if (!validatedFields.success) {
@@ -35,16 +38,49 @@ export async function placeOrderAction(
       };
     }
     
-    // In a real app, you would process the order here:
-    // - Save order details to a database
-    // - Handle the screenshot upload (e.g., to cloud storage)
-    // - Notify admins
-    console.log('New Order Placed:');
-    console.log('Username:', validatedFields.data.minecraftUsername);
-    console.log('Discord:', validatedFields.data.discordTag);
-    console.log('Notes:', validatedFields.data.notes);
-    console.log('Cart:', JSON.parse(validatedFields.data.cart));
-    // console.log('Screenshot:', formData.get('screenshot'));
+    const { minecraftUsername, discordTag, notes, cart, finalPrice } = validatedFields.data;
+    const cartItems: CartItem[] = JSON.parse(cart);
+
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+
+    if (webhookUrl) {
+      const embed = {
+        title: 'New Order Placed!',
+        color: 0x9b59b6, // A nice purple color
+        fields: [
+          { name: 'Minecraft Username', value: minecraftUsername, inline: true },
+          { name: 'Discord Tag', value: discordTag, inline: true },
+          { name: 'Total Price', value: `R$${finalPrice}`, inline: true },
+          { name: 'Items', value: cartItems.map(item => `${item.name} x${item.quantity}`).join('\n') },
+        ],
+        footer: {
+          text: `Loler's Hustle | ${new Date().toLocaleString()}`,
+        },
+      };
+
+      if (notes) {
+        embed.fields.push({ name: 'Notes', value: notes });
+      }
+
+      await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: "Loler's Hustle Bot",
+          avatar_url: 'https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png',
+          embeds: [embed],
+        }),
+      });
+    } else {
+        console.log('New Order Placed (Discord Webhook URL not configured):');
+        console.log('Username:', minecraftUsername);
+        console.log('Discord:', discordTag);
+        console.log('Notes:', notes);
+        console.log('Cart:', cartItems);
+    }
+
 
     return { message: `Order placed successfully! We'll be in touch on Discord.`, success: true };
   } catch (error) {
