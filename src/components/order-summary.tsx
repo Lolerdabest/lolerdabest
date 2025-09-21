@@ -46,7 +46,7 @@ export function OrderSummary() {
   }, [state, toast, clearCart]);
 
   return (
-    <Card className="border-accent border-2 shadow-lg shadow-accent/10 bg-card/80 backdrop-blur-sm">
+    <Card className="border-primary border-2 shadow-lg shadow-primary/20 bg-card">
       <CardHeader>
         <CardTitle className="text-2xl font-headline flex items-center gap-2">
           <ShoppingCart />
@@ -82,7 +82,7 @@ export function OrderSummary() {
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="font-semibold">${itemTotalPrice.toFixed(2)}</p>
+                  <p className="font-semibold">R${itemTotalPrice.toFixed(2)}</p>
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.cartId)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -92,7 +92,7 @@ export function OrderSummary() {
             <Separator />
             <div className="flex justify-between font-bold text-lg">
               <span>Total ({totalItems} items)</span>
-              <span>${totalPrice.toFixed(2)}</span>
+              <span>R${totalPrice.toFixed(2)}</span>
             </div>
           </div>
         )}

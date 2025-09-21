@@ -3,104 +3,128 @@
     {
       "id": "diamond-sword",
       "description": "A powerful diamond sword, ready for battle.",
-      "imageUrl": "https://picsum.photos/seed/101/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond_sword.png",
       "imageHint": "diamond sword"
     },
     {
       "id": "netherite-ingot",
       "description": "A rare and durable netherite ingot, the pinnacle of materials.",
-      "imageUrl": "https://picsum.photos/seed/102/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_ingot.png",
       "imageHint": "netherite ingot"
     },
     {
       "id": "elytra",
       "description": "A pair of wings for gliding through the sky.",
-      "imageUrl": "https://picsum.photos/seed/103/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/elytra.png",
       "imageHint": "elytra wings"
     },
     {
       "id": "totem-of-undying",
       "description": "A mystical totem that saves you from certain death.",
-      "imageUrl": "https://picsum.photos/seed/104/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/totem_of_undying.png",
       "imageHint": "gold totem"
-    },
-    {
-      "id": "enchanted-golden-apple",
-      "description": "A magical apple with extraordinary regenerative powers.",
-      "imageUrl": "https://picsum.photos/seed/105/400/400",
-      "imageHint": "golden apple"
     },
     {
       "id": "shulker-box",
       "description": "A portable chest to carry your items anywhere.",
-      "imageUrl": "https://picsum.photos/seed/106/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/shulker_box.png",
       "imageHint": "purple box"
-    },
-    {
-      "id": "beacon",
-      "description": "A powerful block that provides status effects in a large area.",
-      "imageUrl": "https://picsum.photos/seed/107/400/400",
-      "imageHint": "glowing beacon"
-    },
-    {
-      "id": "trident",
-      "description": "A rare aquatic weapon that can be thrown or used in melee.",
-      "imageUrl": "https://picsum.photos/seed/108/400/400",
-      "imageHint": "trident weapon"
     },
     {
       "id": "netherite-sword",
       "description": "The ultimate sword, forged from netherite.",
-      "imageUrl": "https://picsum.photos/seed/109/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_sword.png",
       "imageHint": "netherite sword"
     },
     {
       "id": "netherite-pickaxe",
       "description": "The ultimate pickaxe for mining.",
-      "imageUrl": "https://picsum.photos/seed/110/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_pickaxe.png",
       "imageHint": "netherite pickaxe"
     },
     {
       "id": "netherite-axe",
       "description": "A powerful axe for combat and chopping.",
-      "imageUrl": "https://picsum.photos/seed/111/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_axe.png",
       "imageHint": "netherite axe"
     },
     {
       "id": "netherite-shovel",
       "description": "The most durable shovel.",
-      "imageUrl": "https://picsum.photos/seed/112/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_shovel.png",
       "imageHint": "netherite shovel"
-    },
-    {
-      "id": "netherite-hoe",
-      "description": "For the most discerning farmer.",
-      "imageUrl": "https://picsum.photos/seed/113/400/400",
-      "imageHint": "netherite hoe"
     },
     {
       "id": "netherite-helmet",
       "description": "The best protection for your head.",
-      "imageUrl": "https://picsum.photos/seed/114/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_helmet.png",
       "imageHint": "netherite helmet"
     },
     {
       "id": "netherite-chestplate",
       "description": "Maximum protection for your torso.",
-      "imageUrl": "https://picsum.photos/seed/115/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_chestplate.png",
       "imageHint": "netherite chestplate"
     },
     {
       "id": "netherite-leggings",
       "description": "Superior leg protection.",
-      "imageUrl": "https://picsum.photos/seed/116/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_leggings.png",
       "imageHint": "netherite leggings"
     },
     {
       "id": "netherite-boots",
       "description": "The finest boots for any terrain.",
-      "imageUrl": "https://picsum.photos/seed/117/400/400",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_boots.png",
       "imageHint": "netherite boots"
+    },
+    {
+      "id": "diamond-helmet",
+      "description": "A sturdy helmet made of diamonds.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond_helmet.png",
+      "imageHint": "diamond helmet"
+    },
+    {
+      "id": "diamond-chestplate",
+      "description": "A chestplate made of diamonds for great protection.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond_chestplate.png",
+      "imageHint": "diamond chestplate"
+    },
+    {
+      "id": "diamond-leggings",
+      "description": "Leggings made of diamonds.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond_leggings.png",
+      "imageHint": "diamond leggings"
+    },
+    {
+      "id": "diamond-boots",
+      "description": "Boots made of diamonds.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond_boots.png",
+      "imageHint": "diamond boots"
+    },
+    {
+      "id": "diamond-pickaxe",
+      "description": "A pickaxe made of diamonds.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond_pickaxe.png",
+      "imageHint": "diamond pickaxe"
+    },
+    {
+      "id": "diamond-axe",
+      "description": "An axe made of diamonds.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond_axe.png",
+      "imageHint": "diamond axe"
+    },
+    {
+      "id": "diamond-shovel",
+      "description": "A shovel made of diamonds.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond_shovel.png",
+      "imageHint": "diamond shovel"
+    },
+    {
+      "id": "maxed-netherite-kit",
+      "description": "The ultimate kit for the discerning player.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_chestplate.png",
+      "imageHint": "netherite armor"
     }
   ]
 }

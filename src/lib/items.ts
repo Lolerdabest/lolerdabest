@@ -1,5 +1,6 @@
 import type { Item } from './types';
 import { enchantments } from './enchantments';
+import { PlaceHolderImages } from './placeholder-images';
 
 const itemData: Omit<Item, 'description' | 'image' | 'imageHint'>[] = [
   // Full Kit
@@ -44,10 +45,13 @@ const itemData: Omit<Item, 'description' | 'image' | 'imageHint'>[] = [
   { id: 'shulker-box', name: 'Shulker Box', price: 100, enchantments: [], icon: 'S' },
 ];
 
-export const items: Item[] = itemData.map(item => ({
-  ...item,
-  description: '', 
-  image: '', 
-  imageHint: '',
-  enchantments: [...new Set(item.enchantments)]
-}));
+export const items: Item[] = itemData.map(item => {
+  const placeholder = PlaceHolderImages.find(p => p.id === item.id);
+  return {
+    ...item,
+    description: placeholder?.description || '', 
+    image: placeholder?.imageUrl || '', 
+    imageHint: placeholder?.imageHint || '',
+    enchantments: [...new Set(item.enchantments)]
+  }
+});
