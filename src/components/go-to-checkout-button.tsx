@@ -3,7 +3,7 @@
 
 import { useCart } from '@/context/cart-provider';
 import { Button } from '@/components/ui/button';
-import { ArrowDownCircle } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function GoToCheckoutButton() {
@@ -28,12 +28,12 @@ export default function GoToCheckoutButton() {
   return (
     <div className="fixed bottom-6 right-6 z-30">
       <Button
-        size="lg"
-        className="text-lg font-bold py-8 px-6 rounded-full shadow-lg shadow-primary/40 animate-bounce"
+        size="icon"
+        className="rounded-full shadow-lg shadow-primary/40 animate-bounce w-16 h-16"
         onClick={handleScroll}
+        aria-label="Go to Checkout"
       >
-        <ArrowDownCircle className="mr-2 h-6 w-6" />
-        Go to Checkout
+        <ShoppingCart className="h-8 w-8" />
       </Button>
     </div>
   );
