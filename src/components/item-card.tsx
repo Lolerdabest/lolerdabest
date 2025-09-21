@@ -8,7 +8,6 @@ import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
 import { useState, useMemo, useEffect } from 'react';
 import { Separator } from './ui/separator';
-import Image from 'next/image';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { exclusiveEnchantmentGroups } from '@/lib/enchantments';
 
@@ -120,24 +119,13 @@ export function ItemCard({ item }: ItemCardProps) {
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 border-border hover:border-primary bg-card group">
       <CardContent className="p-6 flex flex-col items-center gap-4 text-center flex-1">
-        <div className="relative w-full aspect-square bg-muted/30 rounded-md overflow-hidden">
-        {item.image ? (
-            <Image
-              src={item.image}
-              alt={item.name}
-              fill
-              className="object-contain p-4 group-hover:scale-105 transition-transform pixelated"
-              data-ai-hint={item.imageHint}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          ) : (
-            <div 
-              className="w-full h-full flex items-center justify-center text-4xl font-bold text-primary" 
-              style={{ textShadow: '0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary))' }}
-            >
-              {Icon}
-            </div>
-          )}
+        <div className="relative w-full aspect-square bg-transparent rounded-md flex items-center justify-center">
+          <div 
+            className="w-full h-full flex items-center justify-center text-8xl font-bold text-primary" 
+            style={{ textShadow: '0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary))' }}
+          >
+            {Icon}
+          </div>
         </div>
         
         <div className="w-full flex flex-col flex-1">
