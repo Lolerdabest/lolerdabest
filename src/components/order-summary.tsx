@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useCart } from '@/context/cart-provider';
@@ -12,7 +13,6 @@ import { useFormStatus } from 'react-dom';
 import { placeOrderAction, type FormState } from '@/app/actions';
 import { useEffect, useRef, useState, useActionState, ChangeEvent } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import Image from 'next/image';
 import { formatEnchantment } from '@/lib/enchantment-utils';
 import { ScrollArea } from './ui/scroll-area';
 
@@ -37,7 +37,6 @@ export function OrderSummary() {
   const discountedTotal = totalPrice - totalPrice * discount;
 
   const handleApplyCoupon = () => {
-    // Coupon logic is disabled for now.
     setDiscount(0);
     toast({
       title: 'Info',
@@ -75,7 +74,7 @@ export function OrderSummary() {
   };
 
   return (
-    <ScrollArea className="h-full">
+    <ScrollArea className="h-full max-h-[calc(100vh-8rem)]">
       <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card">
         <CardHeader>
           <CardTitle className="text-2xl font-headline flex items-center gap-2 animate-text-glow">
