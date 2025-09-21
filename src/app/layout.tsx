@@ -21,6 +21,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
       </head>
       <body className={cn('antialiased min-h-screen bg-background')}>
+        <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
         {children}
         <Toaster />
       </body>
