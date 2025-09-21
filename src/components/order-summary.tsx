@@ -74,7 +74,7 @@ export function OrderSummary() {
   };
 
   return (
-    <ScrollArea className="h-full max-h-[calc(100vh-8rem)]">
+    <ScrollArea className="h-full">
       <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card">
         <CardHeader>
           <CardTitle className="text-2xl font-headline flex items-center gap-2 animate-text-glow">

@@ -30,9 +30,9 @@ export default function Home() {
     <CartProvider>
       <SearchHeader onSearch={handleSearch} />
       <div className="flex flex-col min-h-screen">
-        <main className="flex-1 container mx-auto p-4 md:p-8 pt-28">
-          <div className="grid lg:grid-cols-3 gap-8 items-start">
-            <div className="lg:col-span-2 space-y-12">
+        <main className="flex-1 container mx-auto p-4 md:p-6 pt-24">
+          <div className="grid lg:grid-cols-4 gap-8 items-start">
+            <div className="lg:col-span-3 space-y-12">
               <section>
                 <ItemList items={filteredItems} />
               </section>
@@ -40,7 +40,7 @@ export default function Home() {
                 <Recommendations />
               </section>
             </div>
-            <div id="order-summary" className="lg:col-span-1 lg:sticky lg:top-28">
+            <div id="order-summary" className="lg:col-span-1 lg:sticky lg:top-24 h-fit max-h-[calc(100vh-7rem)]">
               <OrderSummary />
             </div>
           </div>
