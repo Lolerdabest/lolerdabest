@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Separator } from './ui/separator';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { MinusCircle, PlusCircle } from 'lucide-react';
@@ -73,16 +73,16 @@ export function ItemCard({ item }: { item: Item }) {
     );
   };
   
-  const handleExclusiveEnchantmentChange = (groupName: string, enchantmentValue: string) => {
-    const enchantment = allEnchantmentOptions.find(e => `${e.name} ${numberToRoman(e.level)}` === enchantmentValue);
-    
-    if (enchantment) {
-      setSelectedExclusiveEnchantments(prev => ({
-        ...prev,
-        [groupName]: enchantment
-      }));
-    }
-  };
+  const handleExclusiveEnchantmentChange = useCallback((groupName: string, enchantmentValue: string) => {
+      const enchantment = allEnchantmentOptions.find(e => `${e.name} ${numberToRoman(e.level)}` === enchantmentValue);
+      
+      if (enchantment) {
+        setSelectedExclusiveEnchantments(prev => ({
+          ...prev,
+          [groupName]: enchantment
+        }));
+      }
+  }, [allEnchantmentOptions]);
   
   const handleQuantityChange = (amount: number) => {
     setQuantity(prev => Math.max(1, prev + amount));
