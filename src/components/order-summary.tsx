@@ -73,145 +73,143 @@ export function OrderSummary() {
   };
 
   return (
-      <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card h-full flex flex-col overflow-y-auto">
+      <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card h-full overflow-y-auto">
         <CardHeader className="sticky top-0 bg-card z-10">
           <CardTitle className="text-2xl font-headline flex items-center gap-2 animate-text-glow">
             <ShoppingCart />
             Order Summary
           </CardTitle>
         </CardHeader>
-        <div className="flex-grow overflow-y-auto">
-          <CardContent>
-            {cart.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">Your cart is empty.</p>
-            ) : (
-              <div className="space-y-4">
-                {cart.map((item) => (
-                  <div key={item.cartId} className="flex items-start gap-4">
-                    <div className="relative w-10 h-10 animated-gradient overflow-hidden flex items-center justify-center p-1 rounded-md">
-                        <p className="font-headline text-[10px] text-primary text-center animate-text-glow break-words leading-tight">
-                            {item.name}
-                        </p>
-                    </div>
-                    <div className="flex-grow">
-                      <p className="font-semibold leading-tight">{item.name}</p>
-                      {item.selectedEnchantments.length > 0 && (
-                        <ul className="text-xs text-primary/80 list-disc list-inside">
-                          {item.selectedEnchantments.map(e => (
-                            <li key={e.name}>{formatEnchantment(e)}</li>
-                          ))}
-                        </ul>
-                      )}
-                      <div className="flex items-center gap-1 mt-1">
-                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.cartId, item.quantity - 1)}><MinusCircle className="h-4 w-4" /></Button>
-                        <span className="w-6 text-center">{item.quantity}</span>
-                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.cartId, item.quantity + 1)}><PlusCircle className="h-4 w-4" /></Button>
-                      </div>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="font-semibold">R${((item.price + item.selectedEnchantments.reduce((acc, e) => acc + e.cost, 0)) * item.quantity).toFixed(2)}</p>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.cartId)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+        <CardContent>
+          {cart.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">Your cart is empty.</p>
+          ) : (
+            <div className="space-y-4">
+              {cart.map((item) => (
+                <div key={item.cartId} className="flex items-start gap-4">
+                  <div className="relative w-10 h-10 animated-gradient overflow-hidden flex items-center justify-center p-1 rounded-md">
+                      <p className="font-headline text-[10px] text-primary text-center animate-text-glow break-words leading-tight">
+                          {item.name}
+                      </p>
+                  </div>
+                  <div className="flex-grow">
+                    <p className="font-semibold leading-tight">{item.name}</p>
+                    {item.selectedEnchantments.length > 0 && (
+                      <ul className="text-xs text-primary/80 list-disc list-inside">
+                        {item.selectedEnchantments.map(e => (
+                          <li key={e.name}>{formatEnchantment(e)}</li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="flex items-center gap-1 mt-1">
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.cartId, item.quantity - 1)}><MinusCircle className="h-4 w-4" /></Button>
+                      <span className="w-6 text-center">{item.quantity}</span>
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.cartId, item.quantity + 1)}><PlusCircle className="h-4 w-4" /></Button>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-            {cart.length > 0 && <Separator className="mt-4" />}
-            {cart.length > 0 && (
-                <div className="space-y-2 pt-4">
-                  <div className="flex justify-between">
-                    <span>Subtotal ({totalItems} items)</span>
-                    <span>R${totalPrice.toFixed(2)}</span>
-                  </div>
-                  {discount > 0 && (
-                    <div className="flex justify-between text-primary">
-                      <span>Discount</span>
-                      <span>-R${(totalPrice * discount).toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between font-bold text-lg">
-                    <span>Total</span>
-                    <span>R${discountedTotal.toFixed(2)}</span>
+                  <div className="text-right flex-shrink-0">
+                    <p className="font-semibold">R${((item.price + item.selectedEnchantments.reduce((acc, e) => acc + e.cost, 0)) * item.quantity).toFixed(2)}</p>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.cartId)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-            )}
-          </CardContent>
-
-          {cart.length > 0 && (
-            <CardFooter className="flex-col !items-start gap-6 pt-6">
-              <Separator />
-                <div className="w-full space-y-2">
-                  <Label htmlFor="coupon">Coupon Code</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="coupon"
-                      name="coupon"
-                      value={coupon}
-                      onChange={(e) => setCoupon(e.target.value)}
-                      className="w-full"
-                      placeholder="No coupons available"
-                      disabled
-                    />
-                    <Button onClick={handleApplyCoupon} disabled>Apply</Button>
-                  </div>
-                </div>
-              <Separator />
-
-              <form action={formAction} ref={formRef} className="w-full space-y-6" encType="multipart/form-data">
-                <input type="hidden" name="cart" value={JSON.stringify(cart.map(({image, imageHint, description, enchantments, ...rest}) => rest))} />
-                <input type="hidden" name="finalPrice" value={discountedTotal.toFixed(2)} />
-
-                <div className="space-y-2">
-                  <Label htmlFor="minecraftUsername">Minecraft Username</Label>
-                  <Input id="minecraftUsername" name="minecraftUsername" placeholder="Steve" required />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="discordTag">Discord Tag</Label>
-                  <Input id="discordTag" name="discordTag" placeholder="yourname" required />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="notes">Optional Notes</Label>
-                  <Textarea id="notes" name="notes" placeholder="Any special requests or details?" />
-                </div>
-                
-                <div className="space-y-2">
-                    <Label>Payment Instructions</Label>
-                    <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
-                      <p>Please send the total amount in-game using the command below and upload a screenshot of the payment confirmation.</p>
-                      <code className="block bg-background/50 p-2 rounded-md mt-2 text-center text-foreground break-all">
-                        /pay lolerdabest69 {discountedTotal.toFixed(2)}
-                      </code>
-                    </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="paymentProof">Payment Proof</Label>
-                  <Input 
-                    id="paymentProof" 
-                    name="paymentProof" 
-                    type="file" 
-                    className="hidden" 
-                    onChange={handleFileChange}
-                    accept="image/*"
-                    required
-                  />
-                  <Button asChild variant="outline">
-                    <label htmlFor="paymentProof" className="cursor-pointer w-full">
-                      {paymentProofName ? 'Change Proof' : 'Upload Screenshot'}
-                    </label>
-                  </Button>
-                  {paymentProofName && <p className="text-xs text-muted-foreground">Selected: {paymentProofName}</p>}
-                </div>
-
-                <SubmitButton />
-              </form>
-            </CardFooter>
+              ))}
+            </div>
           )}
-        </div>
+          {cart.length > 0 && <Separator className="mt-4" />}
+          {cart.length > 0 && (
+              <div className="space-y-2 pt-4">
+                <div className="flex justify-between">
+                  <span>Subtotal ({totalItems} items)</span>
+                  <span>R${totalPrice.toFixed(2)}</span>
+                </div>
+                {discount > 0 && (
+                  <div className="flex justify-between text-primary">
+                    <span>Discount</span>
+                    <span>-R${(totalPrice * discount).toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between font-bold text-lg">
+                  <span>Total</span>
+                  <span>R${discountedTotal.toFixed(2)}</span>
+                </div>
+              </div>
+          )}
+        </CardContent>
+
+        {cart.length > 0 && (
+          <CardFooter className="flex-col !items-start gap-6 pt-6">
+            <Separator />
+              <div className="w-full space-y-2">
+                <Label htmlFor="coupon">Coupon Code</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="coupon"
+                    name="coupon"
+                    value={coupon}
+                    onChange={(e) => setCoupon(e.target.value)}
+                    className="w-full"
+                    placeholder="No coupons available"
+                    disabled
+                  />
+                  <Button onClick={handleApplyCoupon} disabled>Apply</Button>
+                </div>
+              </div>
+            <Separator />
+
+            <form action={formAction} ref={formRef} className="w-full space-y-6" encType="multipart/form-data">
+              <input type="hidden" name="cart" value={JSON.stringify(cart.map(({image, imageHint, description, enchantments, ...rest}) => rest))} />
+              <input type="hidden" name="finalPrice" value={discountedTotal.toFixed(2)} />
+
+              <div className="space-y-2">
+                <Label htmlFor="minecraftUsername">Minecraft Username</Label>
+                <Input id="minecraftUsername" name="minecraftUsername" placeholder="Steve" required />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="discordTag">Discord Tag</Label>
+                <Input id="discordTag" name="discordTag" placeholder="yourname" required />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="notes">Optional Notes</Label>
+                <Textarea id="notes" name="notes" placeholder="Any special requests or details?" />
+              </div>
+              
+              <div className="space-y-2">
+                  <Label>Payment Instructions</Label>
+                  <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
+                    <p>Please send the total amount in-game using the command below and upload a screenshot of the payment confirmation.</p>
+                    <code className="block bg-background/50 p-2 rounded-md mt-2 text-center text-foreground break-all">
+                      /pay lolerdabest69 {discountedTotal.toFixed(2)}
+                    </code>
+                  </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="paymentProof">Payment Proof</Label>
+                <Input 
+                  id="paymentProof" 
+                  name="paymentProof" 
+                  type="file" 
+                  className="hidden" 
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  required
+                />
+                <Button asChild variant="outline">
+                  <label htmlFor="paymentProof" className="cursor-pointer w-full">
+                    {paymentProofName ? 'Change Proof' : 'Upload Screenshot'}
+                  </label>
+                </Button>
+                {paymentProofName && <p className="text-xs text-muted-foreground">Selected: {paymentProofName}</p>}
+              </div>
+
+              <SubmitButton />
+            </form>
+          </CardFooter>
+        )}
       </Card>
   );
 }
