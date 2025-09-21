@@ -20,14 +20,6 @@ export type FormState = {
   success: boolean;
 };
 
-// Helper function to convert a File to a data URI
-async function fileToDataUri(file: File): Promise<string> {
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  return `data:${file.type};base64,${buffer.toString('base64')}`;
-}
-
-
 export async function placeOrderAction(
   prevState: FormState,
   formData: FormData
@@ -73,18 +65,20 @@ export async function placeOrderAction(
         embed.fields.push({ name: 'Notes', value: notes });
       }
       
-      const webhookBody = {
+      const webhookFormData = new FormData();
+      const webhookPayload = {
           username: "Loler's Hustle Bot",
           avatar_url: 'https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png',
           embeds: [embed],
       };
 
+      webhookFormData.append('payload_json', JSON.stringify(webhookPayload));
+      webhookFormData.append('file1', screenshot, screenshot.name);
+
+
       const response = await fetch(webhookUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(webhookBody),
+        body: webhookFormData,
       });
 
       if (!response.ok) {
