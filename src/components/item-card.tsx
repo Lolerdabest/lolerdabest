@@ -89,29 +89,29 @@ export function ItemCard({ item }: { item: Item }) {
           {item.name}
         </p>
       </div>
-      <CardContent className="p-4 flex flex-col items-center gap-2 text-center flex-1">
+      <CardContent className="p-3 flex flex-col items-center gap-2 text-center flex-1">
         <div className="w-full flex flex-col flex-1">
           <h2 className="text-md font-bold font-headline min-h-[40px] flex items-center justify-center leading-tight">
             {item.name}
           </h2>
           
           {isEnchantable && (
-            <div className="text-left text-xs mb-4 space-y-4">
+            <div className="text-left text-xs my-2 space-y-2">
                <Separator />
                {exclusiveGroups.map((group, index) => (
                 <div key={index}>
-                    <Label className="font-bold mb-2 block">Choose one:</Label>
-                    <RadioGroup onValueChange={(value) => handleExclusiveEnchantmentChange(group, value)}>
+                    <Label className="font-bold mb-1 block text-primary/90">Choose one:</Label>
+                    <RadioGroup onValueChange={(value) => handleExclusiveEnchantmentChange(group, value)} className="space-y-1">
                         <div className="flex items-center space-x-2">
                            <RadioGroupItem value="none" id={`${item.id}-${index}-none`} />
-                           <Label htmlFor={`${item.id}-${index}-none`}>None</Label>
+                           <Label htmlFor={`${item.id}-${index}-none`} className="text-xs">None</Label>
                         </div>
                         {group.map(name => {
                             const enchantmentString = applicableEnchantments.find(e => e.startsWith(name)) || name;
                             return (
                                 <div key={name} className="flex items-center space-x-2">
                                     <RadioGroupItem value={enchantmentString} id={`${item.id}-${name}`} />
-                                    <Label htmlFor={`${item.id}-${name}`}>{enchantmentString}</Label>
+                                    <Label htmlFor={`${item.id}-${name}`} className="text-xs">{enchantmentString}</Label>
                                 </div>
                             );
                         })}
@@ -120,15 +120,15 @@ export function ItemCard({ item }: { item: Item }) {
                ))}
               {nonExclusiveEnchantments.length > 0 && (
                 <div>
-                   <Label className="font-bold mb-2 block">Add extras:</Label>
-                  <div className="space-y-2">
+                   <Label className="font-bold mb-1 block text-primary/90">Add extras:</Label>
+                  <div className="space-y-1">
                     {nonExclusiveEnchantments.map(enchant => (
                       <div key={enchant.name} className="flex items-center space-x-2">
                         <Checkbox
                           id={`${item.id}-${enchant.name}`}
                           onCheckedChange={(checked) => handleEnchantmentChange(enchant, !!checked)}
                         />
-                        <Label htmlFor={`${item.id}-${enchant.name}`}>{formatEnchantment(enchant)}</Label>
+                        <Label htmlFor={`${item.id}-${enchant.name}`} className="text-xs">{formatEnchantment(enchant)}</Label>
                       </div>
                     ))}
                   </div>
@@ -138,8 +138,8 @@ export function ItemCard({ item }: { item: Item }) {
             </div>
           )}
 
-          <p className="text-lg font-bold text-primary mb-2 mt-auto">R${totalPrice.toFixed(2)}</p>
-          <p className="text-xs text-muted-foreground flex-1 mb-4 min-h-[20px]">{item.description}</p>
+          <p className="text-lg font-bold text-primary mb-1 mt-auto">R${totalPrice.toFixed(2)}</p>
+          <p className="text-xs text-muted-foreground flex-1 mb-2 min-h-[20px]">{item.description}</p>
             
           <div className="flex items-center justify-center gap-2 mt-auto">
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleQuantityChange(-1)}><MinusCircle /></Button>
@@ -153,7 +153,7 @@ export function ItemCard({ item }: { item: Item }) {
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleQuantityChange(1)}><PlusCircle /></Button>
           </div>
 
-          <Button onClick={handleAddToCart} className="w-full font-bold text-lg py-6 mt-4">
+          <Button onClick={handleAddToCart} className="w-full font-bold text-lg py-6 mt-2">
             ADD TO CART
           </Button>
         </div>
