@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState, useMemo } from 'react';
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (item: Item, enchantments: Enchantment[]) => void;
+  addToCart: (item: Item, enchantments: Enchantment[], quantity: number) => void;
   removeFromCart: (cartId: string) => void;
   updateQuantity: (cartId: string, quantity: number) => void;
   clearCart: () => void;
@@ -18,7 +18,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addToCart = (item: Item, selectedEnchantments: Enchantment[]) => {
+  const addToCart = (item: Item, selectedEnchantments: Enchantment[], quantity: number) => {
     setCart((prevCart) => {
       // Create a unique ID for the cart item based on the item and its enchantments
       const enchantmentString = selectedEnchantments.map(e => `${e.name}${e.level}`).sort().join('-');
@@ -29,7 +29,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       if (existingItem) {
         return prevCart.map((cartItem) =>
           cartItem.cartId === cartId
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            ? { ...cartItem, quantity: cartItem.quantity + quantity }
             : cartItem
         );
       }
@@ -37,7 +37,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       const newItem: CartItem = { 
         ...item, 
         cartId, 
-        quantity: 1, 
+        quantity, 
         selectedEnchantments 
       };
       return [...prevCart, newItem];

@@ -4,7 +4,7 @@ import type { Item, Enchantment } from '@/lib/types';
 import { useCart } from '@/context/cart-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, Wand2 } from 'lucide-react';
+import { MinusCircle, Package, PlusCircle, Wand2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -58,6 +58,7 @@ const parseEnchantment = (enchantmentString: string): Enchantment => {
 export function ItemCard({ item }: ItemCardProps) {
   const { addToCart } = useCart();
   const [selectedEnchantments, setSelectedEnchantments] = useState<Enchantment[]>([]);
+  const [quantity, setQuantity] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   
   const handleEnchantmentChange = (checked: boolean, enchantment: Enchantment) => {
@@ -71,13 +72,14 @@ export function ItemCard({ item }: ItemCardProps) {
   };
 
   const handleAddToCart = () => {
-    addToCart(item, selectedEnchantments);
+    addToCart(item, selectedEnchantments, quantity);
     setSelectedEnchantments([]);
+    setQuantity(1);
     setIsOpen(false);
   };
 
   const enchantmentCost = selectedEnchantments.reduce((acc, ench) => acc + (0.5 * ench.level), 0);
-  const totalItemPrice = item.price + enchantmentCost;
+  const totalItemPrice = (item.price + enchantmentCost) * quantity;
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:border-accent hover:shadow-lg hover:shadow-accent/10 bg-card/80 backdrop-blur-sm">
@@ -93,7 +95,7 @@ export function ItemCard({ item }: ItemCardProps) {
         {item.enchantments && item.enchantments.length > 0 ? (
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button className="w-full font-bold" variant="outline">
+              <Button className="w-full font-bold" variant="outline" onClick={() => { setSelectedEnchantments([]); setQuantity(1);}}>
                 <Wand2 className="mr-2" />
                 Enchant
               </Button>
@@ -119,8 +121,13 @@ export function ItemCard({ item }: ItemCardProps) {
                   );
                 })}
               </div>
-              <DialogFooter className="sm:justify-between items-center">
-                <div className="font-bold text-lg">
+              <DialogFooter className="sm:justify-between items-center gap-4">
+                 <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => Math.max(1, q - 1))}><MinusCircle className="h-5 w-5" /></Button>
+                    <span className="font-bold text-lg w-8 text-center">{quantity}</span>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => q + 1)}><PlusCircle className="h-5 w-5" /></Button>
+                  </div>
+                <div className="font-bold text-lg text-right">
                   Total: ${totalItemPrice.toFixed(2)}
                 </div>
                 <Button onClick={handleAddToCart} className="font-bold">
@@ -131,7 +138,7 @@ export function ItemCard({ item }: ItemCardProps) {
             </DialogContent>
           </Dialog>
         ) : (
-          <Button className="w-full font-bold" onClick={() => addToCart(item, [])}>
+          <Button className="w-full font-bold" onClick={() => addToCart(item, [], 1)}>
             <Package className="mr-2" />
             Add to Cart
           </Button>
