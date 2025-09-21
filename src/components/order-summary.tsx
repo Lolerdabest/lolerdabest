@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { MinusCircle, PlusCircle, ShoppingCart, Trash2 } from 'lucide-react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { placeOrderAction, type FormState } from '@/app/actions';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from './ui/badge';
 
@@ -27,6 +27,27 @@ export function OrderSummary() {
   const { cart, removeFromCart, updateQuantity, totalPrice, totalItems, clearCart } = useCart();
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
+  const [coupon, setCoupon] = useState('');
+  const [discount, setDiscount] = useState(0);
+
+  const discountedTotal = totalPrice - totalPrice * discount;
+
+  const handleApplyCoupon = () => {
+    if (coupon.toLowerCase() === 'lolerhustler') {
+      setDiscount(0.15);
+      toast({
+        title: 'Success!',
+        description: '15% coupon applied!',
+      });
+    } else {
+      setDiscount(0);
+      toast({
+        title: 'Error',
+        description: 'Invalid coupon code.',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const initialState: FormState = { message: '', success: false };
   const [state, formAction] = useFormState(placeOrderAction, initialState);
@@ -41,6 +62,8 @@ export function OrderSummary() {
       if (state.success) {
         formRef.current?.reset();
         clearCart();
+        setCoupon('');
+        setDiscount(0);
       }
     }
   }, [state, toast, clearCart]);
@@ -90,9 +113,21 @@ export function OrderSummary() {
               </div>
             )})}
             <Separator />
-            <div className="flex justify-between font-bold text-lg">
-              <span>Total ({totalItems} items)</span>
-              <span>R${totalPrice.toFixed(2)}</span>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span>Subtotal ({totalItems} items)</span>
+                <span>R${totalPrice.toFixed(2)}</span>
+              </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-primary">
+                  <span>Discount (15%)</span>
+                  <span>-R${(totalPrice * discount).toFixed(2)}</span>
+                </div>
+              )}
+              <div className="flex justify-between font-bold text-lg">
+                <span>Total</span>
+                <span>R${discountedTotal.toFixed(2)}</span>
+              </div>
             </div>
           </div>
         )}
@@ -101,9 +136,26 @@ export function OrderSummary() {
       {cart.length > 0 && (
         <CardFooter className="flex-col !items-start gap-6">
           <Separator />
+            <div className="w-full space-y-2">
+              <Label htmlFor="coupon">Coupon Code</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="coupon"
+                  name="coupon"
+                  placeholder="lolerhustler"
+                  value={coupon}
+                  onChange={(e) => setCoupon(e.target.value)}
+                  className="w-full"
+                />
+                <Button onClick={handleApplyCoupon}>Apply Coupon</Button>
+              </div>
+            </div>
+          <Separator />
+
           <form action={formAction} ref={formRef} className="w-full space-y-6">
             <input type="hidden" name="cart" value={JSON.stringify(cart.map(({image, imageHint, description, ...rest}) => rest))} />
-            
+            <input type="hidden" name="finalPrice" value={discountedTotal.toFixed(2)} />
+
             <div className="space-y-2">
               <Label htmlFor="minecraftUsername">Minecraft Username</Label>
               <Input id="minecraftUsername" name="minecraftUsername" placeholder="Steve" required />
@@ -120,17 +172,17 @@ export function OrderSummary() {
             </div>
             
             <div className="space-y-2">
-                <Label>Payment</Label>
+                <Label>Payment Instructions</Label>
                 <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
                   <p>Please send the total amount in-game using the command below and upload a screenshot of the payment confirmation.</p>
                   <code className="block bg-background/50 p-2 rounded-md mt-2 text-center text-foreground break-all">
-                    /pay lolerdabest69 {totalPrice.toFixed(2)}
+                    /pay lolerdabest69 {discountedTotal.toFixed(2)}
                   </code>
                 </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="screenshot">Payment Screenshot</Label>
+              <Label htmlFor="screenshot">Add Payment Proof</Label>
               <Input id="screenshot" name="screenshot" type="file" required className="file:text-primary-foreground file:font-bold"/>
             </div>
             

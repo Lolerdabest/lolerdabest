@@ -125,6 +125,54 @@
       "description": "The ultimate kit for the discerning player.",
       "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_chestplate.png",
       "imageHint": "netherite armor"
+    },
+    {
+      "id": "bow",
+      "description": "A ranged weapon for firing arrows.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/bow.png",
+      "imageHint": "bow"
+    },
+    {
+      "id": "crossbow",
+      "description": "A powerful ranged weapon.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/crossbow.png",
+      "imageHint": "crossbow"
+    },
+    {
+      "id": "golden-carrots",
+      "description": "A stack of nutritious golden carrots.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/golden_carrot.png",
+      "imageHint": "golden carrots"
+    },
+    {
+      "id": "xp-bottles",
+      "description": "A stack of bottles o' enchanting.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/experience_bottle.png",
+      "imageHint": "xp bottle"
+    },
+    {
+      "id": "fireworks",
+      "description": "A stack of fireworks for flight or celebration.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/firework_rocket.png",
+      "imageHint": "firework rocket"
+    },
+    {
+      "id": "ender-chest",
+      "description": "Access your personal inventory from anywhere.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/ender_chest.png",
+      "imageHint": "ender chest"
+    },
+    {
+      "id": "iron-ingot",
+      "description": "A versatile iron ingot.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/iron_ingot.png",
+      "imageHint": "iron ingot"
+    },
+    {
+      "id": "gold-ingot",
+      "description": "A shiny gold ingot.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/gold_ingot.png",
+      "imageHint": "gold ingot"
     }
   ]
 }

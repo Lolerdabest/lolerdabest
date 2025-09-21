@@ -31,8 +31,8 @@ const itemData: Omit<Item, 'description' | 'image' | 'imageHint'>[] = [
 
   // Netherite Items (Base, without upgrade cost)
   { id: 'netherite-helmet', name: 'Netherite Helmet', price: 300, enchantments: [...enchantments.armor, ...enchantments.helmet], icon: 'H' },
-  { id: 'netherite-chestplate', name: 'Netherite Chestplate', price: 300, enchantments: [...enchantments.armor], icon: 'C' },
-  { id: 'netherite-leggings', name: 'Netherite Leggings', price: 300, enchantments: [...enchantments.armor], icon: 'L' },
+  { id: 'netherite-chestplate', name: 'Netherite Chestplate', price: 400, enchantments: [...enchantments.armor], icon: 'C' },
+  { id: 'netherite-leggings', name: 'Netherite Leggings', price: 350, enchantments: [...enchantments.armor], icon: 'L' },
   { id: 'netherite-boots', name: 'Netherite Boots', price: 300, enchantments: [...enchantments.armor, ...enchantments.boots], icon: 'B' },
   { id: 'netherite-sword', name: 'Netherite Sword', price: 350, enchantments: [...enchantments.weapon], icon: 'S' },
   { id: 'netherite-pickaxe', name: 'Netherite Pickaxe', price: 400, enchantments: [...enchantments.tool], icon: 'P' },
@@ -40,9 +40,18 @@ const itemData: Omit<Item, 'description' | 'image' | 'imageHint'>[] = [
   { id: 'netherite-shovel', name: 'Netherite Shovel', price: 250, enchantments: [...enchantments.tool], icon: 'S' },
   
   // Other Items
+  { id: 'bow', name: 'Bow', price: 100, enchantments: enchantments.bow, icon: 'B' },
+  { id: 'crossbow', name: 'Crossbow', price: 120, enchantments: enchantments.crossbow, icon: 'C' },
   { id: 'elytra', name: 'Elytra', price: 1200, enchantments: enchantments.elytra, icon: 'E' },
   { id: 'totem-of-undying', name: 'Totem of Undying', price: 100, enchantments: [], icon: 'T' },
   { id: 'shulker-box', name: 'Shulker Box', price: 100, enchantments: [], icon: 'S' },
+  { id: 'golden-carrots', name: 'Golden Carrots x64', price: 200, enchantments: [] },
+  { id: 'xp-bottles', name: 'XP Bottles x64', price: 600, enchantments: [] },
+  { id: 'fireworks', name: 'Fireworks x64', price: 150, enchantments: [] },
+  { id: 'ender-chest', name: 'Ender Chest', price: 250, enchantments: [] },
+  { id: 'iron-ingot', name: 'Iron Ingot', price: 5, enchantments: [] },
+  { id: 'gold-ingot', name: 'Gold Ingot', price: 5, enchantments: [] },
+  { id: 'netherite-ingot', name: 'Netherite Ingot', price: 200, enchantments: [] },
 ];
 
 export const items: Item[] = itemData.map(item => {

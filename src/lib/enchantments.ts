@@ -35,16 +35,23 @@ export const enchantments = {
     "Depth Strider III",
     "Soul Speed III",
   ],
+  bow: [
+    "Power V",
+    "Punch II",
+    "Flame I",
+    "Infinity I",
+    "Unbreaking III",
+    "Mending I",
+  ],
+  crossbow: [
+    "Quick Charge III",
+    "Multishot I",
+    "Piercing IV",
+    "Unbreaking III",
+    "Mending I",
+  ],
   elytra: [
     "Unbreaking III",
     "Mending I",
   ],
-  trident: [
-    "Impaling V",
-    "Loyalty III",
-    "Channeling I",
-    "Riptide III",
-    "Unbreaking III",
-    "Mending I",
-  ]
 };
