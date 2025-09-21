@@ -14,9 +14,6 @@ export default function Home() {
           <div className="grid lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-2 space-y-12">
               <section>
-                <h2 className="text-3xl font-headline font-bold mb-6 text-accent">
-                  Items
-                </h2>
                 <ItemList items={items} />
               </section>
               <section>

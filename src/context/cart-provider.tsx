@@ -22,7 +22,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     setCart((prevCart) => {
       // Create a unique ID for the cart item based on the item and its enchantments
       const enchantmentString = selectedEnchantments.map(e => `${e.name}${e.level}`).sort().join('-');
-      const cartId = `${item.id}-${enchantmentString}`;
+      const cartId = `${item.id}-${item.name}-${enchantmentString}`;
       
       const existingItem = prevCart.find((cartItem) => cartItem.cartId === cartId);
       
@@ -66,7 +66,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   const totalPrice = useMemo(() => {
     return cart.reduce((total, item) => {
-      const enchantmentCost = item.selectedEnchantments.reduce((cost, ench) => cost + 0.5 * ench.level, 0);
+      const enchantmentCost = item.selectedEnchantments.reduce((cost, ench) => cost + ench.cost, 0);
       return total + (item.price + enchantmentCost) * item.quantity;
     }, 0);
   }, [cart]);

@@ -3,155 +3,144 @@
 import type { Item, Enchantment } from '@/lib/types';
 import { useCart } from '@/context/cart-provider';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { MinusCircle, Package, PlusCircle, Wand2 } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogClose,
-} from '@/components/ui/dialog';
+import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
-import { useState } from 'react';
-import { Badge } from './ui/badge';
+import { useState, useMemo } from 'react';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import { Separator } from './ui/separator';
 
 interface ItemCardProps {
   item: Item;
 }
 
 const romanToNumber = (roman: string): number => {
-    const romanMap: { [key: string]: number } = {
-        'I': 1,
-        'V': 5,
-        'X': 10,
-        'L': 50,
-        'C': 100,
-        'D': 500,
-        'M': 1000,
-    };
-    let result = 0;
-    for (let i = 0; i < roman.length; i++) {
-        const current = romanMap[roman[i]];
-        const next = romanMap[roman[i + 1]];
-        if (next && current < next) {
-            result -= current;
-        } else {
-            result += current;
-        }
+  const romanMap: { [key: string]: number } = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
+  let result = 0;
+  for (let i = 0; i < roman.length; i++) {
+    const current = romanMap[roman[i]];
+    const next = romanMap[roman[i + 1]];
+    if (next && current < next) {
+      result -= current;
+    } else {
+      result += current;
     }
-    return result;
+  }
+  return result;
 };
-
 
 const parseEnchantment = (enchantmentString: string): Enchantment => {
   const parts = enchantmentString.split(' ');
   const levelRoman = parts.pop() || 'I';
   const level = romanToNumber(levelRoman);
   const name = parts.join(' ');
-  return { name, level };
+  return { name, level, cost: 200 }; // Example cost
 };
+
+const protectionEnchantments = ["Protection", "Blast Protection", "Projectile Protection", "Fire Protection"];
 
 export function ItemCard({ item }: ItemCardProps) {
   const { addToCart } = useCart();
+  const [selectedProtection, setSelectedProtection] = useState<Enchantment | null>(null);
   const [selectedEnchantments, setSelectedEnchantments] = useState<Enchantment[]>([]);
-  const [quantity, setQuantity] = useState(1);
-  const [isOpen, setIsOpen] = useState(false);
+  const [upgradeToNetherite, setUpgradeToNetherite] = useState(false);
+
+  const protectionOptions = useMemo(() =>
+    item.enchantments
+      .filter(e => protectionEnchantments.some(p => e.startsWith(p)))
+      .map(parseEnchantment),
+    [item.enchantments]
+  );
+
+  const otherEnchantments = useMemo(() =>
+    item.enchantments
+      .filter(e => !protectionEnchantments.some(p => e.startsWith(p)))
+      .map(parseEnchantment),
+    [item.enchantments]
+  );
+  
+  const handleAddToCart = () => {
+    const allEnchantments = [...selectedEnchantments];
+    if (selectedProtection) {
+      allEnchantments.push(selectedProtection);
+    }
+    
+    let finalItem = { ...item };
+    if (upgradeToNetherite) {
+      finalItem.name = `Netherite ${item.name.split(' ').slice(1).join(' ')}`;
+      finalItem.price += 500;
+    }
+
+    addToCart(finalItem, allEnchantments, 1);
+  };
   
   const handleEnchantmentChange = (checked: boolean, enchantment: Enchantment) => {
-    setSelectedEnchantments(prev => {
-      if (checked) {
-        return [...prev, enchantment];
-      } else {
-        return prev.filter(e => e.name !== enchantment.name);
-      }
-    });
+    setSelectedEnchantments(prev =>
+      checked ? [...prev, enchantment] : prev.filter(e => e.name !== enchantment.name)
+    );
   };
 
-  const handleAddToCart = () => {
-    addToCart(item, selectedEnchantments, quantity);
-    setSelectedEnchantments([]);
-    setQuantity(1);
-    setIsOpen(false);
-  };
-
-  const enchantmentCost = selectedEnchantments.reduce((acc, ench) => acc + (0.5 * ench.level), 0);
-  const totalItemPrice = (item.price + enchantmentCost) * quantity;
+  const Icon = item.icon || 'H';
 
   return (
-    <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:border-accent hover:shadow-lg hover:shadow-accent/10 bg-card/80 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle className="text-xl font-headline">{item.name}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-muted-foreground mt-2 text-2xl font-bold font-mono">
-          ${item.price.toFixed(2)}
-        </p>
-      </CardContent>
-      <CardFooter className='gap-2'>
-        {item.enchantments && item.enchantments.length > 0 ? (
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-              <Button className="w-full font-bold" variant="outline" onClick={() => { setSelectedEnchantments([]); setQuantity(1);}}>
-                <Wand2 className="mr-2" />
-                Enchant
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Enchant {item.name}</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
-                {item.enchantments.map((enchantmentString) => {
-                  const enchantment = parseEnchantment(enchantmentString);
-                  return (
-                    <div key={enchantment.name} className="flex items-center space-x-3">
-                      <Checkbox
-                        id={`${item.id}-${enchantment.name}`}
-                        onCheckedChange={(checked) => handleEnchantmentChange(checked as boolean, enchantment)}
-                        checked={selectedEnchantments.some(e => e.name === enchantment.name)}
-                      />
-                      <Label htmlFor={`${item.id}-${enchantment.name}`} className="flex-grow">
-                        {enchantment.name} {enchantment.level} <Badge variant="secondary">+${(0.5 * enchantment.level).toFixed(2)}</Badge>
-                      </Label>
-                    </div>
-                  );
-                })}
-              </div>
-              <DialogFooter className="flex-col gap-4">
-                 <div className="flex w-full items-center justify-between gap-2">
-                    <div className='flex items-center gap-2'>
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => Math.max(1, q - 1))}><MinusCircle className="h-5 w-5" /></Button>
-                      <span className="font-bold text-lg w-10 text-center">{quantity}</span>
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => q + 1)}><PlusCircle className="h-5 w-5" /></Button>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" onClick={() => setQuantity(q => q + 64)}>+1 Stack</Button>
-                      <Button variant="outline" size="sm" onClick={() => setQuantity(q => q + (27*64))}>+1 Shulker</Button>
-                    </div>
-                  </div>
-                <div className="flex w-full sm:justify-between items-center gap-4">
-                  <div className="font-bold text-lg text-right">
-                    Total: ${totalItemPrice.toFixed(2)}
-                  </div>
-                  <Button onClick={handleAddToCart} className="font-bold">
-                    <Package className="mr-2" />
-                    Add to Cart
-                  </Button>
+    <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 border-2 border-primary/20 hover:border-primary bg-card/80 backdrop-blur-sm p-6">
+      <CardContent className="flex flex-col items-center gap-4 text-center">
+        <div 
+          className="w-16 h-16 flex items-center justify-center text-4xl font-bold text-primary" 
+          style={{ textShadow: '0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary))' }}
+        >
+          {Icon}
+        </div>
+        <h2 className="text-3xl tracking-widest">{item.name}</h2>
+        <p className="text-2xl text-accent font-bold">R${item.price.toFixed(2)}</p>
+
+        <Separator className="my-2 bg-primary/20"/>
+
+        <div className="w-full space-y-4 text-left text-lg tracking-wider">
+          {protectionOptions.length > 0 && (
+            <RadioGroup onValueChange={(value) => setSelectedProtection(JSON.parse(value))} className="space-y-2">
+              {protectionOptions.map(enchantment => (
+                <div key={enchantment.name} className="flex items-center space-x-3">
+                  <RadioGroupItem value={JSON.stringify(enchantment)} id={`${item.id}-${enchantment.name}`} />
+                  <Label htmlFor={`${item.id}-${enchantment.name}`} className="cursor-pointer">
+                    {enchantment.name} {enchantment.level} (+R${enchantment.cost.toFixed(2)})
+                  </Label>
                 </div>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        ) : (
-          <Button className="w-full font-bold" onClick={() => addToCart(item, [], 1)}>
-            <Package className="mr-2" />
-            Add to Cart
-          </Button>
-        )}
-      </CardFooter>
+              ))}
+            </RadioGroup>
+          )}
+
+          {otherEnchantments.map(enchantment => (
+            <div key={enchantment.name} className="flex items-center space-x-3">
+              <Checkbox
+                id={`${item.id}-${enchantment.name}`}
+                onCheckedChange={(checked) => handleEnchantmentChange(checked as boolean, enchantment)}
+                checked={selectedEnchantments.some(e => e.name === enchantment.name)}
+              />
+              <Label htmlFor={`${item.id}-${enchantment.name}`} className="cursor-pointer">
+                {enchantment.name} {enchantment.level} (+R${enchantment.cost.toFixed(2)})
+              </Label>
+            </div>
+          ))}
+
+          {item.canUpgradeToNetherite && (
+              <div className="flex items-center space-x-3">
+                <Checkbox
+                  id={`${item.id}-netherite`}
+                  onCheckedChange={(checked) => setUpgradeToNetherite(checked as boolean)}
+                  checked={upgradeToNetherite}
+                />
+                <Label htmlFor={`${item.id}-netherite`} className="cursor-pointer">
+                  Upgrade to Netherite (+R$500.00)
+                </Label>
+              </div>
+            )}
+        </div>
+
+        <Button onClick={handleAddToCart} className="w-full font-bold text-xl py-6 mt-4">
+          ADD TO CART
+        </Button>
+      </CardContent>
     </Card>
   );
 }

@@ -1,6 +1,7 @@
 export interface Enchantment {
   name: string;
   level: number;
+  cost: number;
 }
 
 export interface Item {
@@ -9,7 +10,10 @@ export interface Item {
   price: number;
   image: string;
   imageHint: string;
+  description: string;
   enchantments: string[];
+  icon?: string;
+  canUpgradeToNetherite?: boolean;
 }
 
 export interface CartItem extends Item {

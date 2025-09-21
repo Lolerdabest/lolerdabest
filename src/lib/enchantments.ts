@@ -26,19 +26,24 @@ export const enchantments = {
     "Unbreaking III",
     "Mending I"
   ],
+  helmet: [
+    "Respiration III",
+    "Aqua Affinity I",
+  ],
   boots: [
     "Feather Falling IV",
     "Depth Strider III",
     "Soul Speed III",
-    "Protection IV",
-    "Fire Protection IV",
-    "Blast Protection IV",
-    "Projectile Protection IV",
-    "Thorns III",
-    "Unbreaking III",
-    "Mending I"
   ],
   elytra: [
+    "Unbreaking III",
+    "Mending I",
+  ],
+  trident: [
+    "Impaling V",
+    "Loyalty III",
+    "Channeling I",
+    "Riptide III",
     "Unbreaking III",
     "Mending I",
   ]

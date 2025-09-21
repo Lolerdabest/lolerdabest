@@ -43,7 +43,7 @@ export default function Recommendations() {
   if (loading) {
     return (
         <div>
-            <h2 className="text-3xl font-headline font-bold mb-6 text-accent">Recommended For You</h2>
+            <h2 className="text-3xl font-headline font-bold mb-6 text-primary">Recommended For You</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-[420px] w-full" />)}
             </div>
@@ -57,7 +57,7 @@ export default function Recommendations() {
 
   return (
     <div>
-      <h2 className="text-3xl font-headline font-bold mb-6 text-accent">Recommended For You</h2>
+      <h2 className="text-3xl font-headline font-bold mb-6 text-primary">Recommended For You</h2>
       <ItemList items={recommendations} />
     </div>
   );
