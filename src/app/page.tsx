@@ -9,6 +9,7 @@ import Recommendations from '@/components/recommendations';
 import { CartProvider } from '@/context/cart-provider';
 import { items } from '@/lib/items';
 import type { Item } from '@/lib/types';
+import GoToCheckoutButton from '@/components/go-to-checkout-button';
 
 export default function Home() {
   const [filteredItems, setFilteredItems] = useState<Item[]>(items);
@@ -39,12 +40,13 @@ export default function Home() {
                 <Recommendations />
               </section>
             </div>
-            <div className="lg:col-span-1 lg:sticky lg:top-28">
+            <div id="order-summary" className="lg:col-span-1 lg:sticky lg:top-28">
               <OrderSummary />
             </div>
           </div>
         </main>
       </div>
+      <GoToCheckoutButton />
     </CartProvider>
   );
 }
