@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Separator } from './ui/separator';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { MinusCircle, PlusCircle } from 'lucide-react';
@@ -17,7 +17,7 @@ import { parseEnchantment, processEnchantments } from '@/lib/enchantment-utils';
 import { numberToRoman } from '@/lib/roman-utils';
 
 
-export function ItemCard({ item }: ItemCardProps) {
+export function ItemCard({ item }: { item: Item }) {
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [selectedEnchantments, setSelectedEnchantments] = useState<Enchantment[]>([]);
@@ -25,6 +25,15 @@ export function ItemCard({ item }: ItemCardProps) {
   const [upgradeToNetherite, setUpgradeToNetherite] = useState(false);
   const [quantity, setQuantity] = useState(1);
   
+  const allEnchantmentOptions = useMemo(() =>
+    item.enchantments.map(parseEnchantment).filter((e): e is Enchantment => e !== null),
+    [item.enchantments]
+  );
+  
+  const { exclusiveGroups, nonExclusiveEnchantments } = useMemo(() => {
+    return processEnchantments(allEnchantmentOptions);
+  }, [allEnchantmentOptions]);
+
   const currentPrice = useMemo(() => {
     let newPrice = item.price;
     const allSelected = [...selectedEnchantments, ...Object.values(selectedExclusiveEnchantments)];
@@ -36,16 +45,6 @@ export function ItemCard({ item }: ItemCardProps) {
     }
     return newPrice;
   }, [item.price, selectedEnchantments, selectedExclusiveEnchantments, upgradeToNetherite]);
-
-  const allEnchantmentOptions = useMemo(() =>
-    item.enchantments.map(parseEnchantment).filter((e): e is Enchantment => e !== null),
-    [item.enchantments]
-  );
-  
-  const { exclusiveGroups, nonExclusiveEnchantments } = useMemo(() => {
-    return processEnchantments(allEnchantmentOptions);
-  }, [allEnchantmentOptions]);
-
 
   const descriptiveEnchantments = useMemo(() =>
     item.enchantments.filter(e => e.startsWith('Full') || e.startsWith('All items')),
@@ -59,7 +58,6 @@ export function ItemCard({ item }: ItemCardProps) {
     if (upgradeToNetherite) {
       finalItem.name = `Netherite ${item.name.split(' ').slice(1).join(' ')}`;
     }
-    // Price is already calculated, so we just pass it along
     finalItem.price = currentPrice;
 
     addToCart(finalItem, allSelected, quantity);
