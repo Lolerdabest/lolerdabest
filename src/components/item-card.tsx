@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { MinusCircle, PlusCircle } from 'lucide-react';
 import { Input } from './ui/input';
 import { useToast } from '@/hooks/use-toast';
-import Image from 'next/image';
 
 export function ItemCard({ item }: { item: Item }) {
   const { addToCart } = useCart();
@@ -31,14 +30,10 @@ export function ItemCard({ item }: { item: Item }) {
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 border-border hover:border-primary/50 bg-card group">
-      <div className="relative w-full h-48 bg-muted overflow-hidden">
-        <Image
-            src={item.image}
-            alt={item.name}
-            fill
-            className="object-contain p-4 pixelated group-hover:scale-110 transition-transform duration-300"
-            data-ai-hint={item.imageHint}
-        />
+      <div className="relative w-full h-48 bg-muted overflow-hidden flex items-center justify-center p-4">
+        <p className="font-headline text-lg text-primary text-center animate-text-glow break-words">
+          {item.name}
+        </p>
       </div>
       <CardContent className="p-4 flex flex-col items-center gap-2 text-center flex-1">
         <div className="w-full flex flex-col flex-1">
