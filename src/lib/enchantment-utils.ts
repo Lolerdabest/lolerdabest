@@ -12,7 +12,8 @@ export const parseEnchantment = (enchantmentString: string): Enchantment | null 
     const levelRoman = parts.pop() || 'I';
     const level = romanToNumber(levelRoman);
     const name = parts.join(' ');
-    return { name, level, cost: 180 }; // Example cost
+    // Note: The cost is no longer used in the simplified ItemCard
+    return { name, level, cost: 180 };
 };
 
 export const processEnchantments = (allEnchantmentOptions: Enchantment[]) => {
@@ -36,5 +37,3 @@ export const processEnchantments = (allEnchantmentOptions: Enchantment[]) => {
 
     return { exclusiveGroups: exclusive, nonExclusiveEnchantments: nonExclusive };
 };
-
-    

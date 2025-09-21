@@ -10,9 +10,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { MinusCircle, PlusCircle, ShoppingCart, Trash2 } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
 import { placeOrderAction, type FormState } from '@/app/actions';
-import { useEffect, useRef, useState, useActionState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from './ui/badge';
+import { useActionState } from 'react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
