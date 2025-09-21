@@ -96,7 +96,7 @@ export function ItemCard({ item }: ItemCardProps) {
               src={item.image}
               alt={item.name}
               fill
-              className="object-contain p-4 group-hover:scale-105 transition-transform"
+              className="object-contain p-4 group-hover:scale-105 transition-transform pixelated"
               data-ai-hint={item.imageHint}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
