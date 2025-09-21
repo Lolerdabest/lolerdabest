@@ -34,7 +34,7 @@ const parseEnchantment = (enchantmentString: string): Enchantment => {
   const levelRoman = parts.pop() || 'I';
   const level = romanToNumber(levelRoman);
   const name = parts.join(' ');
-  return { name, level, cost: 200 }; // Example cost
+  return { name, level, cost: 20 }; // Example cost
 };
 
 const protectionEnchantments = ["Protection", "Blast Protection", "Projectile Protection", "Fire Protection"];
@@ -68,7 +68,7 @@ export function ItemCard({ item }: ItemCardProps) {
     let finalItem = { ...item };
     if (upgradeToNetherite) {
       finalItem.name = `Netherite ${item.name.split(' ').slice(1).join(' ')}`;
-      finalItem.price += 500;
+      finalItem.price += 150;
     }
 
     addToCart(finalItem, allEnchantments, 1);
@@ -131,7 +131,7 @@ export function ItemCard({ item }: ItemCardProps) {
                   checked={upgradeToNetherite}
                 />
                 <Label htmlFor={`${item.id}-netherite`} className="cursor-pointer">
-                  Upgrade to Netherite (+R$500.00)
+                  Upgrade to Netherite (+R$150.00)
                 </Label>
               </div>
             )}
