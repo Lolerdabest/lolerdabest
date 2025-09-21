@@ -33,7 +33,7 @@ const parseEnchantment = (enchantmentString: string): Enchantment => {
   const levelRoman = parts.pop() || 'I';
   const level = romanToNumber(levelRoman);
   const name = parts.join(' ');
-  return { name, level, cost: 20 }; // Example cost
+  return { name, level, cost: 180 }; // Example cost
 };
 
 export function ItemCard({ item }: ItemCardProps) {
