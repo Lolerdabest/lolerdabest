@@ -121,19 +121,27 @@ export function ItemCard({ item }: ItemCardProps) {
                   );
                 })}
               </div>
-              <DialogFooter className="sm:justify-between items-center gap-4">
-                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => Math.max(1, q - 1))}><MinusCircle className="h-5 w-5" /></Button>
-                    <span className="font-bold text-lg w-8 text-center">{quantity}</span>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => q + 1)}><PlusCircle className="h-5 w-5" /></Button>
+              <DialogFooter className="flex-col gap-4">
+                 <div className="flex w-full items-center justify-between gap-2">
+                    <div className='flex items-center gap-2'>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => Math.max(1, q - 1))}><MinusCircle className="h-5 w-5" /></Button>
+                      <span className="font-bold text-lg w-10 text-center">{quantity}</span>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setQuantity(q => q + 1)}><PlusCircle className="h-5 w-5" /></Button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={() => setQuantity(q => q + 64)}>+1 Stack</Button>
+                      <Button variant="outline" size="sm" onClick={() => setQuantity(q => q + (27*64))}>+1 Shulker</Button>
+                    </div>
                   </div>
-                <div className="font-bold text-lg text-right">
-                  Total: ${totalItemPrice.toFixed(2)}
+                <div className="flex w-full sm:justify-between items-center gap-4">
+                  <div className="font-bold text-lg text-right">
+                    Total: ${totalItemPrice.toFixed(2)}
+                  </div>
+                  <Button onClick={handleAddToCart} className="font-bold">
+                    <Package className="mr-2" />
+                    Add to Cart
+                  </Button>
                 </div>
-                <Button onClick={handleAddToCart} className="font-bold">
-                  <Package className="mr-2" />
-                  Add to Cart
-                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
