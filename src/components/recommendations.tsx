@@ -36,28 +36,24 @@ export default function Recommendations() {
     return () => clearTimeout(timeoutId);
   }, [cart]);
 
-  if (cart.length === 0) {
+  if (cart.length === 0 || recommendations.length === 0) {
     return null;
   }
   
   if (loading) {
     return (
         <div>
-            <h2 className="text-3xl font-headline font-bold mb-6 text-primary">Recommended For You</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-[420px] w-full" />)}
+            <h2 className="text-3xl font-headline font-bold mb-6 text-primary animate-text-glow">Recommended For You</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-[380px] w-full" />)}
             </div>
         </div>
     );
   }
 
-  if (recommendations.length === 0) {
-    return null;
-  }
-
   return (
     <div>
-      <h2 className="text-3xl font-headline font-bold mb-6 text-primary">Recommended For You</h2>
+      <h2 className="text-3xl font-headline font-bold mb-6 text-primary animate-text-glow">Recommended For You</h2>
       <ItemList items={recommendations} />
     </div>
   );

@@ -12,7 +12,6 @@ export interface Item {
   imageHint: string;
   description: string;
   enchantments: string[];
-  icon?: string;
   canUpgradeToNetherite?: boolean;
 }
 

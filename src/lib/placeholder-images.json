@@ -1,3 +1,4 @@
+
 {
   "placeholderImages": [
     {
@@ -173,6 +174,120 @@
       "description": "A shiny gold ingot.",
       "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/gold_ingot.png",
       "imageHint": "gold ingot"
+    },
+    {
+      "id": "book-sharpness", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-smite", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-bane-of-arthropods", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-knockback", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-fire-aspect", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-looting", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-sweeping-edge", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-efficiency", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-silk-touch", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-fortune", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-protection", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-fire-protection", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-feather-falling", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-blast-protection", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-projectile-protection", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-thorns", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-depth-strider", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-aqua-affinity", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-respiration", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-soul-speed", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-swift-sneak", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-power", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-punch", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-flame", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-infinity", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-quick-charge", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-multishot", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-piercing", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-luck-of-the-sea", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-lure", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-impaling", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-riptide", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-loyalty", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-channeling", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-unbreaking", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-mending", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-curse-of-vanishing", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "book-curse-of-binding", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
     }
   ]
 }
