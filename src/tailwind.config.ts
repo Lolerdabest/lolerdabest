@@ -18,7 +18,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['"Space Grotesk"', 'sans-serif'],
-        headline: ['"Space Grotesk"', 'sans-serif'],
+        headline: ['"Minecraftia"', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',

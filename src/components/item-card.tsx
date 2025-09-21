@@ -119,17 +119,15 @@ export function ItemCard({ item }: ItemCardProps) {
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 border-border hover:border-primary bg-card group">
       <CardContent className="p-6 flex flex-col items-center gap-4 text-center flex-1">
-        <div className="relative w-full aspect-square bg-transparent rounded-md flex items-center justify-center">
-          <div 
-            className="w-full h-full flex items-center justify-center text-8xl font-bold text-primary" 
-            style={{ textShadow: '0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary))' }}
-          >
-            {Icon}
-          </div>
+        <div 
+          className="w-full flex items-center justify-center text-8xl font-bold text-primary font-headline" 
+          style={{ textShadow: '0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary))' }}
+        >
+          {Icon}
         </div>
         
         <div className="w-full flex flex-col flex-1">
-            <h2 className="text-xl font-bold">{item.name}</h2>
+            <h2 className="text-xl font-bold font-headline">{item.name}</h2>
             <p className="text-lg font-bold text-primary mb-4">R${currentPrice.toFixed(2)}</p>
 
             <Separator className="my-2 bg-border"/>
