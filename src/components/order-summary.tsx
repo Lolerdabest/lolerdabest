@@ -14,7 +14,6 @@ import { placeOrderAction, type FormState } from '@/app/actions';
 import { useEffect, useRef, useState, useActionState, ChangeEvent } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { formatEnchantment } from '@/lib/enchantment-utils';
-import { ScrollArea } from './ui/scroll-area';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -74,9 +73,8 @@ export function OrderSummary() {
   };
 
   return (
-    <ScrollArea className="h-full">
-      <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card">
-        <CardHeader>
+      <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card h-full overflow-y-auto">
+        <CardHeader className="sticky top-0 bg-card z-10">
           <CardTitle className="text-2xl font-headline flex items-center gap-2 animate-text-glow">
             <ShoppingCart />
             Order Summary
@@ -213,6 +211,5 @@ export function OrderSummary() {
           </CardFooter>
         )}
       </Card>
-    </ScrollArea>
   );
 }
