@@ -75,15 +75,14 @@ export async function placeOrderAction(
       webhookFormData.append('payload_json', JSON.stringify(webhookPayload));
       webhookFormData.append('file1', screenshot, screenshot.name);
 
-
       const response = await fetch(webhookUrl, {
         method: 'POST',
         body: webhookFormData,
       });
-
+      
       if (!response.ok) {
-        console.error('Failed to send Discord webhook:', await response.text());
-        // Do not fail the whole order if webhook fails, but let's not return success.
+        const responseBody = await response.text();
+        console.error('Failed to send Discord webhook:', response.status, responseBody);
         return { message: 'There was an error sending the order to Discord. Please contact support.', success: false };
       }
 
@@ -94,7 +93,6 @@ export async function placeOrderAction(
         console.log('Notes:', notes);
         console.log('Cart:', cartItems);
     }
-
 
     return { message: `Order placed successfully! We'll be in touch on Discord.`, success: true };
   } catch (error) {
