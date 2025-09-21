@@ -8,9 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { MinusCircle, PlusCircle, ShoppingCart, Trash2 } from 'lucide-react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { placeOrderAction, type FormState } from '@/app/actions';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from './ui/badge';
 
@@ -50,7 +50,7 @@ export function OrderSummary() {
   };
 
   const initialState: FormState = { message: '', success: false };
-  const [state, formAction] = useFormState(placeOrderAction, initialState);
+  const [state, formAction] = useActionState(placeOrderAction, initialState);
   
   useEffect(() => {
     if(state.message) {
@@ -161,7 +161,7 @@ export function OrderSummary() {
 
             <div className="space-y-2">
               <Label htmlFor="discordTag">Discord Tag</Label>
-              <Input id="discordTag" name="discordTag" placeholder="yourname#1234" required />
+              <Input id="discordTag" name="discordTag" placeholder="yourname" required />
             </div>
 
             <div className="space-y-2">
