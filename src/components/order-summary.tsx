@@ -120,6 +120,16 @@ export function OrderSummary() {
             </div>
             
             <div className="space-y-2">
+                <Label>Payment</Label>
+                <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
+                  <p>Please send the total amount in-game using the command below and upload a screenshot of the payment confirmation.</p>
+                  <code className="block bg-background/50 p-2 rounded-md mt-2 text-center text-foreground break-all">
+                    /pay lolerdabest69 {totalPrice.toFixed(2)}
+                  </code>
+                </div>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="screenshot">Payment Screenshot</Label>
               <Input id="screenshot" name="screenshot" type="file" required className="file:text-primary-foreground file:font-bold"/>
             </div>
