@@ -83,7 +83,8 @@ export async function placeOrderAction(
 
       if (!response.ok) {
         console.error('Failed to send Discord webhook:', await response.text());
-        // Don't fail the whole order, just log the error
+        // Do not fail the whole order if webhook fails, but let's not return success.
+        return { message: 'There was an error sending the order to Discord. Please contact support.', success: false };
       }
 
     } else {
