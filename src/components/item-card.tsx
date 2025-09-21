@@ -89,8 +89,8 @@ export function ItemCard({ item }: ItemCardProps) {
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 border-border hover:border-primary bg-card group">
-      <CardContent className="p-0 flex flex-col items-center gap-4 text-center">
-        <div className="relative w-full aspect-square bg-muted/30">
+      <CardContent className="p-6 flex flex-col items-center gap-4 text-center flex-1">
+        <div className="relative w-full aspect-square bg-muted/30 rounded-md overflow-hidden">
         {item.image ? (
             <Image
               src={item.image}
@@ -110,7 +110,7 @@ export function ItemCard({ item }: ItemCardProps) {
           )}
         </div>
         
-        <div className="p-6 pt-2 w-full flex flex-col flex-1">
+        <div className="w-full flex flex-col flex-1">
             <h2 className="text-xl font-bold">{item.name}</h2>
             <p className="text-lg font-bold text-primary mb-4">R${currentPrice.toFixed(2)}</p>
 
