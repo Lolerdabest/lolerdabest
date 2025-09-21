@@ -598,31 +598,31 @@
     {
       "id": "piston",
       "description": "Pushes blocks.",
-      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/piston.png",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/piston_side.png",
       "imageHint": "piston"
     },
     {
       "id": "sticky-piston",
       "description": "Pushes and pulls blocks.",
-      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/sticky_piston.png",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/piston_side.png",
       "imageHint": "sticky piston"
     },
     {
       "id": "observer",
       "description": "Detects block updates.",
-      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/observer.png",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/observer_side.png",
       "imageHint": "observer block"
     },
     {
       "id": "dispenser",
       "description": "Dispenses items or uses them.",
-      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/dispenser.png",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/dispenser_front.png",
       "imageHint": "dispenser"
     },
     {
       "id": "dropper",
       "description": "Drops items.",
-      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/dropper.png",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/dropper_front.png",
       "imageHint": "dropper"
     },
     {
