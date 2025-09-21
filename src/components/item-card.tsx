@@ -30,8 +30,8 @@ export function ItemCard({ item }: { item: Item }) {
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 border-border hover:border-primary/50 bg-card group">
-      <div className="relative w-full h-48 bg-muted overflow-hidden flex items-center justify-center p-4">
-        <p className="font-headline text-lg text-primary text-center animate-text-glow break-words">
+      <div className="relative w-full h-32 animated-gradient overflow-hidden flex items-center justify-center p-4">
+        <p className="font-headline text-sm text-primary text-center animate-text-glow break-words">
           {item.name}
         </p>
       </div>
