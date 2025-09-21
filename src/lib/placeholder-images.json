@@ -28,7 +28,7 @@
     {
       "id": "shulker-box",
       "description": "A portable chest to carry your items anywhere.",
-      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/shulker_box.png",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/shulker_box.png",
       "imageHint": "purple box"
     },
     {
@@ -288,6 +288,390 @@
     },
     {
       "id": "book-curse-of-binding", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_book.png", "imageHint": "enchanted book"
+    },
+    {
+      "id": "diamond-hoe",
+      "description": "A diamond hoe for farming.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond_hoe.png",
+      "imageHint": "diamond hoe"
+    },
+    {
+      "id": "netherite-hoe",
+      "description": "The ultimate hoe for farming.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/netherite_hoe.png",
+      "imageHint": "netherite hoe"
+    },
+    {
+      "id": "trident",
+      "description": "A rare and powerful aquatic weapon.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/trident.png",
+      "imageHint": "trident"
+    },
+    {
+      "id": "shield",
+      "description": "Block incoming attacks.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/shield.png",
+      "imageHint": "shield"
+    },
+    {
+      "id": "fishing-rod",
+      "description": "Catch fish and other treasures.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/fishing_rod.png",
+      "imageHint": "fishing rod"
+    },
+    {
+      "id": "flint-and-steel",
+      "description": "Start fires.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/flint_and_steel.png",
+      "imageHint": "flint steel"
+    },
+    {
+      "id": "shears",
+      "description": "Gather wool and other items.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/shears.png",
+      "imageHint": "shears"
+    },
+    {
+      "id": "nether-star",
+      "description": "A very rare item dropped by the Wither.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/nether_star.png",
+      "imageHint": "nether star"
+    },
+    {
+      "id": "beacon",
+      "description": "Projects a beam into the sky and provides status effects.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/beacon.png",
+      "imageHint": "beacon"
+    },
+    {
+      "id": "golden-apple",
+      "description": "Provides regeneration and absorption.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/golden_apple.png",
+      "imageHint": "golden apple"
+    },
+    {
+      "id": "enchanted-golden-apple",
+      "description": "The most powerful food item in the game.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/enchanted_golden_apple.png",
+      "imageHint": "enchanted apple"
+    },
+    {
+      "id": "steak",
+      "description": "A reliable food source.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/cooked_beef.png",
+      "imageHint": "cooked beef"
+    },
+    {
+      "id": "bread",
+      "description": "Simple and easy to make.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/bread.png",
+      "imageHint": "bread"
+    },
+    {
+      "id": "potion-of-healing",
+      "description": "Instantly restores health.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/potion_overlay.png",
+      "imageHint": "health potion"
+    },
+    {
+      "id": "potion-of-strength",
+      "description": "Increases melee damage.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/potion_overlay.png",
+      "imageHint": "strength potion"
+    },
+    {
+      "id": "potion-of-swiftness",
+      "description": "Increases movement speed.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/potion_overlay.png",
+      "imageHint": "speed potion"
+    },
+    {
+      "id": "potion-of-fire-resistance",
+      "description": "Immunity to fire and lava.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/potion_overlay.png",
+      "imageHint": "fire potion"
+    },
+    {
+      "id": "potion-of-the-turtle-master",
+      "description": "Grants resistance but also slowness.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/potion_overlay.png",
+      "imageHint": "turtle potion"
+    },
+    {
+      "id": "potion-of-slow-falling",
+      "description": "Fall at a slower rate.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/potion_overlay.png",
+      "imageHint": "feather potion"
+    },
+    {
+      "id": "gunpowder",
+      "description": "Used to craft TNT and fireworks.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/gunpowder.png",
+      "imageHint": "gunpowder"
+    },
+    {
+      "id": "ender-pearl",
+      "description": "Teleport by throwing it.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/ender_pearl.png",
+      "imageHint": "ender pearl"
+    },
+    {
+      "id": "blaze-rod",
+      "description": "A key brewing ingredient and fuel source.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/blaze_rod.png",
+      "imageHint": "blaze rod"
+    },
+    {
+      "id": "ghast-tear",
+      "description": "Used to brew Potions of Regeneration.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/ghast_tear.png",
+      "imageHint": "ghast tear"
+    },
+    {
+      "id": "dragon-breath",
+      "description": "Used to make lingering potions.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/dragon_breath.png",
+      "imageHint": "potion bottle"
+    },
+    {
+      "id": "phantom-membrane",
+      "description": "Used to repair elytra and brew Potions of Slow Falling.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/phantom_membrane.png",
+      "imageHint": "membrane"
+    },
+    {
+      "id": "string",
+      "description": "Used for bows, fishing rods, and more.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/string.png",
+      "imageHint": "string"
+    },
+    {
+      "id": "bone",
+      "description": "Can be crafted into bonemeal.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/bone.png",
+      "imageHint": "bone"
+    },
+    {
+      "id": "slime-ball",
+      "description": "Used to craft sticky pistons and slime blocks.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/slime_ball.png",
+      "imageHint": "slime ball"
+    },
+    {
+      "id": "diamond",
+      "description": "A very rare and valuable mineral.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png",
+      "imageHint": "diamond"
+    },
+    {
+      "id": "emerald",
+      "description": "Used for trading with villagers.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/emerald.png",
+      "imageHint": "emerald"
+    },
+    {
+      "id": "netherite-scrap",
+      "description": "Can be smelted into Netherite Ingots.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/ancient_debris.png",
+      "imageHint": "ancient debris"
+    },
+    {
+      "id": "lapis-lazuli",
+      "description": "Used for enchanting and decoration.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/lapis_block.png",
+      "imageHint": "lapis block"
+    },
+    {
+      "id": "redstone-block",
+      "description": "A compact way to store and use redstone.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/redstone_block.png",
+      "imageHint": "redstone block"
+    },
+    {
+      "id": "coal-block",
+      "description": "An efficient fuel source.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/coal_block.png",
+      "imageHint": "coal block"
+    },
+    {
+      "id": "quartz",
+      "description": "A mineral from the Nether, used for building and redstone components.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/quartz.png",
+      "imageHint": "nether quartz"
+    },
+    {
+      "id": "oak-log",
+      "description": "A basic building material.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/oak_log.png",
+      "imageHint": "oak log"
+    },
+    {
+      "id": "spruce-log",
+      "description": "A dark wood building material.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/spruce_log.png",
+      "imageHint": "spruce log"
+    },
+    {
+      "id": "birch-log",
+      "description": "A light wood building material.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/birch_log.png",
+      "imageHint": "birch log"
+    },
+    {
+      "id": "jungle-log",
+      "description": "An exotic wood from the jungle.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/jungle_log.png",
+      "imageHint": "jungle log"
+    },
+    {
+      "id": "acacia-log",
+      "description": "An orange wood from the savanna.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/acacia_log.png",
+      "imageHint": "acacia log"
+    },
+    {
+      "id": "dark-oak-log",
+      "description": "A very dark wood, found in roofed forests.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/dark_oak_log.png",
+      "imageHint": "dark oak"
+    },
+    {
+      "id": "cobblestone",
+      "description": "The most basic stone building block.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/cobblestone.png",
+      "imageHint": "cobblestone"
+    },
+    {
+      "id": "stone",
+      "description": "A smooth stone block for building.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/stone.png",
+      "imageHint": "stone block"
+    },
+    {
+      "id": "glass",
+      "description": "A transparent block.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/glass.png",
+      "imageHint": "glass block"
+    },
+    {
+      "id": "sand",
+      "description": "A block affected by gravity, can be smelted into glass.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/sand.png",
+      "imageHint": "sand block"
+    },
+    {
+      "id": "gravel",
+      "description": "A block affected by gravity, can drop flint.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/gravel.png",
+      "imageHint": "gravel block"
+    },
+    {
+      "id": "obsidian",
+      "description": "A very strong block, used to build Nether portals.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/obsidian.png",
+      "imageHint": "obsidian block"
+    },
+    {
+      "id": "redstone",
+      "description": "Transmits redstone power.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/redstone.png",
+      "imageHint": "redstone dust"
+    },
+    {
+      "id": "redstone-torch",
+      "description": "A basic redstone power source.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/redstone_torch.png",
+      "imageHint": "redstone torch"
+    },
+    {
+      "id": "repeater",
+      "description": "Repeats, delays, and strengthens redstone signals.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/repeater.png",
+      "imageHint": "redstone repeater"
+    },
+    {
+      "id": "comparator",
+      "description": "Compares redstone signal strengths.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/comparator.png",
+      "imageHint": "redstone comparator"
+    },
+    {
+      "id": "piston",
+      "description": "Pushes blocks.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/piston.png",
+      "imageHint": "piston"
+    },
+    {
+      "id": "sticky-piston",
+      "description": "Pushes and pulls blocks.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/sticky_piston.png",
+      "imageHint": "sticky piston"
+    },
+    {
+      "id": "observer",
+      "description": "Detects block updates.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/observer.png",
+      "imageHint": "observer block"
+    },
+    {
+      "id": "dispenser",
+      "description": "Dispenses items or uses them.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/dispenser.png",
+      "imageHint": "dispenser"
+    },
+    {
+      "id": "dropper",
+      "description": "Drops items.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/dropper.png",
+      "imageHint": "dropper"
+    },
+    {
+      "id": "hopper",
+      "description": "Collects and transfers items.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/hopper.png",
+      "imageHint": "hopper"
+    },
+    {
+      "id": "tnt",
+      "description": "Explodes.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/tnt_side.png",
+      "imageHint": "tnt block"
+    },
+    {
+      "id": "brewing-stand",
+      "description": "Brew potions.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/brewing_stand.png",
+      "imageHint": "brewing stand"
+    },
+    {
+      "id": "cauldron",
+      "description": "Holds water, lava, or potions.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/cauldron.png",
+      "imageHint": "cauldron"
+    },
+    {
+      "id": "nether-wart",
+      "description": "The base ingredient for most potions.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/nether_wart.png",
+      "imageHint": "nether wart"
+    },
+    {
+      "id": "blaze-powder",
+      "description": "A key brewing ingredient.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/blaze_powder.png",
+      "imageHint": "blaze powder"
+    },
+    {
+      "id": "fermented-spider-eye",
+      "description": "Used to brew potions with negative effects.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/fermented_spider_eye.png",
+      "imageHint": "fermented eye"
+    },
+    {
+      "id": "magma-cream",
+      "description": "Used to brew Potions of Fire Resistance.",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/magma_cream.png",
+      "imageHint": "magma cream"
     }
   ]
 }
