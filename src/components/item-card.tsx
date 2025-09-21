@@ -36,14 +36,16 @@ export function ItemCard({ item }: { item: Item }) {
 
   const currentPrice = useMemo(() => {
     let newPrice = item.price;
-    const allSelectedRegular = [...selectedEnchantments];
     
-    const allSelectedExclusive = Object.values(selectedExclusiveEnchantments)
-      .map(enchantmentValue => allEnchantmentOptions.find(e => `${e.name} ${numberToRoman(e.level)}` === enchantmentValue))
-      .filter((e): e is Enchantment => e !== undefined);
-
-    [...allSelectedRegular, ...allSelectedExclusive].forEach(enchantment => {
+    selectedEnchantments.forEach(enchantment => {
       newPrice += enchantment.cost;
+    });
+
+    Object.values(selectedExclusiveEnchantments).forEach(enchantmentValue => {
+        const foundEnchantment = allEnchantmentOptions.find(e => `${e.name} ${numberToRoman(e.level)}` === enchantmentValue);
+        if (foundEnchantment) {
+            newPrice += foundEnchantment.cost;
+        }
     });
 
     if (upgradeToNetherite) {
