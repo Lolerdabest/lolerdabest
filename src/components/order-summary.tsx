@@ -7,8 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import Image from 'next/image';
-import { MinusCircle, PlusCircle, ShoppingCart, Trash2, Upload } from 'lucide-react';
+import { MinusCircle, PlusCircle, ShoppingCart, Trash2 } from 'lucide-react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { placeOrderAction, type FormState } from '@/app/actions';
 import { useEffect, useRef } from 'react';
@@ -46,7 +45,7 @@ export function OrderSummary() {
   }, [state, toast, clearCart]);
 
   return (
-    <Card className="border-accent border-2 shadow-lg shadow-accent/10">
+    <Card className="border-accent border-2 shadow-lg shadow-accent/10 bg-card/80 backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="text-2xl font-headline flex items-center gap-2">
           <ShoppingCart />
@@ -60,14 +59,6 @@ export function OrderSummary() {
           <div className="space-y-4">
             {cart.map((item) => (
               <div key={item.id} className="flex items-center gap-4">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  width={64}
-                  height={64}
-                  className="rounded-md object-cover image-rendering-pixelated"
-                  data-ai-hint={item.imageHint}
-                />
                 <div className="flex-grow">
                   <p className="font-semibold">{item.name}</p>
                   <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
