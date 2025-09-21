@@ -12,6 +12,7 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { exclusiveEnchantmentGroups } from '@/lib/enchantments';
 import { MinusCircle, PlusCircle } from 'lucide-react';
 import { Input } from './ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 interface ItemCardProps {
   item: Item;
@@ -46,6 +47,7 @@ const parseEnchantment = (enchantmentString: string): Enchantment | null => {
 
 export function ItemCard({ item }: ItemCardProps) {
   const { addToCart } = useCart();
+  const { toast } = useToast();
   const [selectedEnchantments, setSelectedEnchantments] = useState<Enchantment[]>([]);
   const [selectedExclusiveEnchantments, setSelectedExclusiveEnchantments] = useState<{ [group: string]: Enchantment }>({});
   const [upgradeToNetherite, setUpgradeToNetherite] = useState(false);
@@ -98,6 +100,10 @@ export function ItemCard({ item }: ItemCardProps) {
     finalItem.price = currentPrice;
 
     addToCart(finalItem, allSelected, quantity);
+    toast({
+      title: 'Added to cart!',
+      description: `${quantity}x "${finalItem.name}" has been added to your cart.`,
+    });
   };
   
   const handleEnchantmentChange = (checked: boolean, enchantment: Enchantment) => {

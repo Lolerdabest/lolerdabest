@@ -39,7 +39,7 @@ export default function Home() {
                 <Recommendations />
               </section>
             </div>
-            <div className="lg:col-span-1 lg:sticky top-28">
+            <div className="lg:col-span-1 lg:sticky lg:top-28">
               <OrderSummary />
             </div>
           </div>
