@@ -45,7 +45,12 @@ export async function placeOrderAction(
   const { minecraftUsername, discordTag, notes, cart, finalPrice, paymentProof } = validatedFields.data;
   const cartItems: CartItem[] = JSON.parse(cart);
   
-  const webhookUrl = 'https://discord.com/api/webhooks/1418907411913375776/xTzRXPnqoYd0VrvexTZZwt_nqnIWDqfq3N0n07x8Q8-R7k6fBIITG2x4NfIjDPSKN9mK';
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+
+  if (!webhookUrl) {
+    console.error('Discord webhook URL is not configured.');
+    return { message: 'Server configuration error: Webhook not set up.', success: false };
+  }
 
   try {
     const discordPayload = {
