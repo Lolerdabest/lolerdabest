@@ -51,23 +51,6 @@ export async function placeOrderAction(
     
     const { minecraftUsername, discordTag, notes, cart, finalPrice, screenshot } = validatedFields.data;
     const cartItems: CartItem[] = JSON.parse(cart);
-    
-    // Convert the screenshot to a data URI
-    const screenshotDataUri = await fileToDataUri(screenshot);
-    
-    // Use a Genkit flow to get a public URL for the image
-    const { media } = await ai.generate({
-      model: 'googleai/gemini-2.5-flash-image-preview',
-      prompt: [
-        { media: { url: screenshotDataUri } },
-        { text: 'Give me this image back' },
-      ],
-      config: {
-        responseModalities: ['IMAGE'],
-      },
-    });
-
-    const screenshotUrl = media?.url;
 
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
@@ -84,9 +67,6 @@ export async function placeOrderAction(
         footer: {
           text: `Loler's Hustle | ${new Date().toLocaleString()}`,
         },
-        image: {
-            url: screenshotUrl,
-        }
       };
 
       if (notes) {
@@ -99,7 +79,7 @@ export async function placeOrderAction(
           embeds: [embed],
       };
 
-      await fetch(webhookUrl, {
+      const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -107,13 +87,17 @@ export async function placeOrderAction(
         body: JSON.stringify(webhookBody),
       });
 
+      if (!response.ok) {
+        console.error('Failed to send Discord webhook:', await response.text());
+        // Don't fail the whole order, just log the error
+      }
+
     } else {
         console.log('New Order Placed (Discord Webhook URL not configured):');
         console.log('Username:', minecraftUsername);
         console.log('Discord:', discordTag);
         console.log('Notes:', notes);
         console.log('Cart:', cartItems);
-        console.log('Screenshot URL:', screenshotUrl);
     }
 
 
