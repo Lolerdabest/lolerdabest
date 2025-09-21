@@ -476,7 +476,7 @@
       "imageHint": "ancient debris"
     },
     {
-      "id": "lapis-lazuli",
+      "id": "lapis-lazuli-block",
       "description": "Used for enchanting and decoration.",
       "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/lapis_block.png",
       "imageHint": "lapis block"
@@ -494,9 +494,9 @@
       "imageHint": "coal block"
     },
     {
-      "id": "quartz",
+      "id": "quartz-block",
       "description": "A mineral from the Nether, used for building and redstone components.",
-      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/quartz.png",
+      "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/quartz_block_side.png",
       "imageHint": "nether quartz"
     },
     {
@@ -672,6 +672,221 @@
       "description": "Used to brew Potions of Fire Resistance.",
       "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/magma_cream.png",
       "imageHint": "magma cream"
+    },
+    {
+      "id": "spyglass", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/spyglass.png", "imageHint": "spyglass"
+    },
+    {
+      "id": "compass", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/compass.png", "imageHint": "compass"
+    },
+    {
+      "id": "clock", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/clock.png", "imageHint": "clock"
+    },
+    {
+      "id": "lead", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/lead.png", "imageHint": "lead"
+    },
+    {
+      "id": "name-tag", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/name_tag.png", "imageHint": "name tag"
+    },
+    {
+      "id": "dragon-egg", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/dragon_egg.png", "imageHint": "dragon egg"
+    },
+    {
+      "id": "dragon-head", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/dragon_head.png", "imageHint": "dragon head"
+    },
+    {
+      "id": "cooked-porkchop", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/cooked_porkchop.png", "imageHint": "cooked porkchop"
+    },
+    {
+      "id": "cooked-chicken", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/cooked_chicken.png", "imageHint": "cooked chicken"
+    },
+    {
+      "id": "cooked-mutton", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/cooked_mutton.png", "imageHint": "cooked mutton"
+    },
+    {
+      "id": "baked-potato", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/baked_potato.png", "imageHint": "baked potato"
+    },
+    {
+      "id": "pumpkin-pie", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/pumpkin_pie.png", "imageHint": "pumpkin pie"
+    },
+    {
+      "id": "cake", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/cake.png", "imageHint": "cake"
+    },
+    {
+      "id": "honey-bottle", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/honey_bottle.png", "imageHint": "honey bottle"
+    },
+    {
+      "id": "potion-of-regeneration", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/potion_overlay.png", "imageHint": "regeneration potion"
+    },
+    {
+      "id": "potion-of-water-breathing", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/potion_overlay.png", "imageHint": "water breathing"
+      },
+    {
+      "id": "potion-of-invisibility", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/potion_overlay.png", "imageHint": "invisibility potion"
+    },
+    {
+      "id": "nautilus-shell", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/nautilus_shell.png", "imageHint": "nautilus shell"
+    },
+    {
+      "id": "heart-of-the-sea", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/heart_of_the_sea.png", "imageHint": "heart sea"
+    },
+    {
+      "id": "wither-skeleton-skull", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/wither_skeleton_skull.png", "imageHint": "wither skull"
+    },
+    {
+      "id": "diamond-block", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/diamond_block.png", "imageHint": "diamond block"
+    },
+    {
+      "id": "emerald-block", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/emerald_block.png", "imageHint": "emerald block"
+    },
+    {
+      "id": "iron-block", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/iron_block.png", "imageHint": "iron block"
+    },
+    {
+      "id": "gold-block", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/gold_block.png", "imageHint": "gold block"
+    },
+    {
+      "id": "netherite-block", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/netherite_block.png", "imageHint": "netherite block"
+    },
+    {
+      "id": "amethyst-shard", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/amethyst_shard.png", "imageHint": "amethyst shard"
+    },
+    {
+      "id": "mangrove-log", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/mangrove_log.png", "imageHint": "mangrove log"
+    },
+    {
+      "id": "cherry-log", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/cherry_log.png", "imageHint": "cherry log"
+    },
+    {
+      "id": "crimson-stem", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/crimson_stem.png", "imageHint": "crimson stem"
+    },
+    {
+      "id": "warped-stem", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/warped_stem.png", "imageHint": "warped stem"
+    },
+    {
+      "id": "granite", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/granite.png", "imageHint": "granite block"
+    },
+    {
+      "id": "diorite", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/diorite.png", "imageHint": "diorite block"
+    },
+    {
+      "id": "andesite", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/andesite.png", "imageHint": "andesite block"
+    },
+    {
+      "id": "deepslate", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/deepslate.png", "imageHint": "deepslate block"
+    },
+    {
+      "id": "calcite", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/calcite.png", "imageHint": "calcite block"
+    },
+    {
+      "id": "tuff", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/tuff.png", "imageHint": "tuff block"
+    },
+    {
+      "id": "sandstone", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/sandstone.png", "imageHint": "sandstone block"
+    },
+    {
+      "id": "red-sandstone", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/red_sandstone.png", "imageHint": "red sandstone"
+    },
+    {
+      "id": "netherrack", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/netherrack.png", "imageHint": "netherrack"
+    },
+    {
+      "id": "soul-sand", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/soul_sand.png", "imageHint": "soul sand"
+    },
+    {
+      "id": "soul-soil", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/soul_soil.png", "imageHint": "soul soil"
+    },
+    {
+      "id": "end-stone", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/end_stone.png", "imageHint": "end stone"
+    },
+    {
+      "id": "purpur-block", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/purpur_block.png", "imageHint": "purpur block"
+    },
+    {
+      "id": "clay-ball", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/clay_ball.png", "imageHint": "clay ball"
+    },
+    {
+      "id": "terracotta", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/terracotta.png", "imageHint": "terracotta block"
+    },
+    {
+      "id": "sea-lantern", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/sea_lantern.png", "imageHint": "sea lantern"
+    },
+    {
+      "id": "glowstone", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/glowstone.png", "imageHint": "glowstone block"
+    },
+    {
+      "id": "slime-block", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/slime_block.png", "imageHint": "slime block"
+    },
+    {
+      "id": "honey-block", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/honey_block_side.png", "imageHint": "honey block"
+    },
+    {
+      "id": "glistering-melon-slice", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/glistering_melon_slice.png", "imageHint": "melon slice"
+    },
+    {
+      "id": "rabbit-foot", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/rabbit_foot.png", "imageHint": "rabbit foot"
+    },
+    {
+      "id": "pufferfish", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/pufferfish.png", "imageHint": "pufferfish"
+    },
+    {
+      "id": "wheat-seeds", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/wheat_seeds.png", "imageHint": "wheat seeds"
+    },
+    {
+      "id": "pumpkin-seeds", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/pumpkin_seeds.png", "imageHint": "pumpkin seeds"
+    },
+    {
+      "id": "melon-seeds", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/melon_seeds.png", "imageHint": "melon seeds"
+    },
+    {
+      "id": "beetroot-seeds", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/beetroot_seeds.png", "imageHint": "beetroot seeds"
+    },
+    {
+      "id": "carrot", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/carrot.png", "imageHint": "carrot"
+    },
+    {
+      "id": "potato", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/potato.png", "imageHint": "potato"
+    },
+    {
+      "id": "sugar-cane", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/sugar_cane.png", "imageHint": "sugar cane"
+    },
+    {
+      "id": "cactus", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/block/cactus_side.png", "imageHint": "cactus"
+    },
+    {
+      "id": "cocoa-beans", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/cocoa_beans.png", "imageHint": "cocoa beans"
+    },
+    {
+      "id": "rail", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/rail.png", "imageHint": "rail"
+    },
+    {
+      "id": "powered-rail", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/powered_rail.png", "imageHint": "powered rail"
+    },
+    {
+      "id": "detector-rail", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/detector_rail.png", "imageHint": "detector rail"
+    },
+    {
+      "id": "activator-rail", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/activator_rail.png", "imageHint": "activator rail"
+    },
+    {
+      "id": "minecart", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/minecart.png", "imageHint": "minecart"
+    },
+    {
+      "id": "chest-minecart", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/chest_minecart.png", "imageHint": "minecart chest"
+    },
+    {
+      "id": "furnace-minecart", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/furnace_minecart.png", "imageHint": "minecart furnace"
+    },
+    {
+      "id": "tnt-minecart", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/tnt_minecart.png", "imageHint": "minecart tnt"
+    },
+    {
+      "id": "hopper-minecart", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/hopper_minecart.png", "imageHint": "minecart hopper"
+    },
+    {
+      "id": "oak-boat", "imageUrl": "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/oak_boat.png", "imageHint": "oak boat"
     }
   ]
 }
+
+    
