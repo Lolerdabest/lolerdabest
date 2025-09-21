@@ -1,3 +1,52 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "diamond-sword",
+      "description": "A powerful diamond sword, ready for battle.",
+      "imageUrl": "https://picsum.photos/seed/101/400/400",
+      "imageHint": "diamond sword"
+    },
+    {
+      "id": "netherite-ingot",
+      "description": "A rare and durable netherite ingot, the pinnacle of materials.",
+      "imageUrl": "https://picsum.photos/seed/102/400/400",
+      "imageHint": "netherite ingot"
+    },
+    {
+      "id": "elytra",
+      "description": "A pair of wings for gliding through the sky.",
+      "imageUrl": "https://picsum.photos/seed/103/400/400",
+      "imageHint": "elytra wings"
+    },
+    {
+      "id": "totem-of-undying",
+      "description": "A mystical totem that saves you from certain death.",
+      "imageUrl": "https://picsum.photos/seed/104/400/400",
+      "imageHint": "gold totem"
+    },
+    {
+      "id": "enchanted-golden-apple",
+      "description": "A magical apple with extraordinary regenerative powers.",
+      "imageUrl": "https://picsum.photos/seed/105/400/400",
+      "imageHint": "golden apple"
+    },
+    {
+      "id": "shulker-box",
+      "description": "A portable chest to carry your items anywhere.",
+      "imageUrl": "https://picsum.photos/seed/106/400/400",
+      "imageHint": "purple box"
+    },
+    {
+      "id": "beacon",
+      "description": "A powerful block that provides status effects in a large area.",
+      "imageUrl": "https://picsum.photos/seed/107/400/400",
+      "imageHint": "glowing beacon"
+    },
+    {
+      "id": "trident",
+      "description": "A rare aquatic weapon that can be thrown or used in melee.",
+      "imageUrl": "https://picsum.photos/seed/108/400/400",
+      "imageHint": "trident weapon"
+    }
+  ]
 }
