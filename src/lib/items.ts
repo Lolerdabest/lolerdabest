@@ -41,9 +41,7 @@ const itemData: Omit<Item, 'description' | 'image' | 'imageHint'>[] = [
   // Other Items
   { id: 'elytra', name: 'Elytra', price: 1200, enchantments: enchantments.elytra, icon: 'E' },
   { id: 'totem-of-undying', name: 'Totem of Undying', price: 100, enchantments: [], icon: 'T' },
-  { id: 'enchanted-golden-apple', name: 'Enchanted Golden Apple', price: 200, enchantments: [], icon: 'A' },
   { id: 'shulker-box', name: 'Shulker Box', price: 100, enchantments: [], icon: 'S' },
-  { id: 'beacon', name: 'Beacon', price: 800, enchantments: [], icon: 'B' },
 ];
 
 export const items: Item[] = itemData.map(item => ({
