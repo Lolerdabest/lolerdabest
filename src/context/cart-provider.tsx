@@ -1,7 +1,8 @@
 'use client';
 
 import type { CartItem, Item, Enchantment } from '@/lib/types';
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useCallback } from 'react';
+import { formatEnchantment } from '@/lib/enchantment-utils';
 
 interface CartContextType {
   cart: CartItem[];
@@ -15,12 +16,18 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const generateCartId = (item: Item, enchantments: Enchantment[]): string => {
+  const sortedEnchantments = [...enchantments].sort((a, b) => a.name.localeCompare(b.name));
+  const enchantmentString = sortedEnchantments.map(e => `${e.name}@${e.level}`).join(',');
+  return `${item.id}-${enchantmentString}`;
+};
+
+
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addToCart = (item: Item, selectedEnchantments: Enchantment[], quantity: number) => {
-    // Since enchantments are not selectable, the cartId can be simplified.
-    const cartId = `${item.id}-${item.name}`;
+  const addToCart = useCallback((item: Item, selectedEnchantments: Enchantment[], quantity: number) => {
+    const cartId = generateCartId(item, selectedEnchantments);
 
     setCart((prevCart) => {
       const existingItemIndex = prevCart.findIndex((cartItem) => cartItem.cartId === cartId);
@@ -43,13 +50,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         return [...prevCart, newItem];
       }
     });
-  };
+  }, []);
 
-  const removeFromCart = (cartId: string) => {
+  const removeFromCart = useCallback((cartId: string) => {
     setCart((prevCart) => prevCart.filter((item) => item.cartId !== cartId));
-  };
+  }, []);
 
-  const updateQuantity = (cartId: string, quantity: number) => {
+  const updateQuantity = useCallback((cartId: string, quantity: number) => {
     if (quantity <= 0) {
       removeFromCart(cartId);
       return;
@@ -59,15 +66,16 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         item.cartId === cartId ? { ...item, quantity } : item
       )
     );
-  };
+  }, [removeFromCart]);
   
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCart([]);
-  };
+  }, []);
 
   const totalPrice = useMemo(() => {
     return cart.reduce((total, item) => {
-       return total + item.price * item.quantity;
+       const itemTotalCost = item.price + item.selectedEnchantments.reduce((acc, ench) => acc + ench.cost, 0);
+       return total + itemTotalCost * item.quantity;
     }, 0);
   }, [cart]);
   

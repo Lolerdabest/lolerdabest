@@ -13,6 +13,7 @@ import { placeOrderAction, type FormState } from '@/app/actions';
 import { useEffect, useRef, useState, useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
+import { formatEnchantment } from '@/lib/enchantment-utils';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -33,20 +34,12 @@ export function OrderSummary() {
   const discountedTotal = totalPrice - totalPrice * discount;
 
   const handleApplyCoupon = () => {
-    if (coupon.toLowerCase() === 'lolerhustler') {
-      setDiscount(0.15);
-      toast({
-        title: 'Success!',
-        description: '15% coupon applied!',
-      });
-    } else {
-      setDiscount(0);
-      toast({
-        title: 'Error',
-        description: 'Invalid coupon code.',
-        variant: 'destructive',
-      });
-    }
+    // Coupon logic is disabled for now.
+    setDiscount(0);
+    toast({
+      title: 'Info',
+      description: 'Coupon codes are not available at this time.',
+    });
   };
 
   const initialState: FormState = { message: '', success: false };
@@ -82,10 +75,17 @@ export function OrderSummary() {
         ) : (
           <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2">
             {cart.map((item) => (
-              <div key={item.cartId} className="flex items-center gap-4">
+              <div key={item.cartId} className="flex items-start gap-4">
                 <Image src={item.image} alt={item.name} width={40} height={40} className="pixelated rounded-md bg-muted p-1" />
                 <div className="flex-grow">
                   <p className="font-semibold leading-tight">{item.name}</p>
+                   {item.selectedEnchantments.length > 0 && (
+                    <ul className="text-xs text-primary/80 list-disc list-inside">
+                      {item.selectedEnchantments.map(e => (
+                        <li key={e.name}>{formatEnchantment(e)}</li>
+                      ))}
+                    </ul>
+                  )}
                   <div className="flex items-center gap-1 mt-1">
                     <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.cartId, item.quantity - 1)}><MinusCircle className="h-4 w-4" /></Button>
                     <span className="w-6 text-center">{item.quantity}</span>
@@ -93,7 +93,7 @@ export function OrderSummary() {
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="font-semibold">R${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-semibold">R${((item.price + item.selectedEnchantments.reduce((acc, e) => acc + e.cost, 0)) * item.quantity).toFixed(2)}</p>
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.cartId)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -111,7 +111,7 @@ export function OrderSummary() {
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-primary">
-                  <span>Discount (15%)</span>
+                  <span>Discount</span>
                   <span>-R${(totalPrice * discount).toFixed(2)}</span>
                 </div>
               )}
@@ -135,15 +135,16 @@ export function OrderSummary() {
                   value={coupon}
                   onChange={(e) => setCoupon(e.target.value)}
                   className="w-full"
-                  placeholder="lolerhustler"
+                  placeholder="No coupons available"
+                  disabled
                 />
-                <Button onClick={handleApplyCoupon}>Apply</Button>
+                <Button onClick={handleApplyCoupon} disabled>Apply</Button>
               </div>
             </div>
           <Separator />
 
           <form action={formAction} ref={formRef} className="w-full space-y-6">
-            <input type="hidden" name="cart" value={JSON.stringify(cart.map(({image, imageHint, description, enchantments, ...rest}) => rest))} />
+             <input type="hidden" name="cart" value={JSON.stringify(cart.map(({image, imageHint, description, enchantments, ...rest}) => rest))} />
             <input type="hidden" name="finalPrice" value={discountedTotal.toFixed(2)} />
 
             <div className="space-y-2">
@@ -169,11 +170,6 @@ export function OrderSummary() {
                     /pay lolerdabest69 {discountedTotal.toFixed(2)}
                   </code>
                 </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="screenshot">Add Payment Proof (Optional)</Label>
-              <Input id="screenshot" name="screenshot" type="file" className="file:text-primary-foreground file:font-bold"/>
             </div>
             
             <SubmitButton />

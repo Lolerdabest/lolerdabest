@@ -1,6 +1,4 @@
 
-'use server';
-
 import type { Item, Enchantment } from './types';
 import { romanToNumber, numberToRoman } from './roman-utils';
 
@@ -22,10 +20,10 @@ export const exclusiveEnchantments: { [key: string]: string[][] } = {
     pickaxe: [["Silk Touch", "Fortune"]],
     axe: [["Sharpness", "Smite", "Bane of Arthropods"], ["Silk Touch", "Fortune"]],
     shovel: [["Silk Touch", "Fortune"]],
-helmet: [["Protection", "Fire Protection", "Blast Protection", "Projectile Protection"]],
+    helmet: [["Protection", "Fire Protection", "Blast Protection", "Projectile Protection"]],
     chestplate: [["Protection", "Fire Protection", "Blast Protection", "Projectile Protection"]],
     leggings: [["Protection", "Fire Protection", "Blast Protection", "Projectile Protection"]],
-    boots: [["Protection", "Fire Protection", "Blast Protection", "Projectile Protection"], ["Depth Strider", "Soul Speed"]],
+    boots: [["Protection", "Fire Protection", "Blast Protection", "Projectile Protection"], ["Depth Strider", "Frost Walker"]],
     bow: [["Infinity", "Mending"]],
     crossbow: [["Multishot", "Piercing"]],
 };
@@ -42,13 +40,14 @@ export const getExclusiveGroups = (item: Item): string[][] => {
     return itemType ? exclusiveEnchantments[itemType] : [];
 };
 
-
 export const parseEnchantment = (enchantmentString: string): Enchantment | null => {
     const parts = enchantmentString.split(' ');
     const levelRoman = parts.length > 1 && ["I", "II", "III", "IV", "V"].includes(parts[parts.length - 1]) ? parts.pop()! : null;
     const name = parts.join(' ');
     const level = levelRoman ? romanToNumber(levelRoman) : 1;
   
+    if (!name) return null;
+
     return {
       name,
       level,
