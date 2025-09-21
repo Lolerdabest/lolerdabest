@@ -39,8 +39,7 @@ const itemData: Omit<Item, 'description' | 'image' | 'imageHint'>[] = [
   { id: 'netherite-shovel', name: 'Netherite Shovel', price: 250, enchantments: [...enchantments.tool], icon: 'S' },
   
   // Other Items
-  { id: 'elytra', name: 'Elytra', price: 500, enchantments: enchantments.elytra, icon: 'E' },
-  { id: 'trident', name: 'Trident', price: 450, enchantments: enchantments.trident, icon: 'T' },
+  { id: 'elytra', name: 'Elytra', price: 1200, enchantments: enchantments.elytra, icon: 'E' },
   { id: 'totem-of-undying', name: 'Totem of Undying', price: 100, enchantments: [], icon: 'T' },
   { id: 'enchanted-golden-apple', name: 'Enchanted Golden Apple', price: 200, enchantments: [], icon: 'A' },
   { id: 'shulker-box', name: 'Shulker Box', price: 100, enchantments: [], icon: 'S' },
