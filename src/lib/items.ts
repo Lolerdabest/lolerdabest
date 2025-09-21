@@ -2,6 +2,20 @@ import type { Item } from './types';
 import { enchantments } from './enchantments';
 
 const itemData: Omit<Item, 'description' | 'image' | 'imageHint'>[] = [
+  // Full Kit
+  {
+    id: 'maxed-netherite-kit',
+    name: 'Maxed Netherite Kit',
+    price: 10000,
+    enchantments: [
+      'Full Netherite Armor (Helmet, Chestplate, Leggings, Boots)',
+      'Full Netherite Tools (Sword, Pickaxe, Axe, Shovel)',
+      'All items enchanted with the best compatible enchantments (e.g., Protection IV, Unbreaking III, Mending, Efficiency V, Sharpness V, etc.)'
+    ],
+    icon: 'K',
+    canUpgradeToNetherite: false,
+  },
+
   // Diamond Armor
   { id: 'diamond-helmet', name: 'Diamond Helmet', price: 150, enchantments: [...enchantments.armor, ...enchantments.helmet], icon: 'H', canUpgradeToNetherite: true },
   { id: 'diamond-chestplate', name: 'Diamond Chestplate', price: 250, enchantments: [...enchantments.armor], icon: 'C', canUpgradeToNetherite: true },

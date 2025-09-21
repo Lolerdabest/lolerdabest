@@ -14,6 +14,7 @@ interface ItemCardProps {
 }
 
 const romanToNumber = (roman: string): number => {
+  if (!roman || typeof roman !== 'string') return 1;
   const romanMap: { [key: string]: number } = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
   let result = 0;
   for (let i = 0; i < roman.length; i++) {
@@ -28,7 +29,10 @@ const romanToNumber = (roman: string): number => {
   return result;
 };
 
-const parseEnchantment = (enchantmentString: string): Enchantment => {
+const parseEnchantment = (enchantmentString: string): Enchantment | null => {
+  if (enchantmentString.startsWith('Full') || enchantmentString.startsWith('All items')) {
+    return null;
+  }
   const parts = enchantmentString.split(' ');
   const levelRoman = parts.pop() || 'I';
   const level = romanToNumber(levelRoman);
@@ -54,7 +58,12 @@ export function ItemCard({ item }: ItemCardProps) {
   }, [item.price, selectedEnchantments, upgradeToNetherite]);
 
   const allEnchantmentOptions = useMemo(() =>
-    item.enchantments.map(parseEnchantment),
+    item.enchantments.map(parseEnchantment).filter((e): e is Enchantment => e !== null),
+    [item.enchantments]
+  );
+
+  const descriptiveEnchantments = useMemo(() =>
+    item.enchantments.filter(e => e.startsWith('Full') || e.startsWith('All items')),
     [item.enchantments]
   );
   
@@ -75,6 +84,7 @@ export function ItemCard({ item }: ItemCardProps) {
   };
 
   const Icon = item.icon || 'H';
+  const isKit = item.id === 'maxed-netherite-kit';
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 border-2 border-primary/20 hover:border-primary bg-card/80 backdrop-blur-sm p-6">
@@ -91,31 +101,39 @@ export function ItemCard({ item }: ItemCardProps) {
         <Separator className="my-2 bg-primary/20"/>
 
         <div className="w-full space-y-4 text-left text-lg tracking-wider">
-          {allEnchantmentOptions.map(enchantment => (
-            <div key={enchantment.name} className="flex items-center space-x-3">
-              <Checkbox
-                id={`${item.id}-${enchantment.name}`}
-                onCheckedChange={(checked) => handleEnchantmentChange(checked as boolean, enchantment)}
-                checked={selectedEnchantments.some(e => e.name === enchantment.name)}
-              />
-              <Label htmlFor={`${item.id}-${enchantment.name}`} className="cursor-pointer">
-                {enchantment.name} {enchantment.level} (+R${enchantment.cost.toFixed(2)})
-              </Label>
-            </div>
-          ))}
+          {isKit ? (
+            <ul className="list-disc list-inside text-muted-foreground space-y-1">
+              {descriptiveEnchantments.map(desc => <li key={desc}>{desc}</li>)}
+            </ul>
+          ) : (
+            <>
+              {allEnchantmentOptions.map(enchantment => (
+                <div key={enchantment.name} className="flex items-center space-x-3">
+                  <Checkbox
+                    id={`${item.id}-${enchantment.name}`}
+                    onCheckedChange={(checked) => handleEnchantmentChange(checked as boolean, enchantment)}
+                    checked={selectedEnchantments.some(e => e.name === enchantment.name)}
+                  />
+                  <Label htmlFor={`${item.id}-${enchantment.name}`} className="cursor-pointer">
+                    {enchantment.name} {enchantment.level} (+R${enchantment.cost.toFixed(2)})
+                  </Label>
+                </div>
+              ))}
 
-          {item.canUpgradeToNetherite && (
-              <div className="flex items-center space-x-3">
-                <Checkbox
-                  id={`${item.id}-netherite`}
-                  onCheckedChange={(checked) => setUpgradeToNetherite(checked as boolean)}
-                  checked={upgradeToNetherite}
-                />
-                <Label htmlFor={`${item.id}-netherite`} className="cursor-pointer">
-                  Upgrade to Netherite (+R$150.00)
-                </Label>
-              </div>
-            )}
+              {item.canUpgradeToNetherite && (
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      id={`${item.id}-netherite`}
+                      onCheckedChange={(checked) => setUpgradeToNetherite(checked as boolean)}
+                      checked={upgradeToNetherite}
+                    />
+                    <Label htmlFor={`${item.id}-netherite`} className="cursor-pointer">
+                      Upgrade to Netherite (+R$150.00)
+                    </Label>
+                  </div>
+                )}
+            </>
+          )}
         </div>
 
         <Button onClick={handleAddToCart} className="w-full font-bold text-xl py-6 mt-4">
