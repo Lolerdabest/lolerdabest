@@ -8,7 +8,7 @@ export function Header() {
         <Link href="/" className="flex flex-col items-center gap-2 group">
           <Logo />
           <h1 className="text-4xl font-bold tracking-tighter text-foreground group-hover:text-primary transition-colors">
-            Enchanted Arsenal
+            Loler's Hustle
           </h1>
         </Link>
       </div>
