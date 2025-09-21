@@ -172,8 +172,8 @@ export function OrderSummary() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="screenshot">Add Payment Proof</Label>
-              <Input id="screenshot" name="screenshot" type="file" required className="file:text-primary-foreground file:font-bold"/>
+              <Label htmlFor="screenshot">Add Payment Proof (Optional)</Label>
+              <Input id="screenshot" name="screenshot" type="file" className="file:text-primary-foreground file:font-bold"/>
             </div>
             
             <SubmitButton />
