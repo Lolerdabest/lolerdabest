@@ -4,19 +4,29 @@ import { z } from 'zod';
 import { getItemRecommendations } from '@/ai/flows/personalized-item-recommendations';
 import { items } from '@/lib/items';
 import type { CartItem } from '@/lib/types';
+import {ai} from '@/ai/genkit';
 
 const orderSchema = z.object({
   minecraftUsername: z.string().min(3, { message: "Username must be at least 3 characters." }),
-  discordTag: z.string().regex(/^.{3,32}#[0-9]{4}$/, { message: "Invalid Discord tag format (e.g., user#1234)." }),
+  discordTag: z.string().min(2, { message: "Please enter your Discord username." }),
   notes: z.string().optional(),
   cart: z.string(),
   finalPrice: z.string(),
+  screenshot: z.instanceof(File),
 });
 
 export type FormState = {
   message: string;
   success: boolean;
 };
+
+// Helper function to convert a File to a data URI
+async function fileToDataUri(file: File): Promise<string> {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  return `data:${file.type};base64,${buffer.toString('base64')}`;
+}
+
 
 export async function placeOrderAction(
   prevState: FormState,
@@ -29,6 +39,7 @@ export async function placeOrderAction(
       notes: formData.get('notes'),
       cart: formData.get('cart'),
       finalPrice: formData.get('finalPrice'),
+      screenshot: formData.get('screenshot'),
     });
 
     if (!validatedFields.success) {
@@ -38,8 +49,25 @@ export async function placeOrderAction(
       };
     }
     
-    const { minecraftUsername, discordTag, notes, cart, finalPrice } = validatedFields.data;
+    const { minecraftUsername, discordTag, notes, cart, finalPrice, screenshot } = validatedFields.data;
     const cartItems: CartItem[] = JSON.parse(cart);
+    
+    // Convert the screenshot to a data URI
+    const screenshotDataUri = await fileToDataUri(screenshot);
+    
+    // Use a Genkit flow to get a public URL for the image
+    const { media } = await ai.generate({
+      model: 'googleai/gemini-2.5-flash-image-preview',
+      prompt: [
+        { media: { url: screenshotDataUri } },
+        { text: 'Give me this image back' },
+      ],
+      config: {
+        responseModalities: ['IMAGE'],
+      },
+    });
+
+    const screenshotUrl = media?.url;
 
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
@@ -56,29 +84,36 @@ export async function placeOrderAction(
         footer: {
           text: `Loler's Hustle | ${new Date().toLocaleString()}`,
         },
+        image: {
+            url: screenshotUrl,
+        }
       };
 
       if (notes) {
         embed.fields.push({ name: 'Notes', value: notes });
       }
+      
+      const webhookBody = {
+          username: "Loler's Hustle Bot",
+          avatar_url: 'https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png',
+          embeds: [embed],
+      };
 
       await fetch(webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          username: "Loler's Hustle Bot",
-          avatar_url: 'https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png',
-          embeds: [embed],
-        }),
+        body: JSON.stringify(webhookBody),
       });
+
     } else {
         console.log('New Order Placed (Discord Webhook URL not configured):');
         console.log('Username:', minecraftUsername);
         console.log('Discord:', discordTag);
         console.log('Notes:', notes);
         console.log('Cart:', cartItems);
+        console.log('Screenshot URL:', screenshotUrl);
     }
 
 
