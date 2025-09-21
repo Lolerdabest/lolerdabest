@@ -23,9 +23,34 @@ interface ItemCardProps {
   item: Item;
 }
 
+const romanToNumber = (roman: string): number => {
+    const romanMap: { [key: string]: number } = {
+        'I': 1,
+        'V': 5,
+        'X': 10,
+        'L': 50,
+        'C': 100,
+        'D': 500,
+        'M': 1000,
+    };
+    let result = 0;
+    for (let i = 0; i < roman.length; i++) {
+        const current = romanMap[roman[i]];
+        const next = romanMap[roman[i + 1]];
+        if (next && current < next) {
+            result -= current;
+        } else {
+            result += current;
+        }
+    }
+    return result;
+};
+
+
 const parseEnchantment = (enchantmentString: string): Enchantment => {
   const parts = enchantmentString.split(' ');
-  const level = parseInt(parts.pop() || '1', 10);
+  const levelRoman = parts.pop() || 'I';
+  const level = romanToNumber(levelRoman);
   const name = parts.join(' ');
   return { name, level };
 };
