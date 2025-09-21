@@ -82,8 +82,7 @@ export function OrderSummary() {
         ) : (
           <div className="space-y-4">
             {cart.map((item) => {
-              const enchantmentCost = item.selectedEnchantments.reduce((cost, ench) => cost + 0.5 * ench.level, 0);
-              const itemTotalPrice = (item.price + enchantmentCost) * item.quantity;
+              const itemTotalPrice = item.price * item.quantity;
 
               return (
               <div key={item.cartId} className="flex items-start gap-4">

@@ -9,6 +9,8 @@ import { Label } from './ui/label';
 import { useState, useMemo, useEffect } from 'react';
 import { Separator } from './ui/separator';
 import Image from 'next/image';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import { exclusiveEnchantmentGroups } from '@/lib/enchantments';
 
 interface ItemCardProps {
   item: Item;
@@ -44,24 +46,39 @@ const parseEnchantment = (enchantmentString: string): Enchantment | null => {
 export function ItemCard({ item }: ItemCardProps) {
   const { addToCart } = useCart();
   const [selectedEnchantments, setSelectedEnchantments] = useState<Enchantment[]>([]);
+  const [selectedExclusiveEnchantments, setSelectedExclusiveEnchantments] = useState<{ [group: string]: Enchantment }>({});
   const [upgradeToNetherite, setUpgradeToNetherite] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(item.price);
 
   useEffect(() => {
     let newPrice = item.price;
-    selectedEnchantments.forEach(enchantment => {
+    const allSelected = [...selectedEnchantments, ...Object.values(selectedExclusiveEnchantments)];
+    allSelected.forEach(enchantment => {
       newPrice += enchantment.cost;
     });
     if (upgradeToNetherite) {
       newPrice += 150;
     }
     setCurrentPrice(newPrice);
-  }, [item.price, selectedEnchantments, upgradeToNetherite]);
+  }, [item.price, selectedEnchantments, selectedExclusiveEnchantments, upgradeToNetherite]);
 
   const allEnchantmentOptions = useMemo(() =>
     item.enchantments.map(parseEnchantment).filter((e): e is Enchantment => e !== null),
     [item.enchantments]
   );
+  
+  const { exclusiveGroups, nonExclusiveEnchantments } = useMemo(() => {
+    const exclusive = Object.entries(exclusiveEnchantmentGroups).map(([groupName, enchantments]) => {
+      const groupEnchantments = allEnchantmentOptions.filter(opt => enchantments.includes(`${opt.name} ${Object.keys(romanMap).find(key => romanMap[key] === opt.level)}`));
+      return { groupName, enchantments: groupEnchantments };
+    }).filter(g => g.enchantments.length > 0);
+
+    const allExclusiveEnchantmentNames = Object.values(exclusiveEnchantmentGroups).flat();
+    const nonExclusive = allEnchantmentOptions.filter(opt => !allExclusiveEnchantmentNames.includes(`${opt.name} ${Object.keys(romanMap).find(key => romanMap[key] === opt.level)}`));
+    
+    return { exclusiveGroups: exclusive, nonExclusiveEnchantments: nonExclusive };
+  }, [allEnchantmentOptions]);
+
 
   const descriptiveEnchantments = useMemo(() =>
     item.enchantments.filter(e => e.startsWith('Full') || e.startsWith('All items')),
@@ -70,18 +87,31 @@ export function ItemCard({ item }: ItemCardProps) {
   
   const handleAddToCart = () => {
     let finalItem = { ...item };
+    const allSelected = [...selectedEnchantments, ...Object.values(selectedExclusiveEnchantments)];
+
     if (upgradeToNetherite) {
       finalItem.name = `Netherite ${item.name.split(' ').slice(1).join(' ')}`;
-      finalItem.price = currentPrice; // Use the calculated price
     }
+    // Price is already calculated, so we just pass it along
+    finalItem.price = currentPrice;
 
-    addToCart(finalItem, selectedEnchantments, 1);
+    addToCart(finalItem, allSelected, 1);
   };
   
   const handleEnchantmentChange = (checked: boolean, enchantment: Enchantment) => {
     setSelectedEnchantments(prev =>
       checked ? [...prev, enchantment] : prev.filter(e => e.name !== enchantment.name)
     );
+  };
+  
+  const handleExclusiveEnchantmentChange = (groupName: string, enchantmentName: string) => {
+    const enchantment = allEnchantmentOptions.find(e => e.name === enchantmentName.split(' ').slice(0, -1).join(' '));
+    if (enchantment) {
+      setSelectedExclusiveEnchantments(prev => ({
+        ...prev,
+        [groupName]: enchantment
+      }));
+    }
   };
 
   const Icon = item.icon || 'H';
@@ -116,27 +146,42 @@ export function ItemCard({ item }: ItemCardProps) {
 
             <Separator className="my-2 bg-border"/>
 
-            <div className="w-full space-y-3 text-left text-sm flex-1">
+            <div className="w-full space-y-3 text-left text-sm flex-1 max-h-60 overflow-y-auto pr-2">
               {isKit ? (
                 <ul className="list-disc list-inside text-muted-foreground space-y-1">
                   {descriptiveEnchantments.map(desc => <li key={desc}>{desc}</li>)}
                 </ul>
               ) : (
                 <>
-                  {allEnchantmentOptions.length > 0 && 
-                    <div className="space-y-3 max-h-40 overflow-y-auto pr-2">
-                    {allEnchantmentOptions.map(enchantment => (
-                        <div key={enchantment.name} className="flex items-center space-x-3">
-                        <Checkbox
-                            id={`${item.id}-${enchantment.name}`}
-                            onCheckedChange={(checked) => handleEnchantmentChange(checked as boolean, enchantment)}
-                            checked={selectedEnchantments.some(e => e.name === enchantment.name)}
-                        />
-                        <Label htmlFor={`${item.id}-${enchantment.name}`} className="cursor-pointer text-xs">
-                            {enchantment.name} {enchantment.level} (+R${enchantment.cost.toFixed(2)})
-                        </Label>
-                        </div>
-                    ))}
+                  {exclusiveGroups.map(group => (
+                    <div key={group.groupName} className="p-3 rounded-md border border-dashed border-primary/50 space-y-2">
+                       <RadioGroup onValueChange={(value) => handleExclusiveEnchantmentChange(group.groupName, value)}>
+                        {group.enchantments.map(enchantment => (
+                          <div key={enchantment.name} className="flex items-center space-x-3">
+                            <RadioGroupItem value={`${enchantment.name} ${enchantment.level}`} id={`${item.id}-${group.groupName}-${enchantment.name}`} />
+                            <Label htmlFor={`${item.id}-${group.groupName}-${enchantment.name}`} className="cursor-pointer text-xs">
+                              {enchantment.name} {enchantment.level} (+R${enchantment.cost.toFixed(2)})
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  ))}
+
+                  {nonExclusiveEnchantments.length > 0 && 
+                    <div className="space-y-3 pt-2">
+                      {nonExclusiveEnchantments.map(enchantment => (
+                          <div key={enchantment.name} className="flex items-center space-x-3">
+                            <Checkbox
+                                id={`${item.id}-${enchantment.name}`}
+                                onCheckedChange={(checked) => handleEnchantmentChange(checked as boolean, enchantment)}
+                                checked={selectedEnchantments.some(e => e.name === enchantment.name)}
+                            />
+                            <Label htmlFor={`${item.id}-${enchantment.name}`} className="cursor-pointer text-xs">
+                                {enchantment.name} {enchantment.level} (+R${enchantment.cost.toFixed(2)})
+                            </Label>
+                          </div>
+                      ))}
                     </div>
                   }
 
@@ -164,3 +209,5 @@ export function ItemCard({ item }: ItemCardProps) {
     </Card>
   );
 }
+
+const romanMap: { [key: string]: number } = { I: 1, II: 2, III: 3, IV: 4, V: 5 };

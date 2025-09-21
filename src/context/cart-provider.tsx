@@ -34,13 +34,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         );
       }
       
-      const enchantmentCost = selectedEnchantments.reduce((cost, ench) => cost + ench.cost, 0);
-      const finalPrice = item.price + (item.canUpgradeToNetherite && item.name.startsWith('Netherite') ? 0 : enchantmentCost);
-
-
       const newItem: CartItem = { 
         ...item, 
-        price: finalPrice,
         cartId, 
         quantity, 
         selectedEnchantments 
@@ -71,8 +66,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   const totalPrice = useMemo(() => {
     return cart.reduce((total, item) => {
-      const enchantmentCost = item.selectedEnchantments.reduce((cost, ench) => cost + ench.cost, 0);
-      return total + (item.price + enchantmentCost) * item.quantity;
+       return total + item.price * item.quantity;
     }, 0);
   }, [cart]);
   

@@ -55,3 +55,12 @@ export const enchantments = {
     "Mending I",
   ],
 };
+
+
+export const exclusiveEnchantmentGroups = {
+  protection: ["Protection IV", "Fire Protection IV", "Blast Protection IV", "Projectile Protection IV"],
+  damage: ["Sharpness V", "Smite V", "Bane of Arthropods V"],
+  tool_bonus: ["Fortune III", "Silk Touch I"],
+  bow_special: ["Infinity I", "Mending I"],
+  crossbow_special: ["Multishot I", "Piercing IV"],
+}
