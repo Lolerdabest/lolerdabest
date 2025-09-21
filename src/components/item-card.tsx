@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Item, Enchantment } from '@/lib/types';
@@ -32,6 +33,18 @@ const romanToNumber = (roman: string): number => {
     }
   }
   return result;
+};
+
+const numberToRoman = (num: number): string => {
+  const romanMap: { [key: string]: number } = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
+  let roman = '';
+  for (const key in romanMap) {
+    while (num >= romanMap[key]) {
+      roman += key;
+      num -= romanMap[key];
+    }
+  }
+  return roman;
 };
 
 const parseEnchantment = (enchantmentString: string): Enchantment | null => {
@@ -72,16 +85,25 @@ export function ItemCard({ item }: ItemCardProps) {
   );
   
   const { exclusiveGroups, nonExclusiveEnchantments } = useMemo(() => {
-    const exclusive = Object.entries(exclusiveEnchantmentGroups).map(([groupName, enchantments]) => {
-      const groupEnchantments = allEnchantmentOptions.filter(opt => enchantments.includes(`${opt.name} ${Object.keys(romanMap).find(key => romanMap[key] === opt.level)}`));
-      return { groupName, enchantments: groupEnchantments };
+    const exclusive: { groupName: string; enchantments: Enchantment[] }[] = Object.entries(exclusiveEnchantmentGroups).map(([groupName, enchantmentsInGroup]) => {
+        const groupEnchantments = allEnchantmentOptions.filter(opt =>
+            enchantmentsInGroup.some(enchantmentString => {
+                const parts = enchantmentString.split(' ');
+                const levelRoman = parts.pop();
+                const name = parts.join(' ');
+                return opt.name === name && numberToRoman(opt.level) === levelRoman;
+            })
+        );
+        return { groupName, enchantments: groupEnchantments };
     }).filter(g => g.enchantments.length > 0);
 
-    const allExclusiveEnchantmentNames = Object.values(exclusiveEnchantmentGroups).flat();
-    const nonExclusive = allEnchantmentOptions.filter(opt => !allExclusiveEnchantmentNames.includes(`${opt.name} ${Object.keys(romanMap).find(key => romanMap[key] === opt.level)}`));
+    const allExclusiveEnchantmentStrings = Object.values(exclusiveEnchantmentGroups).flat();
+    const nonExclusive = allEnchantmentOptions.filter(opt => 
+        !allExclusiveEnchantmentStrings.includes(`${opt.name} ${numberToRoman(opt.level)}`)
+    );
     
     return { exclusiveGroups: exclusive, nonExclusiveEnchantments: nonExclusive };
-  }, [allEnchantmentOptions]);
+}, [allEnchantmentOptions]);
 
 
   const descriptiveEnchantments = useMemo(() =>
@@ -112,8 +134,14 @@ export function ItemCard({ item }: ItemCardProps) {
     );
   };
   
-  const handleExclusiveEnchantmentChange = (groupName: string, enchantmentName: string) => {
-    const enchantment = allEnchantmentOptions.find(e => e.name === enchantmentName.split(' ').slice(0, -1).join(' '));
+  const handleExclusiveEnchantmentChange = (groupName: string, enchantmentValue: string) => {
+    const parts = enchantmentValue.split(' ');
+    const levelRoman = parts.pop();
+    const name = parts.join(' ');
+    const level = romanToNumber(levelRoman || 'I');
+
+    const enchantment = allEnchantmentOptions.find(e => e.name === name && e.level === level);
+
     if (enchantment) {
       setSelectedExclusiveEnchantments(prev => ({
         ...prev,
@@ -147,14 +175,16 @@ export function ItemCard({ item }: ItemCardProps) {
                   {exclusiveGroups.map(group => (
                     <div key={group.groupName} className="p-3 rounded-md border border-dashed border-primary/50 space-y-2">
                        <RadioGroup onValueChange={(value) => handleExclusiveEnchantmentChange(group.groupName, value)}>
-                        {group.enchantments.map(enchantment => (
-                          <div key={enchantment.name} className="flex items-center space-x-3">
-                            <RadioGroupItem value={`${enchantment.name} ${enchantment.level}`} id={`${item.id}-${group.groupName}-${enchantment.name}`} />
-                            <Label htmlFor={`${item.id}-${group.groupName}-${enchantment.name}`} className="cursor-pointer text-xs">
-                              {enchantment.name} {enchantment.level} (+R${enchantment.cost.toFixed(2)})
+                        {group.enchantments.map(enchantment => {
+                          const value = `${enchantment.name} ${numberToRoman(enchantment.level)}`;
+                          return (
+                          <div key={value} className="flex items-center space-x-3">
+                            <RadioGroupItem value={value} id={`${item.id}-${group.groupName}-${enchantment.name}-${enchantment.level}`} />
+                            <Label htmlFor={`${item.id}-${group.groupName}-${enchantment.name}-${enchantment.level}`} className="cursor-pointer text-xs">
+                              {enchantment.name} {numberToRoman(enchantment.level)} (+R${enchantment.cost.toFixed(2)})
                             </Label>
                           </div>
-                        ))}
+                        )})}
                       </RadioGroup>
                     </div>
                   ))}
@@ -169,7 +199,7 @@ export function ItemCard({ item }: ItemCardProps) {
                                 checked={selectedEnchantments.some(e => e.name === enchantment.name)}
                             />
                             <Label htmlFor={`${item.id}-${enchantment.name}`} className="cursor-pointer text-xs">
-                                {enchantment.name} {enchantment.level} (+R${enchantment.cost.toFixed(2)})
+                                {enchantment.name} {numberToRoman(enchantment.level)} (+R${enchantment.cost.toFixed(2)})
                             </Label>
                           </div>
                       ))}
@@ -212,5 +242,3 @@ export function ItemCard({ item }: ItemCardProps) {
     </Card>
   );
 }
-
-const romanMap: { [key: string]: number } = { I: 1, II: 2, III: 3, IV: 4, V: 5 };
