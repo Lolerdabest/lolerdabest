@@ -7,7 +7,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
 import { useState, useMemo, useEffect } from 'react';
-import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Separator } from './ui/separator';
 
 interface ItemCardProps {
@@ -37,20 +36,14 @@ const parseEnchantment = (enchantmentString: string): Enchantment => {
   return { name, level, cost: 20 }; // Example cost
 };
 
-const protectionEnchantments = ["Protection", "Blast Protection", "Projectile Protection", "Fire Protection"];
-
 export function ItemCard({ item }: ItemCardProps) {
   const { addToCart } = useCart();
-  const [selectedProtection, setSelectedProtection] = useState<Enchantment | null>(null);
   const [selectedEnchantments, setSelectedEnchantments] = useState<Enchantment[]>([]);
   const [upgradeToNetherite, setUpgradeToNetherite] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(item.price);
 
   useEffect(() => {
     let newPrice = item.price;
-    if (selectedProtection) {
-      newPrice += selectedProtection.cost;
-    }
     selectedEnchantments.forEach(enchantment => {
       newPrice += enchantment.cost;
     });
@@ -58,35 +51,21 @@ export function ItemCard({ item }: ItemCardProps) {
       newPrice += 150;
     }
     setCurrentPrice(newPrice);
-  }, [item.price, selectedProtection, selectedEnchantments, upgradeToNetherite]);
+  }, [item.price, selectedEnchantments, upgradeToNetherite]);
 
-  const protectionOptions = useMemo(() =>
-    item.enchantments
-      .filter(e => protectionEnchantments.some(p => e.startsWith(p)))
-      .map(parseEnchantment),
-    [item.enchantments]
-  );
-
-  const otherEnchantments = useMemo(() =>
-    item.enchantments
-      .filter(e => !protectionEnchantments.some(p => e.startsWith(p)))
-      .map(parseEnchantment),
+  const allEnchantmentOptions = useMemo(() =>
+    item.enchantments.map(parseEnchantment),
     [item.enchantments]
   );
   
   const handleAddToCart = () => {
-    const allEnchantments = [...selectedEnchantments];
-    if (selectedProtection) {
-      allEnchantments.push(selectedProtection);
-    }
-    
     let finalItem = { ...item };
     if (upgradeToNetherite) {
       finalItem.name = `Netherite ${item.name.split(' ').slice(1).join(' ')}`;
       finalItem.price = currentPrice; // Use the calculated price
     }
 
-    addToCart(finalItem, allEnchantments, 1);
+    addToCart(finalItem, selectedEnchantments, 1);
   };
   
   const handleEnchantmentChange = (checked: boolean, enchantment: Enchantment) => {
@@ -112,20 +91,7 @@ export function ItemCard({ item }: ItemCardProps) {
         <Separator className="my-2 bg-primary/20"/>
 
         <div className="w-full space-y-4 text-left text-lg tracking-wider">
-          {protectionOptions.length > 0 && (
-            <RadioGroup onValueChange={(value) => setSelectedProtection(JSON.parse(value))} className="space-y-2">
-              {protectionOptions.map(enchantment => (
-                <div key={enchantment.name} className="flex items-center space-x-3">
-                  <RadioGroupItem value={JSON.stringify(enchantment)} id={`${item.id}-${enchantment.name}`} />
-                  <Label htmlFor={`${item.id}-${enchantment.name}`} className="cursor-pointer">
-                    {enchantment.name} {enchantment.level} (+R${enchantment.cost.toFixed(2)})
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          )}
-
-          {otherEnchantments.map(enchantment => (
+          {allEnchantmentOptions.map(enchantment => (
             <div key={enchantment.name} className="flex items-center space-x-3">
               <Checkbox
                 id={`${item.id}-${enchantment.name}`}
