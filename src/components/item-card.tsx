@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Separator } from './ui/separator';
 
@@ -44,6 +44,21 @@ export function ItemCard({ item }: ItemCardProps) {
   const [selectedProtection, setSelectedProtection] = useState<Enchantment | null>(null);
   const [selectedEnchantments, setSelectedEnchantments] = useState<Enchantment[]>([]);
   const [upgradeToNetherite, setUpgradeToNetherite] = useState(false);
+  const [currentPrice, setCurrentPrice] = useState(item.price);
+
+  useEffect(() => {
+    let newPrice = item.price;
+    if (selectedProtection) {
+      newPrice += selectedProtection.cost;
+    }
+    selectedEnchantments.forEach(enchantment => {
+      newPrice += enchantment.cost;
+    });
+    if (upgradeToNetherite) {
+      newPrice += 150;
+    }
+    setCurrentPrice(newPrice);
+  }, [item.price, selectedProtection, selectedEnchantments, upgradeToNetherite]);
 
   const protectionOptions = useMemo(() =>
     item.enchantments
@@ -68,7 +83,7 @@ export function ItemCard({ item }: ItemCardProps) {
     let finalItem = { ...item };
     if (upgradeToNetherite) {
       finalItem.name = `Netherite ${item.name.split(' ').slice(1).join(' ')}`;
-      finalItem.price += 150;
+      finalItem.price = currentPrice; // Use the calculated price
     }
 
     addToCart(finalItem, allEnchantments, 1);
@@ -92,7 +107,7 @@ export function ItemCard({ item }: ItemCardProps) {
           {Icon}
         </div>
         <h2 className="text-3xl tracking-widest">{item.name}</h2>
-        <p className="text-2xl text-accent font-bold">R${item.price.toFixed(2)}</p>
+        <p className="text-2xl text-accent font-bold">R${currentPrice.toFixed(2)}</p>
 
         <Separator className="my-2 bg-primary/20"/>
 
