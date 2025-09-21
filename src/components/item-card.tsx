@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Item, Enchantment } from '@/lib/types';
@@ -48,12 +49,17 @@ export function ItemCard({ item }: { item: Item }) {
   }, []);
 
   const handleExclusiveEnchantmentChange = useCallback((group: string[], value: string) => {
-    const newEnchantment = parseEnchantment(value);
-    if (!newEnchantment) return;
-
     setSelectedEnchantments(prev => {
-      // Remove any other enchantments from the same exclusive group
+      // Remove any enchantments from the same exclusive group
       const filtered = prev.filter(e => !group.includes(e.name));
+      
+      if (value === 'none') {
+        return filtered; // Just remove the old ones, don't add a new one
+      }
+
+      const newEnchantment = parseEnchantment(value);
+      if (!newEnchantment) return filtered;
+
       // Add the new one
       return [...filtered, newEnchantment];
     });
@@ -74,7 +80,7 @@ export function ItemCard({ item }: { item: Item }) {
     setQuantity(prev => Math.max(1, prev + amount));
   };
 
-  const isEnchantable = applicableEnchantments.length > 0;
+  const isEnchantable = applicableEnchantments.length > 0 && item.id !== 'maxed-netherite-kit';
 
   return (
     <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 border-border hover:border-primary/50 bg-card group">
@@ -96,6 +102,10 @@ export function ItemCard({ item }: { item: Item }) {
                 <div key={index}>
                     <Label className="font-bold mb-2 block">Choose one:</Label>
                     <RadioGroup onValueChange={(value) => handleExclusiveEnchantmentChange(group, value)}>
+                        <div className="flex items-center space-x-2">
+                           <RadioGroupItem value="none" id={`${item.id}-${index}-none`} />
+                           <Label htmlFor={`${item.id}-${index}-none`}>None</Label>
+                        </div>
                         {group.map(name => {
                             const enchantmentString = applicableEnchantments.find(e => e.startsWith(name)) || name;
                             return (
