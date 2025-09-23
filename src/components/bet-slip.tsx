@@ -8,18 +8,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Ticket, Trash2, Send } from 'lucide-react';
-import { useFormStatus } from 'react-dom';
 import { placeBetAction, type FormState } from '@/app/actions';
-import { useEffect, useRef, useMemo, useActionState } from 'react';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+function SubmitButton({ isPending }: { isPending: boolean }) {
   return (
-    <Button type="submit" className="w-full font-bold text-lg py-6" disabled={pending}>
+    <Button type="submit" className="w-full font-bold text-lg py-6" disabled={isPending}>
       <Send className="mr-2 h-5 w-5" />
-      {pending ? 'Submitting Bet...' : 'Submit Bet for Confirmation'}
+      {isPending ? 'Submitting Bet...' : 'Submit Bet for Confirmation'}
     </Button>
   );
 }
@@ -29,8 +27,8 @@ export function BetSlip() {
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
   
-  const initialState: FormState = { message: '', success: false };
-  const [state, formAction] = useActionState(placeBetAction, initialState);
+  const [state, setState] = useState<FormState>({ message: '', success: false });
+  const [isPending, setIsPending] = useState(false);
   
   const betDetailsString = useMemo(() => {
     return bets.map(bet => {
@@ -40,6 +38,13 @@ export function BetSlip() {
       return `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)} (Potential Payout: $${bet.payout.toFixed(2)})`;
     }).join('\n');
   }, [bets]);
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsPending(true);
+    const result = await placeBetAction(formData);
+    setState(result);
+    setIsPending(false);
+  };
 
   useEffect(() => {
     if (state.message) {
@@ -51,6 +56,8 @@ export function BetSlip() {
       if (state.success) {
         formRef.current?.reset();
         clearBets();
+        // Reset state after processing
+        setState({ message: '', success: false });
       }
     }
   }, [state, toast, clearBets]);
@@ -104,7 +111,7 @@ export function BetSlip() {
               </div>
             <Separator />
 
-            <form action={formAction} ref={formRef} className="w-full space-y-4">
+            <form action={handleSubmit} ref={formRef} className="w-full space-y-4">
               <input type="hidden" name="betDetails" value={betDetailsString} />
               <input type="hidden" name="totalBetAmount" value={totalWager.toFixed(2)} />
 
@@ -128,7 +135,7 @@ export function BetSlip() {
                   </div>
               </div>
 
-              <SubmitButton />
+              <SubmitButton isPending={isPending} />
             </form>
           </CardFooter>
         )}

@@ -16,7 +16,6 @@ export type FormState = {
 };
 
 export async function placeBetAction(
-  prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
   const rawFormData = {
