@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { Ticket, Trash2, Upload } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
 import { placeBetAction, type FormState } from '@/app/actions';
-import { useEffect, useRef, useState, useActionState, ChangeEvent } from 'react';
+import { useEffect, useRef, useState, useActionState, ChangeEvent, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 
@@ -30,6 +30,17 @@ export function BetSlip() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const [paymentProofName, setPaymentProofName] = useState<string>('');
+  const [betId, setBetId] = useState('');
+
+  // Generate a unique bet ID whenever the bets change
+  useEffect(() => {
+    if (bets.length > 0) {
+      const newBetId = `BET-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
+      setBetId(newBetId);
+    } else {
+      setBetId('');
+    }
+  }, [bets]);
 
   const initialState: FormState = { message: '', success: false };
   const [state, formAction] = useActionState(placeBetAction, initialState);
@@ -57,9 +68,13 @@ export function BetSlip() {
     setPaymentProofName(file ? file.name : '');
   };
   
-  const betDetailsString = bets.map(bet => 
-    `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)} (Potential Payout: $${bet.payout.toFixed(2)})`
-  ).join('\n');
+  const betDetailsString = useMemo(() => {
+    const details = bets.map(bet => 
+      `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)} (Potential Payout: $${bet.payout.toFixed(2)})`
+    ).join('\n');
+    return betId ? `${details}\n\nBet ID: ${betId}` : details;
+  }, [bets, betId]);
+
 
   return (
       <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card h-full flex flex-col">
@@ -123,9 +138,10 @@ export function BetSlip() {
               <div className="space-y-2">
                   <Label>Payment Instructions</Label>
                   <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
-                    <p>Please pay the total wager in-game and upload a screenshot of the payment confirmation.</p>
+                    <p className="font-bold text-foreground mb-2">1. Your unique Bet ID is: <span className="text-primary">{betId}</span></p>
+                    <p>2. Pay in-game and include the Bet ID in the payment message. Take a screenshot showing the confirmation and the Bet ID.</p>
                     <code className="block bg-background/50 p-2 rounded-md mt-2 text-center text-foreground break-all">
-                      /pay lolerdabest69 {totalWager.toFixed(2)}
+                      /pay lolerdabest69 {totalWager.toFixed(2)} Bet ID: {betId}
                     </code>
                   </div>
               </div>
