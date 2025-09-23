@@ -7,8 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Textarea } from '@/components/ui/textarea';
-import { Ticket, Trash2 } from 'lucide-react';
+import { Ticket, Trash2, Upload } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
 import { placeBetAction, type FormState } from '@/app/actions';
 import { useEffect, useRef, useState, useActionState, ChangeEvent } from 'react';
@@ -19,7 +18,8 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" className="w-full font-bold text-lg py-6" disabled={pending}>
-      {pending ? 'Placing Bets...' : 'Place Bets & Upload Proof'}
+      <Upload className="mr-2 h-5 w-5" />
+      {pending ? 'Placing Bet...' : 'Place Bet & Upload Proof'}
     </Button>
   );
 }
@@ -27,8 +27,8 @@ function SubmitButton() {
 export function BetSlip() {
   const { bets, removeBet, clearBets, totalWager } = useBet();
   const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const [paymentProof, setPaymentProof] = useState<File | null>(null);
   const [paymentProofName, setPaymentProofName] = useState<string>('');
 
   const initialState: FormState = { message: '', success: false };
@@ -43,8 +43,10 @@ export function BetSlip() {
       });
       if (state.success) {
         formRef.current?.reset();
+        if(fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
         clearBets();
-        setPaymentProof(null);
         setPaymentProofName('');
       }
     }
@@ -52,28 +54,25 @@ export function BetSlip() {
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setPaymentProof(file);
-      setPaymentProofName(file.name);
-    }
+    setPaymentProofName(file ? file.name : '');
   };
   
   const betDetailsString = bets.map(bet => 
-    `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)} (x${bet.multiplier.toFixed(2)})`
+    `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)} (Potential Payout: $${bet.payout.toFixed(2)})`
   ).join('\n');
 
   return (
-      <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card h-full">
+      <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card h-full flex flex-col">
         <CardHeader className="sticky top-0 bg-card z-10">
           <CardTitle className="text-2xl font-bold flex items-center gap-3 animate-text-glow">
             <Ticket />
             Bet Slip
           </CardTitle>
         </CardHeader>
-        <ScrollArea className="h-[calc(100vh-22rem)]">
+        <ScrollArea className="flex-grow">
           <CardContent>
             {bets.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">Your bet slip is empty. <br/> Place a bet to get started!</p>
+              <p className="text-muted-foreground text-center py-8">Your bet slip is empty. <br/> Place a bet in a game to get started!</p>
             ) : (
               <div className="space-y-4">
                 {bets.map((bet) => (
@@ -85,7 +84,7 @@ export function BetSlip() {
                       <p className="text-xs">Multiplier: <span className="font-semibold">{bet.multiplier.toFixed(2)}x</span></p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="font-semibold text-primary">Payout: ${bet.payout.toFixed(2)}</p>
+                      <p className="font-semibold text-primary">Potential: ${bet.payout.toFixed(2)}</p>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeBet(bet.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -98,7 +97,7 @@ export function BetSlip() {
         </ScrollArea>
 
         {bets.length > 0 && (
-          <CardFooter className="flex-col !items-start gap-4 pt-4 border-t">
+          <CardFooter className="flex-col !items-start gap-4 pt-4 border-t mt-auto">
               <div className="w-full space-y-2">
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total Wager</span>
@@ -124,7 +123,7 @@ export function BetSlip() {
               <div className="space-y-2">
                   <Label>Payment Instructions</Label>
                   <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
-                    <p>Please pay the total wager in-game using the command below and upload a screenshot of the payment confirmation.</p>
+                    <p>Please pay the total wager in-game and upload a screenshot of the payment confirmation.</p>
                     <code className="block bg-background/50 p-2 rounded-md mt-2 text-center text-foreground break-all">
                       /pay lolerdabest69 {totalWager.toFixed(2)}
                     </code>
@@ -132,7 +131,7 @@ export function BetSlip() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="paymentProof">Payment Proof</Label>
+                <Label htmlFor="paymentProof">Payment Proof Screenshot</Label>
                 <Input 
                   id="paymentProof" 
                   name="paymentProof" 
@@ -141,10 +140,11 @@ export function BetSlip() {
                   onChange={handleFileChange}
                   accept="image/*"
                   required
+                  ref={fileInputRef}
                 />
-                <Button asChild variant="outline">
-                  <label htmlFor="paymentProof" className="cursor-pointer w-full">
-                    {paymentProofName ? 'Change Proof' : 'Upload Screenshot'}
+                <Button asChild variant="outline" className="w-full">
+                  <label htmlFor="paymentProof" className="cursor-pointer">
+                    {paymentProofName ? 'Change Screenshot' : 'Select Screenshot'}
                   </label>
                 </Button>
                 {paymentProofName && <p className="text-xs text-muted-foreground truncate">Selected: {paymentProofName}</p>}

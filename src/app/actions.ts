@@ -8,7 +8,7 @@ const betSchema = z.object({
   discordTag: z.string().min(2, { message: "Please enter your Discord username." }),
   betDetails: z.string().min(1, { message: "Bet details are missing." }),
   totalBetAmount: z.string(),
-  paymentProof: z.instanceof(File).refine(file => file.size > 0, "Payment proof is required."),
+  paymentProof: z.instanceof(File).refine(file => file.size > 0, "Payment proof is required.").refine(file => file.type.startsWith('image/'), "File must be an image."),
 });
 
 export type FormState = {
@@ -32,7 +32,7 @@ export async function placeBetAction(
 
   if (!validatedFields.success) {
     return {
-      message: validatedFields.error.errors.map((e) => e.message).join(', '),
+      message: validatedFields.error.flatten().fieldErrors.paymentProof?.[0] || validatedFields.error.errors.map((e) => e.message).join(', '),
       success: false,
     };
   }
