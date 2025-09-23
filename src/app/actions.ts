@@ -8,7 +8,6 @@ const betSchema = z.object({
   discordTag: z.string().min(2, { message: "Please enter your Discord username." }),
   betDetails: z.string().min(1, { message: "Bet details are missing." }),
   totalBetAmount: z.string(),
-  paymentProof: z.instanceof(File).refine(file => file.size > 0, "Payment proof is required.").refine(file => file.type.startsWith('image/'), "File must be an image."),
 });
 
 export type FormState = {
@@ -25,19 +24,18 @@ export async function placeBetAction(
     discordTag: formData.get('discordTag'),
     betDetails: formData.get('betDetails'),
     totalBetAmount: formData.get('totalBetAmount'),
-    paymentProof: formData.get('paymentProof'),
   };
   
   const validatedFields = betSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
     return {
-      message: validatedFields.error.flatten().fieldErrors.paymentProof?.[0] || validatedFields.error.errors.map((e) => e.message).join(', '),
+      message: validatedFields.error.errors.map((e) => e.message).join(', '),
       success: false,
     };
   }
 
-  const { minecraftUsername, discordTag, betDetails, totalBetAmount, paymentProof } = validatedFields.data;
+  const { minecraftUsername, discordTag, betDetails, totalBetAmount } = validatedFields.data;
   
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
@@ -53,6 +51,7 @@ export async function placeBetAction(
       embeds: [
         {
           title: "New Bet Placed!",
+          description: "Awaiting in-game payment confirmation.",
           color: 16763904, // Gold color
           timestamp: new Date().toISOString(),
           fields: [
@@ -61,20 +60,14 @@ export async function placeBetAction(
             { name: "Total Bet Amount", value: `$${totalBetAmount}`, inline: true },
             { name: "Bet Details", value: betDetails },
           ],
-          image: {
-            url: `attachment://${paymentProof.name}`
-          }
         }
       ]
     };
 
-    const webhookFormData = new FormData();
-    webhookFormData.append('payload_json', JSON.stringify(discordPayload));
-    webhookFormData.append('file', paymentProof, paymentProof.name);
-
     const response = await fetch(webhookUrl, {
       method: 'POST',
-      body: webhookFormData,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(discordPayload),
     });
 
     if (!response.ok) {
@@ -83,7 +76,7 @@ export async function placeBetAction(
       throw new Error(`Failed to send bet to Discord. Status: ${response.status}`);
     }
 
-    return { message: `Bet placed successfully! We'll confirm your payment and notify you on Discord. Good luck!`, success: true };
+    return { message: `Bet placed! Please pay in-game now. We'll notify you on Discord about the results.`, success: true };
   } catch (error) {
     console.error('Bet placement failed:', error);
     return { message: 'Something went wrong. Please try again.', success: false };

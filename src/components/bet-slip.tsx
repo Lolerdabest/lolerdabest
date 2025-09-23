@@ -7,10 +7,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Ticket, Trash2, Upload } from 'lucide-react';
+import { Ticket, Trash2, Send } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
 import { placeBetAction, type FormState } from '@/app/actions';
-import { useEffect, useRef, useState, useActionState, ChangeEvent, useMemo } from 'react';
+import { useEffect, useRef, useState, useActionState, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 
@@ -18,8 +18,8 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" className="w-full font-bold text-lg py-6" disabled={pending}>
-      <Upload className="mr-2 h-5 w-5" />
-      {pending ? 'Placing Bet...' : 'Place Bet & Upload Proof'}
+      <Send className="mr-2 h-5 w-5" />
+      {pending ? 'Placing Bet...' : 'Place Bet'}
     </Button>
   );
 }
@@ -27,9 +27,7 @@ function SubmitButton() {
 export function BetSlip() {
   const { bets, removeBet, clearBets, totalWager } = useBet();
   const formRef = useRef<HTMLFormElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const [paymentProofName, setPaymentProofName] = useState<string>('');
   const [betId, setBetId] = useState('');
 
   // Generate a unique bet ID whenever the bets change
@@ -54,20 +52,11 @@ export function BetSlip() {
       });
       if (state.success) {
         formRef.current?.reset();
-        if(fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
         clearBets();
-        setPaymentProofName('');
       }
     }
   }, [state, toast, clearBets]);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    setPaymentProofName(file ? file.name : '');
-  };
-  
   const betDetailsString = useMemo(() => {
     const details = bets.map(bet => 
       `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)} (Potential Payout: $${bet.payout.toFixed(2)})`
@@ -121,7 +110,7 @@ export function BetSlip() {
               </div>
             <Separator />
 
-            <form action={formAction} ref={formRef} className="w-full space-y-4" encType="multipart/form-data">
+            <form action={formAction} ref={formRef} className="w-full space-y-4">
               <input type="hidden" name="betDetails" value={betDetailsString} />
               <input type="hidden" name="totalBetAmount" value={totalWager.toFixed(2)} />
 
@@ -138,32 +127,11 @@ export function BetSlip() {
               <div className="space-y-2">
                   <Label>Payment Instructions</Label>
                   <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
-                    <p className="font-bold text-foreground mb-2">1. Your unique Bet ID is: <span className="text-primary">{betId}</span></p>
-                    <p>2. Pay in-game and include the Bet ID in the payment message. Take a screenshot showing the confirmation and the Bet ID.</p>
+                    <p>After placing your bet, pay the total wager amount in-game. We will confirm your payment and send winnings.</p>
                     <code className="block bg-background/50 p-2 rounded-md mt-2 text-center text-foreground break-all">
-                      /pay lolerdabest69 {totalWager.toFixed(2)} Bet ID: {betId}
+                      /pay lolerdabest69 {totalWager.toFixed(2)}
                     </code>
                   </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="paymentProof">Payment Proof Screenshot</Label>
-                <Input 
-                  id="paymentProof" 
-                  name="paymentProof" 
-                  type="file" 
-                  className="hidden" 
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  required
-                  ref={fileInputRef}
-                />
-                <Button asChild variant="outline" className="w-full">
-                  <label htmlFor="paymentProof" className="cursor-pointer">
-                    {paymentProofName ? 'Change Screenshot' : 'Select Screenshot'}
-                  </label>
-                </Button>
-                {paymentProofName && <p className="text-xs text-muted-foreground truncate">Selected: {paymentProofName}</p>}
               </div>
 
               <SubmitButton />
