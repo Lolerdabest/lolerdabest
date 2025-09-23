@@ -1,52 +1,27 @@
 
 'use client';
-
-import { useState } from 'react';
-import { SearchHeader } from '@/components/search-header';
-import { ItemList } from '@/components/item-list';
-import { OrderSummary } from '@/components/order-summary';
-import Recommendations from '@/components/recommendations';
-import { CartProvider } from '@/context/cart-provider';
-import { items } from '@/lib/items';
-import type { Item } from '@/lib/types';
-import GoToCheckoutButton from '@/components/go-to-checkout-button';
+import { Header } from '@/components/header';
+import { BetSlip } from '@/components/bet-slip';
+import { BetProvider } from '@/context/bet-provider';
+import DiceGame from '@/components/dice-game';
 
 export default function Home() {
-  const [filteredItems, setFilteredItems] = useState<Item[]>(items);
-
-  const handleSearch = (searchTerm: string) => {
-    if (!searchTerm) {
-      setFilteredItems(items);
-      return;
-    }
-    const lowercasedTerm = searchTerm.toLowerCase();
-    const results = items.filter(item =>
-      item.name.toLowerCase().includes(lowercasedTerm)
-    );
-    setFilteredItems(results);
-  };
-
   return (
-    <CartProvider>
-      <SearchHeader onSearch={handleSearch} />
+    <BetProvider>
+      <Header />
       <div className="flex flex-col min-h-screen">
-        <main className="flex-1 container mx-auto p-4 md:p-6 pt-24">
-          <div className="grid lg:grid-cols-[1fr_380px] gap-8 items-start">
-            <div className="space-y-12">
-              <section>
-                <ItemList items={filteredItems} />
-              </section>
-              <section>
-                <Recommendations />
-              </section>
+        <main className="flex-1 container mx-auto p-4 md:p-6 pt-12">
+          <div className="grid lg:grid-cols-[1fr_420px] gap-8 items-start">
+            <div className="space-y-8">
+              <DiceGame />
+              {/* Other games can be added here in the future */}
             </div>
-            <div id="order-summary-container" className="lg:sticky lg:top-24 h-[calc(100vh-7rem)]">
-              <OrderSummary />
+            <div className="lg:sticky lg:top-24 space-y-8">
+              <BetSlip />
             </div>
           </div>
         </main>
       </div>
-      <GoToCheckoutButton />
-    </CartProvider>
+    </BetProvider>
   );
 }

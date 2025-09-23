@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
-import { Gem } from "lucide-react";
+import { Dice5 } from "lucide-react";
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <Gem className={cn("w-12 h-12 text-primary", className)} />
+    <Dice5 className={cn("w-12 h-12 text-primary", className)} />
   );
 }
