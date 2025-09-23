@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Ticket, Trash2, Send } from 'lucide-react';
 import { placeBetAction, type FormState } from '@/app/actions';
-import { useEffect, useRef, useMemo, useState } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 import { useFormState, useFormStatus } from 'react-dom';
