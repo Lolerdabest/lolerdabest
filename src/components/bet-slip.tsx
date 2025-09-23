@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { Ticket, Trash2, Send } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
 import { placeBetAction, type FormState } from '@/app/actions';
-import { useEffect, useRef, useState, useActionState, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 
@@ -32,6 +32,15 @@ export function BetSlip() {
   const initialState: FormState = { message: '', success: false };
   const [state, formAction] = useActionState(placeBetAction, initialState);
   
+  const betDetailsString = useMemo(() => {
+    return bets.map(bet => {
+      if (bet.game === 'Mines') {
+        return `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)}`;
+      }
+      return `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)} (Potential Payout: $${bet.payout.toFixed(2)})`;
+    }).join('\n');
+  }, [bets]);
+
   useEffect(() => {
     if (state.message) {
       toast({
@@ -45,12 +54,6 @@ export function BetSlip() {
       }
     }
   }, [state, toast, clearBets]);
-
-  const betDetailsString = useMemo(() => {
-    return bets.map(bet => 
-      `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)} (Potential Payout: $${bet.payout.toFixed(2)})`
-    ).join('\n');
-  }, [bets]);
 
 
   return (
@@ -73,10 +76,13 @@ export function BetSlip() {
                       <p className="font-semibold leading-tight">{bet.game}</p>
                       <p className="text-sm text-muted-foreground">{bet.details}</p>
                       <p className="text-sm">Wager: <span className="font-bold text-primary">${bet.wager.toFixed(2)}</span></p>
-                      <p className="text-xs">Multiplier: <span className="font-semibold">{bet.multiplier.toFixed(2)}x</span></p>
+                      {bet.game !== 'Mines' && <p className="text-xs">Multiplier: <span className="font-semibold">{bet.multiplier.toFixed(2)}x</span></p>}
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="font-semibold text-primary">Potential: ${bet.payout.toFixed(2)}</p>
+                      {bet.game !== 'Mines' ? 
+                        <p className="font-semibold text-primary">Potential: ${bet.payout.toFixed(2)}</p>
+                        : <p className="font-semibold text-primary">Payout Varies</p>
+                      }
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeBet(bet.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -115,7 +121,7 @@ export function BetSlip() {
               <div className="space-y-2">
                   <Label>Payment Instructions</Label>
                   <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
-                    <p>After submitting, pay the total wager in-game. The house will confirm your payment and roll the dice for you.</p>
+                    <p>After submitting, pay the total wager in-game. The house will confirm your payment and roll for you.</p>
                     <code className="block bg-background/50 p-2 rounded-md mt-2 text-center text-foreground break-all">
                       /pay lolerdabest69 {totalWager.toFixed(2)}
                     </code>
