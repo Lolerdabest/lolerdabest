@@ -50,8 +50,8 @@ export async function placeBetAction(
       avatar_url: "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png",
       embeds: [
         {
-          title: "New Bet Placed!",
-          description: "Awaiting in-game payment confirmation.",
+          title: "New Bet Submitted!",
+          description: "Awaiting payment and confirmation from the house.",
           color: 16763904, // Gold color
           timestamp: new Date().toISOString(),
           fields: [
@@ -76,9 +76,9 @@ export async function placeBetAction(
       throw new Error(`Failed to send bet to Discord. Status: ${response.status}`);
     }
 
-    return { message: `Bet placed! Please pay in-game now. We'll notify you on Discord about the results.`, success: true };
+    return { message: `Bet submitted! Please pay in-game now. The house will confirm and roll for you.`, success: true };
   } catch (error) {
-    console.error('Bet placement failed:', error);
+    console.error('Bet submission failed:', error);
     return { message: 'Something went wrong. Please try again.', success: false };
   }
 }

@@ -19,7 +19,7 @@ function SubmitButton() {
   return (
     <Button type="submit" className="w-full font-bold text-lg py-6" disabled={pending}>
       <Send className="mr-2 h-5 w-5" />
-      {pending ? 'Placing Bet...' : 'Place Bet'}
+      {pending ? 'Submitting Bet...' : 'Submit Bet for Confirmation'}
     </Button>
   );
 }
@@ -28,18 +28,7 @@ export function BetSlip() {
   const { bets, removeBet, clearBets, totalWager } = useBet();
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
-  const [betId, setBetId] = useState('');
-
-  // Generate a unique bet ID whenever the bets change
-  useEffect(() => {
-    if (bets.length > 0) {
-      const newBetId = `BET-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
-      setBetId(newBetId);
-    } else {
-      setBetId('');
-    }
-  }, [bets]);
-
+  
   const initialState: FormState = { message: '', success: false };
   const [state, formAction] = useActionState(placeBetAction, initialState);
   
@@ -58,11 +47,10 @@ export function BetSlip() {
   }, [state, toast, clearBets]);
 
   const betDetailsString = useMemo(() => {
-    const details = bets.map(bet => 
+    return bets.map(bet => 
       `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)} (Potential Payout: $${bet.payout.toFixed(2)})`
     ).join('\n');
-    return betId ? `${details}\n\nBet ID: ${betId}` : details;
-  }, [bets, betId]);
+  }, [bets]);
 
 
   return (
@@ -76,7 +64,7 @@ export function BetSlip() {
         <ScrollArea className="flex-grow">
           <CardContent>
             {bets.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">Your bet slip is empty. <br/> Place a bet in a game to get started!</p>
+              <p className="text-muted-foreground text-center py-8">Your bet slip is empty. <br/> Add a bet from a game to get started!</p>
             ) : (
               <div className="space-y-4">
                 {bets.map((bet) => (
@@ -127,7 +115,7 @@ export function BetSlip() {
               <div className="space-y-2">
                   <Label>Payment Instructions</Label>
                   <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
-                    <p>After placing your bet, pay the total wager amount in-game. We will confirm your payment and send winnings.</p>
+                    <p>After submitting, pay the total wager in-game. The house will confirm your payment and roll the dice for you.</p>
                     <code className="block bg-background/50 p-2 rounded-md mt-2 text-center text-foreground break-all">
                       /pay lolerdabest69 {totalWager.toFixed(2)}
                     </code>
