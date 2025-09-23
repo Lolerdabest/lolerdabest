@@ -5,6 +5,7 @@ import { BetSlip } from '@/components/bet-slip';
 import { BetProvider } from '@/context/bet-provider';
 import CoinflipGame from '@/components/coinflip-game';
 import MinesGame from '@/components/mines-game';
+import { useFormState } from 'react-dom';
 
 export default function Home() {
   return (
