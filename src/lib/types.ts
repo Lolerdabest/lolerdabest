@@ -1,9 +1,18 @@
 
+
+export type BetStatus = 'pending' | 'active' | 'completed';
+
 export interface Bet {
-  id: string; // e.g., 'dice-roll-1'
-  game: string; // e.g., 'Dice Roll'
-  details: string; // e.g., 'Roll Over 50.5'
+  id: string; 
+  game: string; 
+  details: string; 
   wager: number;
   multiplier: number;
   payout: number;
+  // New fields for state management
+  minecraftUsername: string;
+  discordTag: string;
+  status: BetStatus;
+  createdAt: string; // ISO 8601 date string
+  result?: 'win' | 'loss';
 }

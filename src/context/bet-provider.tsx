@@ -4,9 +4,21 @@
 import type { Bet } from '@/lib/types';
 import React, { createContext, useContext, useState, useMemo, useCallback } from 'react';
 
+// This interface is for the individual game bets before they are submitted.
+// The main Bet type in types.ts is for the confirmed bet record.
+export interface TempBet {
+  id: string; 
+  game: string; 
+  details: string; 
+  wager: number;
+  multiplier: number;
+  payout: number;
+}
+
+
 interface BetContextType {
-  bets: Bet[];
-  addBet: (bet: Omit<Bet, 'id'> & { id?: string }) => void;
+  bets: TempBet[];
+  addBet: (bet: Omit<TempBet, 'id'>) => void;
   removeBet: (betId: string) => void;
   clearBets: () => void;
   totalWager: number;
@@ -15,12 +27,12 @@ interface BetContextType {
 const BetContext = createContext<BetContextType | undefined>(undefined);
 
 export const BetProvider = ({ children }: { children: React.ReactNode }) => {
-  const [bets, setBets] = useState<Bet[]>([]);
+  const [bets, setBets] = useState<TempBet[]>([]);
 
-  const addBet = useCallback((bet: Omit<Bet, 'id'> & { id?: string }) => {
-    const newBet: Bet = {
+  const addBet = useCallback((bet: Omit<TempBet, 'id'>) => {
+    const newBet: TempBet = {
       ...bet,
-      id: bet.id || `${bet.game.replace(/\s/g, '-')}-${Date.now()}`,
+      id: `${bet.game.replace(/\s/g, '-')}-${Date.now()}`,
     };
     setBets((prevBets) => [...prevBets, newBet]);
   }, []);
