@@ -45,6 +45,9 @@ export function BetSlip() {
     }).join('\n');
   }, [bets]);
 
+  // Get the game type from the first bet, since we're not allowing mixed bets
+  const gameType = useMemo(() => bets.length > 0 ? bets[0].game : '', [bets]);
+
   useEffect(() => {
     if (state.message) {
       toast({
@@ -111,6 +114,7 @@ export function BetSlip() {
             <form action={formAction} ref={formRef} className="w-full space-y-4">
               <input type="hidden" name="betDetails" value={betDetailsString} />
               <input type="hidden" name="totalBetAmount" value={totalWager.toFixed(2)} />
+              <input type="hidden" name="gameType" value={gameType} />
 
               <div className="space-y-2">
                 <Label htmlFor="minecraftUsername">Minecraft Username</Label>

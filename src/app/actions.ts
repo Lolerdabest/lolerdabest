@@ -12,6 +12,7 @@ const betSchema = z.object({
   discordTag: z.string().min(2, { message: "Please enter your Discord username." }),
   betDetails: z.string().min(1, { message: "Bet details are missing." }),
   totalBetAmount: z.string(),
+  gameType: z.string(), // Added gameType to the schema
 });
 
 export type FormState = {
@@ -30,6 +31,7 @@ async function readBets(): Promise<Bet[]> {
   } catch (error) {
     // If the file doesn't exist, return an empty array
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+      await writeBets([]); // Create the file if it doesn't exist
       return [];
     }
     console.error('Failed to read bets.json:', error);
@@ -52,6 +54,7 @@ export async function placeBetAction(
     discordTag: formData.get('discordTag'),
     betDetails: formData.get('betDetails'),
     totalBetAmount: formData.get('totalBetAmount'),
+    gameType: formData.get('gameType'),
   };
   
   const validatedFields = betSchema.safeParse(rawFormData);
@@ -63,13 +66,11 @@ export async function placeBetAction(
     };
   }
 
-  const { minecraftUsername, discordTag, betDetails, totalBetAmount } = validatedFields.data;
+  const { minecraftUsername, discordTag, betDetails, totalBetAmount, gameType } = validatedFields.data;
   
-  const gameType = betDetails.startsWith('[Coinflip]') ? 'Coinflip' : betDetails.startsWith('[Mines]') ? 'Mines' : 'Combined';
-
   const newBet: Bet = {
     id: `bet-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-    game: gameType,
+    game: gameType, // Use the straightforward game type
     details: betDetails,
     wager: parseFloat(totalBetAmount),
     minecraftUsername,
