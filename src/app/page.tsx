@@ -17,15 +17,24 @@ import { PlayableMines } from '@/components/playable-mines';
 const dbPath = path.join(process.cwd(), 'src', 'lib', 'bets.json');
 
 async function getActiveBetForPlayer(username: string): Promise<Bet | undefined> {
+  if (!username) return undefined;
   try {
     const data = await fs.readFile(dbPath, 'utf-8');
-    const bets: Bet[] = JSON.parse(data).bets || [];
+    const betsData = JSON.parse(data);
+    const bets: Bet[] = betsData.bets || [];
     // Find the first active bet for the player, case-insensitive and trimming whitespace
     return bets.find(bet => 
         bet.minecraftUsername.trim().toLowerCase() === username.trim().toLowerCase() && 
         bet.status === 'active'
     );
   } catch (error) {
+    // If the file doesn't exist or is empty, it's not an error, just no bets.
+    if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return undefined;
+    }
+    if (error instanceof SyntaxError) { // Catches empty or invalid JSON
+        return undefined;
+    }
     console.error('Failed to read bets.json:', error);
     return undefined;
   }
@@ -36,14 +45,21 @@ export default async function Home({ searchParams }: { searchParams: { username?
   const activeBet = await getActiveBetForPlayer(username);
 
   if (activeBet) {
+    const gameType = activeBet.game;
     return (
        <div className="flex flex-col min-h-screen">
         <Header />
         <main className="flex-1 container mx-auto p-4 md:p-6 pt-12">
             <h2 className="text-2xl font-bold text-center text-primary mb-4">Welcome, {activeBet.minecraftUsername}!</h2>
             <p className="text-center text-muted-foreground mb-8">Your bet has been confirmed. It's time to play!</p>
-            {activeBet.game === 'Coinflip' && <PlayableCoinflip bet={activeBet} />}
-            {activeBet.game === 'Mines' && <PlayableMines bet={activeBet} />}
+            {gameType === 'Coinflip' && <PlayableCoinflip bet={activeBet} />}
+            {gameType === 'Mines' && <PlayableMines bet={activeBet} />}
+            {gameType === 'Combined' && (
+              <div className="text-center text-lg text-destructive">
+                <p>Error: Combined bets cannot be played directly.</p>
+                <p>Please contact support.</p>
+              </div>
+            )}
         </main>
       </div>
     );
@@ -51,8 +67,8 @@ export default async function Home({ searchParams }: { searchParams: { username?
 
   return (
     <BetProvider>
-      <Header />
       <div className="flex flex-col min-h-screen">
+      <Header />
         <main className="flex-1 container mx-auto p-4 md:p-6 pt-12">
            <Card className="max-w-md mx-auto mb-8 border-primary/30">
             <CardHeader>
