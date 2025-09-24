@@ -1,4 +1,16 @@
-
 {
-  "bets": []
+  "bets": [
+    {
+      "id": "bet-1758681606630-g3xyc",
+      "game": "Combined",
+      "details": "[Mines] Grid with 24 mines - Wager: $5000.00",
+      "wager": 5000,
+      "minecraftUsername": "Lolerdabest69 ",
+      "discordTag": "Mittu",
+      "status": "active",
+      "createdAt": "2025-09-24T02:40:06.630Z",
+      "multiplier": 0,
+      "payout": 0
+    }
+  ]
 }

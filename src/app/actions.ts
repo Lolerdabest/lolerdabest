@@ -19,7 +19,7 @@ export type FormState = {
   success: boolean;
 };
 
-// --- New Database Functions ---
+// --- Database Functions ---
 const dbPath = path.join(process.cwd(), 'src', 'lib', 'bets.json');
 
 async function readBets(): Promise<Bet[]> {
@@ -65,23 +65,24 @@ export async function placeBetAction(
 
   const { minecraftUsername, discordTag, betDetails, totalBetAmount } = validatedFields.data;
   
-  // Create a new Bet object and save it to our "database"
+  const gameType = betDetails.startsWith('[Coinflip]') ? 'Coinflip' : betDetails.startsWith('[Mines]') ? 'Mines' : 'Combined';
+
   const newBet: Bet = {
     id: `bet-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-    game: 'Combined', // We can refine this later
+    game: gameType,
     details: betDetails,
     wager: parseFloat(totalBetAmount),
     minecraftUsername,
     discordTag,
     status: 'pending',
     createdAt: new Date().toISOString(),
-    multiplier: 0, // Not relevant for combined bet slip
-    payout: 0, // Not relevant for combined bet slip
+    multiplier: 0, 
+    payout: 0, 
   };
 
   try {
     const allBets = await readBets();
-    allBets.unshift(newBet); // Add new bet to the beginning of the list
+    allBets.unshift(newBet);
     await writeBets(allBets);
   } catch (error) {
      console.error('Failed to save bet:', error);
@@ -90,50 +91,48 @@ export async function placeBetAction(
 
 
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-  if (!webhookUrl) {
-    console.error('Discord webhook URL is not configured.');
-    return { message: 'Server configuration error: Webhook not set up.', success: false };
-  }
+  if (webhookUrl) {
+    try {
+      const discordPayload = {
+        username: "Loler's Gambling House",
+        avatar_url: "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png",
+        embeds: [
+          {
+            title: "New Bet Submitted (Pending Payment)!",
+            description: `Waiting for payment confirmation from the house. Bet ID: ${newBet.id}`,
+            color: 16763904, // Gold color
+            timestamp: new Date().toISOString(),
+            fields: [
+              { name: "Minecraft Username", value: minecraftUsername, inline: true },
+              { name: "Discord Tag", value: discordTag, inline: true },
+              { name: "Total Bet Amount", value: `$${totalBetAmount}`, inline: true },
+              { name: "Bet Details", value: betDetails },
+            ],
+          }
+        ]
+      };
 
-  try {
-    const discordPayload = {
-      username: "Loler's Gambling House",
-      avatar_url: "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png",
-      embeds: [
-        {
-          title: "New Bet Submitted (Pending Payment)!",
-          description: `Waiting for payment confirmation from the house. Bet ID: ${newBet.id}`,
-          color: 16763904, // Gold color
-          timestamp: new Date().toISOString(),
-          fields: [
-            { name: "Minecraft Username", value: minecraftUsername, inline: true },
-            { name: "Discord Tag", value: discordTag, inline: true },
-            { name: "Total Bet Amount", value: `$${totalBetAmount}`, inline: true },
-            { name: "Bet Details", value: betDetails },
-          ],
-        }
-      ]
-    };
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(discordPayload),
+      });
 
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(discordPayload),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to send bet to Discord. Status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`Failed to send bet to Discord. Status: ${response.status}`);
+      }
+    } catch (error) {
+       console.error('Bet submission to Discord failed:', error);
+       // Non-fatal, so we don't return an error to the user
     }
-    
-    revalidatePath('/admin'); // Important: This tells Next.js to refresh the admin page data
-    return { message: `Bet submitted! Please pay in-game now. The house will confirm and grant you access to play.`, success: true };
-  } catch (error) {
-    console.error('Bet submission failed:', error);
-    return { message: 'Something went wrong. Please try again.', success: false };
+  } else {
+     console.warn('Discord webhook URL is not configured.');
   }
+    
+  revalidatePath('/admin');
+  return { message: `Bet submitted! Please pay in-game now. The house will confirm and grant you access to play.`, success: true };
 }
 
-// New action for the admin to confirm a bet
 export async function confirmBetAction(betId: string): Promise<FormState> {
   try {
     const allBets = await readBets();
@@ -151,10 +150,154 @@ export async function confirmBetAction(betId: string): Promise<FormState> {
     await writeBets(allBets);
 
     revalidatePath('/admin');
-    revalidatePath('/'); // Refresh player page too
+    revalidatePath('/'); // Important: Refresh player page too
     return { message: 'Bet confirmed! The player can now play.', success: true };
   } catch (error) {
     console.error('Failed to confirm bet:', error);
     return { message: 'Failed to update bet status.', success: false };
   }
+}
+
+export async function playCoinflipAction(betId: string, choice: 'Heads' | 'Tails'): Promise<{ message: string; result: 'win' | 'loss' }> {
+    const allBets = await readBets();
+    const betIndex = allBets.findIndex(b => b.id === betId);
+
+    if (betIndex === -1 || allBets[betIndex].status !== 'active') {
+        throw new Error('Active bet not found.');
+    }
+
+    const bet = allBets[betIndex];
+    const outcome = Math.random() < 0.5 ? 'Heads' : 'Tails';
+    const result = choice === outcome ? 'win' : 'loss';
+    const payout = result === 'win' ? bet.wager * 1.95 : 0;
+
+    bet.status = 'completed';
+    bet.result = result;
+    bet.payout = payout;
+    bet.details = `${bet.details}. Result: ${outcome}. Player ${result === 'win' ? 'won' : 'lost'}.`;
+
+    await writeBets(allBets);
+    revalidatePath('/');
+    revalidatePath('/admin');
+
+    // Notify Discord
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if(webhookUrl) {
+         const discordPayload = {
+            username: "Loler's Gambling House",
+            avatar_url: "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png",
+            embeds: [
+                {
+                    title: `Coinflip Result: ${bet.minecraftUsername} ${result === 'win' ? 'Won!' : 'Lost.'}`,
+                    description: `Bet ID: ${bet.id}`,
+                    color: result === 'win' ? 65340 : 16711680, // Green for win, Red for loss
+                    timestamp: new Date().toISOString(),
+                    fields: [
+                        { name: "Player's Choice", value: choice, inline: true },
+                        { name: "Actual Outcome", value: outcome, inline: true },
+                        { name: "Wager", value: `$${bet.wager.toFixed(2)}`, inline: true },
+                        { name: "Payout", value: `$${payout.toFixed(2)}`, inline: true },
+                    ],
+                }
+            ]
+        };
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(discordPayload),
+        });
+    }
+
+    return { message: `The coin landed on ${outcome}. You ${result}!`, result };
+}
+
+export async function playMinesAction(betId: string, tileIndex: number): Promise<{ message: string; result: 'win' | 'loss' | 'continue', mineHit: boolean, newMultiplier: number }> {
+    const allBets = await readBets();
+    const betIndex = allBets.findIndex(b => b.id === betId);
+
+    if (betIndex === -1 || allBets[betIndex].status !== 'active') {
+        throw new Error('Active bet not found.');
+    }
+    
+    // This is a simplified simulation. A real implementation would need to store the mine locations.
+    const mineCountMatch = allBets[betIndex].details.match(/(\d+) mines/);
+    const mineCount = mineCountMatch ? parseInt(mineCountMatch[1], 10) : 3;
+    const isMine = Math.random() < (mineCount / 25); // Simplified probability
+
+    if (isMine) {
+        allBets[betIndex].status = 'completed';
+        allBets[betIndex].result = 'loss';
+        allBets[betIndex].payout = 0;
+        await writeBets(allBets);
+        revalidatePath('/');
+        revalidatePath('/admin');
+        return { message: 'You hit a mine! Game over.', result: 'loss', mineHit: true, newMultiplier: 0 };
+    }
+
+    // A real implementation would calculate multiplier based on mines and tiles revealed.
+    // For now, let's just increment it slightly.
+    const currentMultiplier = allBets[betIndex].multiplier || 1;
+    const newMultiplier = parseFloat((currentMultiplier * 1.1).toFixed(2));
+    allBets[betIndex].multiplier = newMultiplier;
+
+    await writeBets(allBets);
+    revalidatePath('/'); 
+
+    return {
+        message: 'Safe! Multiplier increased.',
+        result: 'continue',
+        mineHit: false,
+        newMultiplier: newMultiplier
+    };
+}
+
+
+export async function cashOutMinesAction(betId: string): Promise<{message: string; payout: number}> {
+    const allBets = await readBets();
+    const betIndex = allBets.findIndex(b => b.id === betId);
+
+    if (betIndex === -1 || allBets[betIndex].status !== 'active') {
+        throw new Error('Active bet not found.');
+    }
+
+    const bet = allBets[betIndex];
+    const payout = bet.wager * (bet.multiplier || 1);
+
+    bet.status = 'completed';
+    bet.result = 'win';
+    bet.payout = payout;
+
+    await writeBets(allBets);
+    revalidatePath('/');
+    revalidatePath('/admin');
+
+     // Notify Discord
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if(webhookUrl) {
+         const discordPayload = {
+            username: "Loler's Gambling House",
+            avatar_url: "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png",
+            embeds: [
+                {
+                    title: `Mines Payout: ${bet.minecraftUsername} Cashed Out!`,
+                    description: `Bet ID: ${bet.id}`,
+                    color: 65340, // Green
+                    timestamp: new Date().toISOString(),
+                    fields: [
+                        { name: "Wager", value: `$${bet.wager.toFixed(2)}`, inline: true },
+                        { name: "Final Multiplier", value: `${bet.multiplier}x`, inline: true },
+                        { name: "Total Payout", value: `$${payout.toFixed(2)}`, inline: true },
+                    ],
+                }
+            ]
+        };
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(discordPayload),
+        });
+    }
+
+
+    return { message: `You cashed out successfully! You won $${payout.toFixed(2)}`, payout };
 }
