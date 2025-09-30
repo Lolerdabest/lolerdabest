@@ -6,7 +6,7 @@ import { BetSlip } from '@/components/bet-slip';
 import { BetProvider } from '@/context/bet-provider';
 import CoinflipGame from '@/components/coinflip-game';
 import MinesGame from '@/components/mines-game';
-import RouletteGame from '@/components/roulette-game';
+import LimboGame from '@/components/limbo-game';
 import DragonTowersGame from '@/components/dragon-towers-game';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Label } from '@/components/ui/label';
 import { PlayableCoinflip } from '@/components/playable-coinflip';
 import { PlayableMines } from '@/components/playable-mines';
-import { PlayableRoulette } from '@/components/playable-roulette';
+import { PlayableLimbo } from '@/components/playable-limbo';
 import { PlayableDragonTowers } from '@/components/playable-dragon-towers';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ShieldCheck, Scale, AlertTriangle } from 'lucide-react';
@@ -57,7 +57,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
             <p className="text-center text-muted-foreground mb-8">Your bet has been confirmed. It's time to play!</p>
             {gameType.includes('Coinflip') && <PlayableCoinflip bet={activeBet} />}
             {gameType.includes('Mines') && <PlayableMines bet={activeBet} />}
-            {gameType.includes('Roulette') && <PlayableRoulette bet={activeBet} />}
+            {gameType.includes('Limbo') && <PlayableLimbo bet={activeBet} />}
             {gameType.includes('Dragon Towers') && <PlayableDragonTowers bet={activeBet} />}
         </main>
       </div>
@@ -97,7 +97,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
             <div className="space-y-8">
               <CoinflipGame />
               <MinesGame />
-              <RouletteGame />
+              <LimboGame />
               <DragonTowersGame />
             </div>
             <div className="lg:sticky lg:top-24 space-y-8">
@@ -112,7 +112,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
                 <AccordionTrigger className="text-lg font-semibold"><Scale className="mr-2 h-5 w-5 text-primary"/> Fair Play &amp; Odds</AccordionTrigger>
                 <AccordionContent className="text-muted-foreground space-y-2">
                   <p>All games offered are based on provably fair algorithms. The outcome of each game is determined by cryptographic seeds that ensure neither the player nor the house can manipulate the results.</p>
-                  <p>Odds are transparent. Coinflip has a ~50% chance of winning with a 1.9x payout. The Mines payout multiplier increases with each safe tile revealed, with the risk determined by the number of mines selected. Roulette payouts vary by bet type. Dragon Towers payouts increase as you climb the tower.</p>
+                  <p>Odds are transparent. Coinflip has a ~50% chance of winning with a 1.9x payout. The Mines payout multiplier increases with each safe tile revealed, with the risk determined by the number of mines selected. Dragon Towers payouts increase as you climb the tower.</p>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">

@@ -40,8 +40,8 @@ export const BetProvider = ({ children }: { children: React.ReactNode }) => {
     setBets((prevBets) => {
       // If the slip is empty or the new bet is the same game type, add it
       if (prevBets.length === 0 || prevBets[0].game === newBet.game) {
-        // Coinflip, Mines, and Dragon Towers are single-bet only. Clear slip if adding a new one.
-        if (['Coinflip', 'Mines', 'Dragon Towers'].includes(newBet.game)) {
+        // Coinflip, Mines, Limbo and Dragon Towers are single-bet only. Clear slip if adding a new one.
+        if (['Coinflip', 'Mines', 'Dragon Towers', 'Limbo'].includes(newBet.game)) {
            if(prevBets.length > 0) {
                 toast({
                     title: "Bet Slip Updated",

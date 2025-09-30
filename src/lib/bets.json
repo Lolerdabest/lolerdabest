@@ -1,6 +1,19 @@
 {
   "bets": [
     {
+      "id": "bet-1759239848184-dpfi7",
+      "game": "Roulette",
+      "details": "[Roulette] Color: Black - Wager: $10.00. Result: 4. Player won.",
+      "wager": 10,
+      "minecraftUsername": "Lolerdabest69 ",
+      "discordTag": "mittu",
+      "status": "completed",
+      "createdAt": "2025-09-30T13:44:08.184Z",
+      "multiplier": 1,
+      "payout": 20,
+      "result": "win"
+    },
+    {
       "id": "bet-1759239269397-wack7",
       "game": "Roulette",
       "details": "[Roulette] Color: Red - Wager: $10.00. Result: 14. Player won.",
