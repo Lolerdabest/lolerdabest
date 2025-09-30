@@ -67,12 +67,21 @@ export async function placeBetAction(
   }
 
   const { minecraftUsername, discordTag, betDetails, totalBetAmount, gameType } = validatedFields.data;
+
+  // Enforce minimum bet for Roulette
+  const wagerAmount = parseFloat(totalBetAmount);
+  if (gameType === 'Roulette' && wagerAmount < 250) {
+      return {
+          message: 'The minimum bet for Roulette is $250.',
+          success: false,
+      };
+  }
   
   const newBet: Bet = {
     id: `bet-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
     game: gameType,
     details: betDetails,
-    wager: parseFloat(totalBetAmount),
+    wager: wagerAmount,
     minecraftUsername,
     discordTag,
     status: 'pending',

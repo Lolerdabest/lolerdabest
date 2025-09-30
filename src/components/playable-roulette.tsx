@@ -4,7 +4,7 @@
 import type { Bet } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from './ui/card';
 import { Button } from './ui/button';
-import { useState, useTransition, useEffect, useMemo } from 'react';
+import { useState, useTransition, useEffect, useMemo, useRef } from 'react';
 import { playRouletteAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
@@ -36,6 +36,8 @@ export function PlayableRoulette({ bet, serverSeed }: { bet: Bet; serverSeed: st
     const [ballRotation, setBallRotation] = useState(0);
     const [isSpinning, setIsSpinning] = useState(false);
     const [recentNumbers, setRecentNumbers] = useState<number[]>([]);
+    const ballRef = useRef<HTMLDivElement>(null);
+
 
     const parsedBets = useMemo(() => {
         try {
@@ -50,28 +52,27 @@ export function PlayableRoulette({ bet, serverSeed }: { bet: Bet; serverSeed: st
         if (isPending || isSpinning) return;
 
         setIsSpinning(true);
+        // Reset rotations for re-spin feel
+        setWheelRotation(prev => prev + 360 * 2);
+        setBallRotation(prev => prev - 360 * 4);
+        
         startTransition(async () => {
             try {
-                // Initial animation
-                const initialWheelSpins = 2;
-                const initialBallSpins = 10;
-                setWheelRotation(360 * initialWheelSpins + Math.random() * 360);
-                setBallRotation(-(360 * initialBallSpins + Math.random() * 360));
-                
                 const res = await playRouletteAction(bet.id);
-
+                
                 const winningIndex = ROULETTE_NUMBERS.indexOf(res.winningNumber);
                 const finalAngle = winningIndex * NUMBER_SPACING;
 
-                const wheelRevolutions = 4;
-                const finalWheelRotation = (360 * wheelRevolutions) + finalAngle + (Math.random() - 0.5) * (NUMBER_SPACING * 0.8);
+                // More revolutions for a longer spin
+                const wheelRevolutions = 8 + Math.random() * 4;
+                const ballRevolutions = 15 + Math.random() * 5;
 
-                const ballRevolutions = 15;
-                const finalBallRotation = -(360 * ballRevolutions) - finalAngle - (Math.random() - 0.5) * (NUMBER_SPACING * 0.4);
+                const finalWheelRotation = (360 * wheelRevolutions) + finalAngle;
+                // Ball spins opposite direction
+                const finalBallRotation = -(360 * ballRevolutions) - finalAngle;
 
                 setWheelRotation(finalWheelRotation);
                 setBallRotation(finalBallRotation);
-
 
                 setTimeout(() => {
                     setResult(res);
@@ -82,7 +83,7 @@ export function PlayableRoulette({ bet, serverSeed }: { bet: Bet; serverSeed: st
                         description: `The ball landed on ${res.winningNumber}.`,
                         variant: res.totalPayout > bet.wager ? 'default' : 'destructive'
                     });
-                }, 8000); // Animation duration
+                }, 8000); // Match animation duration
 
             } catch (error) {
                 setIsSpinning(false);
@@ -132,10 +133,13 @@ export function PlayableRoulette({ bet, serverSeed }: { bet: Bet; serverSeed: st
                 </div>
             </div>
             
-            <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] flex items-center justify-center">
+             <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] flex items-center justify-center">
+                {/* Pointer */}
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white z-30"></div>
+
                 {/* Wheel */}
                  <div 
-                    className="absolute w-full h-full rounded-full border-[16px] md:border-[24px] border-yellow-800 bg-neutral-900 shadow-2xl transition-transform duration-[7500ms] cubic-bezier(0.25, 0.1, 0.25, 1.0)"
+                    className="absolute w-[90%] h-[90%] md:w-[95%] md:h-[95%] rounded-full border-[16px] md:border-[24px] border-yellow-800 bg-neutral-900 shadow-2xl transition-transform duration-[7500ms] ease-out"
                     style={{ transform: `rotate(${wheelRotation}deg)` }}
                 >
                     {ROULETTE_NUMBERS.map((num, i) => (
@@ -144,28 +148,27 @@ export function PlayableRoulette({ bet, serverSeed }: { bet: Bet; serverSeed: st
                             className="absolute top-0 left-1/2 w-px h-1/2 origin-bottom" 
                             style={{ transform: `translateX(-50%) rotate(${i * NUMBER_SPACING}deg)`}}
                         >
-                            <div className={cn("absolute -top-1 left-1/2 -translate-x-1/2 w-[24px] h-[24px] md:w-[36px] md:h-[36px] flex items-center justify-center text-white font-bold text-sm md:text-lg", getNumberColorClass(num))}>
-                                <span style={{ transform: `rotate(${-i * NUMBER_SPACING}deg)` }}>{num}</span>
+                             <div className={cn("absolute top-[-2px] md:top-0 left-1/2 -translate-x-1/2 w-[22px] h-[22px] md:w-[32px] md:h-[32px] flex items-center justify-center text-white font-bold text-sm md:text-base", getNumberColorClass(num))}>
+                                <span style={{ transform: `rotate(${-i * NUMBER_SPACING}deg) translateY(3px)` }}>{num}</span>
                             </div>
                         </div>
                     ))}
-                    {/* Inner lines */}
+                     {/* Inner lines */}
                     {ROULETTE_NUMBERS.map((_, i) => (
-                         <div key={`line-${i}`} className="absolute top-0 left-1/2 w-[1px] h-1/2 bg-white/10 origin-bottom" style={{ transform: `translateX(-50%) rotate(${i * NUMBER_SPACING - (NUMBER_SPACING / 2)}deg)`}} />
+                         <div key={`line-${i}`} className="absolute top-0 left-1/2 w-px h-1/2 bg-white/10 origin-bottom" style={{ transform: `translateX(-50%) rotate(${i * NUMBER_SPACING - (NUMBER_SPACING / 2)}deg)`}} />
                     ))}
                 </div>
 
                 {/* Ball Track */}
-                <div className="absolute w-[90%] h-[90%] md:w-[95%] md:h-[95%] rounded-full">
+                <div className="absolute w-[100%] h-[100%] md:w-[105%] md:h-[105%] rounded-full"
+                    style={{
+                        transform: `rotate(${ballRotation}deg)`,
+                        transition: 'transform 8s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                    }}
+                >
                      <div 
-                        className="absolute top-1/2 left-0 w-3 h-3 md:w-4 md:h-4 bg-slate-200 rounded-full z-20 origin-center" 
-                        style={{ 
-                            transform: `rotate(${ballRotation}deg) translateX(calc(50vw - 60px))`,
-                             '@media (min-width: 768px)': {
-                                transform: `rotate(${ballRotation}deg) translateX(210px)`,
-                            },
-                            transition: 'transform 8s cubic-bezier(0.1, 0.4, 0.1, 1)',
-                        }}
+                        ref={ballRef}
+                        className="absolute top-[calc(50%-8px)] left-0 w-4 h-4 bg-slate-200 rounded-full z-20" 
                     />
                 </div>
                

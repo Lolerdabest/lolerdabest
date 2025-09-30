@@ -25,12 +25,12 @@ const getNumberColorClass = (n: number) => {
 
 type BetType = 'straight' | 'color' | 'parity' | 'range' | 'dozen' | 'column';
 
-const CHIP_VALUES = [1, 5, 10, 50, 100, 500];
+const CHIP_VALUES = [250, 500, 1000, 5000, 10000, 50000];
 
 export default function RouletteGame() {
   const { addBet, clearBets, bets } = useBet();
   const { toast } = useToast();
-  const [selectedChip, setSelectedChip] = useState(10);
+  const [selectedChip, setSelectedChip] = useState(250);
 
   const handleBetPlacement = (type: BetType, value: string | number, multiplier: number) => {
     if (selectedChip <= 0) {
@@ -63,7 +63,7 @@ export default function RouletteGame() {
           <Dot />
           Roulette
         </CardTitle>
-        <CardDescription>Place your bets on the table below. Select a chip value first.</CardDescription>
+        <CardDescription>Place your bets on the table below. Select a chip value first. Minimum bet is $250.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         
@@ -139,7 +139,7 @@ export default function RouletteGame() {
              <ToggleGroup type="single" value={String(selectedChip)} onValueChange={(value) => value && setSelectedChip(Number(value))} className="grid grid-cols-6 gap-2">
                 {CHIP_VALUES.map(value => (
                     <ToggleGroupItem key={value} value={String(value)} className="w-full h-12 flex items-center justify-center rounded-full border-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground font-bold">
-                        {value}
+                        {value > 1000 ? `${value/1000}k` : value}
                     </ToggleGroupItem>
                 ))}
              </ToggleGroup>
@@ -152,9 +152,6 @@ export default function RouletteGame() {
                 <Button variant="outline" onClick={clearBets} className="w-full">
                     Clear All Bets
                 </Button>
-                 <Button className="w-full" disabled>
-                    Add to Bet Slip
-                </Button>
             </div>
             </>
         )}
@@ -163,3 +160,6 @@ export default function RouletteGame() {
     </Card>
   );
 }
+
+
+    
