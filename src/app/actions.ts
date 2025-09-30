@@ -240,7 +240,6 @@ export async function playMinesAction(betId: string, tileIndex: number): Promise
     bet.multiplier = newMultiplier;
 
     await writeBets(allBets);
-    // DO NOT revalidate path here, it causes the page to reload prematurely
 
     return {
         message: 'Safe! Multiplier increased.',
@@ -485,3 +484,5 @@ export async function cashOutDragonTowersAction(betId: string): Promise<{message
 
     return { message: `You cashed out successfully! You won $${payout.toFixed(2)}`, payout };
 }
+
+    
