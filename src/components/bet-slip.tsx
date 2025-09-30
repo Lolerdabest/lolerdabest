@@ -7,13 +7,12 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Ticket, Trash2, Send, User } from 'lucide-react';
+import { Ticket, Trash2, Send } from 'lucide-react';
 import { placeBetAction, type FormState } from '@/app/actions';
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from './ui/scroll-area';
 import { useFormState, useFormStatus } from 'react-dom';
-import Image from 'next/image';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -34,7 +33,6 @@ export function BetSlip() {
   const { bets, removeBet, clearBets, totalWager } = useBet();
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   const [state, formAction] = useFormState(placeBetAction, initialState);
 
@@ -64,25 +62,10 @@ export function BetSlip() {
       });
       if (state.success) {
         formRef.current?.reset();
-        setAvatarPreview(null);
         clearBets();
       }
     }
   }, [state, toast, clearBets]);
-  
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setAvatarPreview(null);
-    }
-  };
-
 
   return (
       <Card className="border-border bg-card/80 backdrop-blur-sm h-full flex flex-col">
@@ -144,20 +127,6 @@ export function BetSlip() {
               <div className="space-y-2">
                 <Label htmlFor="discordTag">Discord Tag</Label>
                 <Input id="discordTag" name="discordTag" placeholder="yourname#1234" required />
-              </div>
-
-               <div className="space-y-2">
-                <Label htmlFor="avatar">Avatar (Optional)</Label>
-                <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center overflow-hidden border">
-                        {avatarPreview ? (
-                            <Image src={avatarPreview} alt="Avatar Preview" width={64} height={64} className="object-cover" />
-                        ) : (
-                            <User className="w-8 h-8 text-muted-foreground" />
-                        )}
-                    </div>
-                    <Input id="avatar" name="avatar" type="file" accept="image/*" onChange={handleAvatarChange} className="flex-1" />
-                </div>
               </div>
               
               <div className="space-y-2">

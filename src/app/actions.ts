@@ -13,7 +13,6 @@ const betSchema = z.object({
   betDetails: z.string().min(1, { message: "Bet details are missing." }),
   totalBetAmount: z.string(),
   gameType: z.string(), // Added gameType to the schema
-  avatar: z.instanceof(File).optional(),
 });
 
 export type FormState = {
@@ -56,7 +55,6 @@ export async function placeBetAction(
     betDetails: formData.get('betDetails'),
     totalBetAmount: formData.get('totalBetAmount'),
     gameType: formData.get('gameType'),
-    avatar: formData.get('avatar'),
   };
   
   const validatedFields = betSchema.safeParse(rawFormData);
@@ -68,7 +66,7 @@ export async function placeBetAction(
     };
   }
 
-  const { minecraftUsername, discordTag, betDetails, totalBetAmount, gameType, avatar } = validatedFields.data;
+  const { minecraftUsername, discordTag, betDetails, totalBetAmount, gameType } = validatedFields.data;
 
   // Enforce minimum bet for Roulette
   const wagerAmount = parseFloat(totalBetAmount);
@@ -114,7 +112,6 @@ export async function placeBetAction(
             description: `Waiting for payment confirmation from the house. Bet ID: ${newBet.id}`,
             color: 16763904, // Gold color
             timestamp: new Date().toISOString(),
-            thumbnail: avatar ? { url: `attachment://${avatar.name}` } : undefined,
             fields: [
               { name: "Game", value: gameType, inline: true },
               { name: "Minecraft Username", value: minecraftUsername, inline: true },
@@ -132,9 +129,6 @@ export async function placeBetAction(
 
       const discordFormData = new FormData();
       discordFormData.append('payload_json', JSON.stringify(discordPayload));
-      if (avatar) {
-          discordFormData.append('file1', avatar, avatar.name);
-      }
 
       const response = await fetch(webhookUrl, {
         method: 'POST',
