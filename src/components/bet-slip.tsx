@@ -88,11 +88,11 @@ export function BetSlip() {
                   <div key={bet.id} className="flex items-start gap-4 p-3 rounded-lg bg-background/50">
                     <div className="flex-grow">
                       <p className="font-semibold leading-tight text-primary">{bet.game}</p>
-                      <p className="text-sm text-muted-foreground">{bet.game === 'Roulette' ? `Bet on: ${bet.details} - ${bet.payout}` : bet.details}</p>
+                      <p className="text-sm text-muted-foreground">{bet.game === 'Roulette' ? `Bet on: ${bet.payout}` : bet.details}</p>
                       <p className="text-sm">Wager: <span className="font-bold text-accent">${bet.wager.toFixed(2)}</span></p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="font-semibold text-accent">Payout: ${bet.multiplier.toFixed(2)}</p>
+                       <p className="font-semibold text-accent">{bet.multiplier}x</p>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeBet(bet.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -132,9 +132,9 @@ export function BetSlip() {
               <div className="space-y-2">
                   <Label>Payment Instructions</Label>
                   <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
-                    <p>After submitting, pay the total wager in-game:</p>
+                    <p>You will be notified on Discord when your payment is confirmed. Then, enter your name on the main page to play.</p>
+                    <p className="mt-2">After submitting, pay the total wager in-game:</p>
                     <code className="font-bold text-primary bg-background/50 px-2 py-1 rounded-md">/pay Lolerdabest69 ${totalWager.toFixed(2)}</code>
-                    <p className="mt-2">You will be notified on Discord when your payment is confirmed. Then, enter your name on the main page to play.</p>
                   </div>
               </div>
 
