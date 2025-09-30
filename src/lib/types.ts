@@ -9,7 +9,6 @@ export interface Bet {
   wager: number;
   multiplier: number;
   payout: number;
-  // New fields for state management
   minecraftUsername: string;
   discordTag: string;
   status: BetStatus;

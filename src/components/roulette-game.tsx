@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -155,6 +155,9 @@ export default function RouletteGame() {
           Add Bet to Slip
         </Button>
       </CardContent>
+      <CardFooter className="min-h-[80px] flex items-center justify-center bg-muted/30">
+        <p className="text-center text-muted-foreground">Pay in-game to play: <code className="text-primary">/pay Lolerdabest69 [amount]</code><br/>An admin will confirm your payment to unlock the game.</p>
+      </CardFooter>
     </Card>
   );
 }

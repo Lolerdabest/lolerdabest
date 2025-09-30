@@ -8,7 +8,7 @@ import { useState, useTransition } from 'react';
 import { cashOutMinesAction, playMinesAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { Bomb, CheckCircle, Diamond, Gem, Star, XCircle } from 'lucide-react';
+import { Bomb, CheckCircle, Gem, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Tile = {
@@ -27,7 +27,7 @@ export function PlayableMines({ bet }: { bet: Bet }) {
   const [isPending, startTransition] = useTransition();
   const [grid, setGrid] = useState<Tile[]>(createInitialGrid());
   const [gameOver, setGameOver] = useState<'win' | 'loss' | null>(null);
-  const [multiplier, setMultiplier] = useState(1.0);
+  const [multiplier, setMultiplier] = useState(bet.multiplier || 1.0);
   const [finalPayout, setFinalPayout] = useState(0);
   const { toast } = useToast();
   

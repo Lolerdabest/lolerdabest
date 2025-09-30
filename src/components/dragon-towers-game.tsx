@@ -32,7 +32,7 @@ export default function DragonTowersGame() {
       game: 'Dragon Towers',
       details: `Difficulty: ${difficulty}`,
       wager: betAmount,
-      multiplier: 0,
+      multiplier: 1, // Start at 1x
       payout: 0, // Payout is determined by gameplay
     });
 
@@ -103,7 +103,7 @@ export default function DragonTowersGame() {
         </Button>
       </CardContent>
       <CardFooter className="min-h-[80px] flex items-center justify-center bg-muted/30">
-        <p className="text-center text-muted-foreground">Climb the tower, avoid the skulls. <br /> The higher you go, the bigger the prize.</p>
+        <p className="text-center text-muted-foreground">Pay in-game to play: <code className="text-primary">/pay Lolerdabest69 [amount]</code><br/>An admin will confirm your payment to unlock the game.</p>
       </CardFooter>
     </Card>
   );

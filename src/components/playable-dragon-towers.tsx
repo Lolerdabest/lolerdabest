@@ -2,7 +2,7 @@
 'use client';
 
 import type { Bet } from '@/lib/types';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from './ui/card';
 import { Button } from './ui/button';
 import { useState, useTransition, useMemo } from 'react';
 import { cashOutDragonTowersAction, playDragonTowersAction } from '@/app/actions';
@@ -14,25 +14,29 @@ import { cn } from '@/lib/utils';
 type TileState = 'hidden' | 'safe' | 'skull';
 
 const TOWER_LEVELS = 8;
-const TILES_PER_LEVEL = 5;
 
-const createInitialTower = (): TileState[][] => {
-  return Array(TOWER_LEVELS).fill(null).map(() => Array(TILES_PER_LEVEL).fill('hidden'));
+const createInitialTower = (difficulty: 'easy' | 'medium' | 'hard'): TileState[][] => {
+  const tilesPerLevel = difficulty === 'hard' ? 2 : 4;
+  return Array(TOWER_LEVELS).fill(null).map(() => Array(tilesPerLevel).fill('hidden'));
 };
 
 export function PlayableDragonTowers({ bet }: { bet: Bet }) {
   const [isPending, startTransition] = useTransition();
-  const [tower, setTower] = useState<TileState[][]>(createInitialTower());
-  const [gameOver, setGameOver] = useState<'win' | 'loss' | null>(null);
-  const [multiplier, setMultiplier] = useState(1.0);
-  const [finalPayout, setFinalPayout] = useState(0);
-  const [currentRow, setCurrentRow] = useState(TOWER_LEVELS - 1);
   const { toast } = useToast();
 
   const difficulty = useMemo(() => {
     const match = bet.details.match(/Difficulty: (\w+)/);
-    return match ? match[1] : 'easy';
+    const diff = match ? match[1] : 'easy';
+    return diff as 'easy' | 'medium' | 'hard';
   }, [bet.details]);
+
+  const [tower, setTower] = useState<TileState[][]>(createInitialTower(difficulty));
+  const [gameOver, setGameOver] = useState<'win' | 'loss' | null>(null);
+  const [multiplier, setMultiplier] = useState(bet.multiplier || 1.0);
+  const [finalPayout, setFinalPayout] = useState(0);
+  const [currentRow, setCurrentRow] = useState(0);
+
+  const tilesPerLevel = difficulty === 'hard' ? 2 : 4;
 
   const handleTileClick = (rowIndex: number, tileIndex: number) => {
     if (gameOver || isPending || rowIndex !== currentRow) return;
@@ -51,8 +55,8 @@ export function PlayableDragonTowers({ bet }: { bet: Bet }) {
           newTower[rowIndex][tileIndex] = 'safe';
           setTower(newTower);
           setMultiplier(res.newMultiplier);
-          setCurrentRow(currentRow - 1);
-          toast({ title: 'Safe!', description: `Multiplier is now ${res.newMultiplier}x. Advanced to level ${TOWER_LEVELS - (currentRow - 1)}.` });
+          setCurrentRow(currentRow + 1);
+          toast({ title: 'Safe!', description: `Multiplier is now ${res.newMultiplier}x. Advanced to level ${currentRow + 2}.` });
         }
       } catch (error) {
         toast({ title: 'Error', description: 'Could not play. Please refresh and try again.', variant: 'destructive'});
@@ -97,12 +101,12 @@ export function PlayableDragonTowers({ bet }: { bet: Bet }) {
     <Card className="max-w-md mx-auto border-primary/50">
       <CardHeader>
         <CardTitle className="text-center">Dragon Towers</CardTitle>
-        <p className="text-center text-muted-foreground">Climb the tower. Current level: {TOWER_LEVELS - currentRow}.</p>
+        <p className="text-center text-muted-foreground">Climb the tower. Current level: {currentRow + 1}.</p>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-col-reverse gap-2 bg-background p-2 rounded-md">
             {tower.map((row, rowIndex) => (
-                <div key={rowIndex} className="grid grid-cols-5 gap-2">
+                <div key={rowIndex} className={`grid gap-2 grid-cols-${tilesPerLevel}`}>
                 {row.map((tile, tileIndex) => (
                     <button
                         key={tileIndex}
@@ -111,7 +115,7 @@ export function PlayableDragonTowers({ bet }: { bet: Bet }) {
                         className={cn(
                             "aspect-square rounded-md flex items-center justify-center transition-all border-2",
                             "disabled:cursor-not-allowed",
-                             rowIndex > currentRow && "border-transparent",
+                             rowIndex < currentRow && "border-transparent",
                              rowIndex === currentRow ? "border-primary/50 animate-pulse" : "border-transparent",
                              tile === 'hidden' && "bg-muted hover:bg-muted/80",
                              tile === 'safe' && "bg-primary/20 border-primary",
@@ -140,6 +144,9 @@ export function PlayableDragonTowers({ bet }: { bet: Bet }) {
             Cash Out
         </Button>
       </CardContent>
+       <CardFooter>
+        <p className="text-xs text-muted-foreground text-center w-full">Difficulty: {difficulty}. The higher you climb, the bigger the reward.</p>
+      </CardFooter>
     </Card>
   );
 }

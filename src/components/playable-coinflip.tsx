@@ -58,7 +58,7 @@ export function PlayableCoinflip({ bet }: { bet: Bet }) {
       <CardContent className="text-center space-y-4">
         <p className="text-muted-foreground">You wagered <span className="font-bold text-primary">${bet.wager.toFixed(2)}</span></p>
         <p className="text-4xl font-bold">You Chose: <span className="text-primary">{playerChoice}</span></p>
-        <p className="text-muted-foreground">Potential Payout: <span className="font-bold text-primary">${(bet.wager * 1.95).toFixed(2)}</span></p>
+        <p className="text-muted-foreground">Potential Payout: <span className="font-bold text-primary">${(bet.wager * 1.90).toFixed(2)}</span></p>
         <Button onClick={handlePlay} disabled={isPending} className="w-full py-6 text-lg">
           {isPending ? 'Flipping...' : 'Flip the Coin!'}
         </Button>

@@ -1,6 +1,19 @@
 {
   "bets": [
     {
+      "id": "bet-1759235983465-vjp8o",
+      "game": "Dragon Towers",
+      "details": "[Dragon Towers] Difficulty: easy - Wager: $1000.00",
+      "wager": 1000,
+      "minecraftUsername": "Lolerdabest69 ",
+      "discordTag": "mittu1010",
+      "status": "completed",
+      "createdAt": "2025-09-30T12:39:43.465Z",
+      "multiplier": 2.5,
+      "payout": 0,
+      "result": "loss"
+    },
+    {
       "id": "bet-1758684081308-grvt6",
       "game": "Mines",
       "details": "[Mines] Grid with 3 mines - Wager: $500000.00",

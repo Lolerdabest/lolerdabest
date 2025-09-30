@@ -18,7 +18,7 @@ export default function CoinflipGame() {
   const [betAmount, setBetAmount] = useState(10);
   const [choice, setChoice] = useState<'Heads' | 'Tails'>('Heads');
 
-  const multiplier = 1.95;
+  const multiplier = 1.90; // 5% house edge
   const payout = betAmount * multiplier;
 
   const handleAddBet = () => {
@@ -72,7 +72,7 @@ export default function CoinflipGame() {
             />
           </div>
           <div className="space-y-2">
-            <Label>Potential Payout (1.95x)</Label>
+            <Label>Potential Payout (1.90x)</Label>
             <Input
               value={`$${payout.toFixed(2)}`}
               disabled
@@ -104,7 +104,7 @@ export default function CoinflipGame() {
         </Button>
       </CardContent>
       <CardFooter className="min-h-[80px] flex items-center justify-center bg-muted/30">
-        <p className="text-center text-muted-foreground">Choose Heads or Tails and add the bet to your slip. <br/> The house will flip for you upon payment confirmation.</p>
+        <p className="text-center text-muted-foreground">Pay in-game to play: <code className="text-primary">/pay Lolerdabest69 [amount]</code><br/>An admin will confirm your payment to unlock the game.</p>
       </CardFooter>
     </Card>
   );

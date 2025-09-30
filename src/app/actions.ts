@@ -77,7 +77,7 @@ export async function placeBetAction(
     discordTag,
     status: 'pending',
     createdAt: new Date().toISOString(),
-    multiplier: 0, 
+    multiplier: 1, 
     payout: 0, 
   };
 
@@ -171,7 +171,7 @@ export async function playCoinflipAction(betId: string, choice: 'Heads' | 'Tails
     const bet = allBets[betIndex];
     const outcome = Math.random() < 0.5 ? 'Heads' : 'Tails';
     const result = choice === outcome ? 'win' : 'loss';
-    const payout = result === 'win' ? bet.wager * 1.95 : 0;
+    const payout = result === 'win' ? bet.wager * 1.90 : 0; // House edge is 5%
 
     bet.status = 'completed';
     bet.result = result;
@@ -221,26 +221,25 @@ export async function playMinesAction(betId: string, tileIndex: number): Promise
         throw new Error('Active bet not found.');
     }
     
-    // This is a simplified simulation. A real implementation would need to store the mine locations.
-    const mineCountMatch = allBets[betIndex].details.match(/(\d+) mines/);
+    const bet = allBets[betIndex];
+    const mineCountMatch = bet.details.match(/(\d+) mines/);
     const mineCount = mineCountMatch ? parseInt(mineCountMatch[1], 10) : 3;
-    const isMine = Math.random() < (mineCount / 25); // Simplified probability
+    // Increased chance of hitting a mine for house edge
+    const isMine = Math.random() < ((mineCount / 25) * 1.05); 
 
     if (isMine) {
-        allBets[betIndex].status = 'completed';
-        allBets[betIndex].result = 'loss';
-        allBets[betIndex].payout = 0;
+        bet.status = 'completed';
+        bet.result = 'loss';
+        bet.payout = 0;
         await writeBets(allBets);
         revalidatePath('/');
         revalidatePath('/admin');
         return { message: 'You hit a mine! Game over.', result: 'loss', mineHit: true, newMultiplier: 0 };
     }
 
-    // A real implementation would calculate multiplier based on mines and tiles revealed.
-    // For now, let's just increment it slightly.
-    const currentMultiplier = allBets[betIndex].multiplier || 1;
-    const newMultiplier = parseFloat((currentMultiplier * 1.1).toFixed(2));
-    allBets[betIndex].multiplier = newMultiplier;
+    const currentMultiplier = bet.multiplier || 1;
+    const newMultiplier = parseFloat((currentMultiplier * 1.05).toFixed(2));
+    bet.multiplier = newMultiplier;
 
     await writeBets(allBets);
     revalidatePath('/'); 
@@ -412,12 +411,14 @@ export async function playDragonTowersAction(betId: string, row: number, choice:
     }
 
     const bet = allBets[betIndex];
-    // This is a simplified simulation. A real implementation would store the bad tile location.
     const difficultyMatch = bet.details.match(/Difficulty: (\w+)/);
     const difficulty = difficultyMatch ? difficultyMatch[1] : 'easy';
-    const badTilesPerRow = difficulty === 'easy' ? 1 : difficulty === 'medium' ? 2 : 3;
+
+    const tilesPerRow = difficulty === 'hard' ? 2 : 4;
+    const losingTiles = difficulty === 'easy' ? 1 : difficulty === 'medium' ? 2 : 1;
     
-    const isBadTile = Math.random() < (badTilesPerRow / 5);
+    // Slightly rigged probability
+    const isBadTile = Math.random() < ((losingTiles / tilesPerRow) * 1.05);
 
     if (isBadTile) {
         bet.status = 'completed';
@@ -430,8 +431,8 @@ export async function playDragonTowersAction(betId: string, row: number, choice:
     }
 
     const currentMultiplier = bet.multiplier || 1;
-    const multiplierMap = { easy: 1.2, medium: 1.5, hard: 2.0 };
-    const newMultiplier = parseFloat((currentMultiplier * (multiplierMap[difficulty as keyof typeof multiplierMap] || 1.2)).toFixed(2));
+    const multiplierMap = { easy: 1.15, medium: 1.33, hard: 1.5 };
+    const newMultiplier = parseFloat((currentMultiplier * (multiplierMap[difficulty as keyof typeof multiplierMap])).toFixed(2));
     bet.multiplier = newMultiplier;
 
     await writeBets(allBets);

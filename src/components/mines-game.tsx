@@ -32,9 +32,7 @@ export default function MinesGame() {
       game: 'Mines',
       details: `Grid with ${mineCount} mines`,
       wager: betAmount,
-      // Payout is variable in mines, so we don't set a fixed multiplier/payout here.
-      // The payout will depend on how many tiles the player uncovers.
-      multiplier: 0, 
+      multiplier: 1, 
       payout: 0,
     });
 
@@ -92,7 +90,7 @@ export default function MinesGame() {
         </Button>
       </CardContent>
       <CardFooter className="min-h-[80px] flex items-center justify-center bg-muted/30">
-        <p className="text-center text-muted-foreground">Set your wager and mine count. <br/>After payment, the house will generate the grid for you to play.</p>
+        <p className="text-center text-muted-foreground">Pay in-game to play: <code className="text-primary">/pay Lolerdabest69 [amount]</code><br/>An admin will confirm your payment to unlock the game.</p>
       </CardFooter>
     </Card>
   );
