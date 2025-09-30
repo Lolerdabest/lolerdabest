@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useBet } from '@/context/bet-provider';
@@ -37,14 +38,15 @@ export function BetSlip() {
 
   const betDetailsString = useMemo(() => {
     return bets.map(bet => {
-      if (bet.game === 'Mines') {
-        return `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)}`;
-      }
-      return `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)} (Potential Payout: $${bet.payout.toFixed(2)})`;
+      return `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)}`;
     }).join('\n');
   }, [bets]);
 
-  const gameType = useMemo(() => bets.length > 0 ? bets[0].game : '', [bets]);
+  const gameType = useMemo(() => {
+      if (bets.length === 0) return '';
+      if (bets.length > 1 && bets[0].game === 'Roulette') return 'Roulette';
+      return bets[0].game;
+  }, [bets]);
 
   useEffect(() => {
     if (state.message) {
@@ -83,13 +85,9 @@ export function BetSlip() {
                       <p className="font-semibold leading-tight text-primary">{bet.game}</p>
                       <p className="text-sm text-muted-foreground">{bet.details}</p>
                       <p className="text-sm">Wager: <span className="font-bold text-accent">${bet.wager.toFixed(2)}</span></p>
-                      {bet.game !== 'Mines' && <p className="text-xs">Multiplier: <span className="font-semibold">{bet.multiplier.toFixed(2)}x</span></p>}
                     </div>
                     <div className="text-right flex-shrink-0">
-                      {bet.game !== 'Mines' ? 
-                        <p className="font-semibold text-accent">Payout: ${bet.payout.toFixed(2)}</p>
-                        : <p className="font-semibold text-accent">Payout Varies</p>
-                      }
+                      <p className="font-semibold text-accent">Payout: ${bet.payout.toFixed(2)}</p>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeBet(bet.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>

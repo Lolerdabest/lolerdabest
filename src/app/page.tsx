@@ -6,12 +6,14 @@ import { BetSlip } from '@/components/bet-slip';
 import { BetProvider } from '@/context/bet-provider';
 import CoinflipGame from '@/components/coinflip-game';
 import MinesGame from '@/components/mines-game';
+import RouletteGame from '@/components/roulette-game';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { PlayableCoinflip } from '@/components/playable-coinflip';
 import { PlayableMines } from '@/components/playable-mines';
+import { PlayableRoulette } from '@/components/playable-roulette';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ShieldCheck, Scale, AlertTriangle } from 'lucide-react';
 
@@ -53,12 +55,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
             <p className="text-center text-muted-foreground mb-8">Your bet has been confirmed. It's time to play!</p>
             {gameType.includes('Coinflip') && <PlayableCoinflip bet={activeBet} />}
             {gameType.includes('Mines') && <PlayableMines bet={activeBet} />}
-            {gameType === 'Combined' && (
-              <div className="text-center text-lg text-destructive">
-                <p>Error: Combined bets cannot be played directly.</p>
-                <p>Please contact support.</p>
-              </div>
-            )}
+            {gameType.includes('Roulette') && <PlayableRoulette bet={activeBet} />}
         </main>
       </div>
     );
@@ -97,6 +94,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
             <div className="space-y-8">
               <CoinflipGame />
               <MinesGame />
+              <RouletteGame />
             </div>
             <div className="lg:sticky lg:top-24 space-y-8">
               <BetSlip />

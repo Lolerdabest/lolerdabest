@@ -70,7 +70,7 @@ export async function placeBetAction(
   
   const newBet: Bet = {
     id: `bet-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-    game: gameType, // Use the straightforward game type
+    game: gameType,
     details: betDetails,
     wager: parseFloat(totalBetAmount),
     minecraftUsername,
@@ -104,10 +104,11 @@ export async function placeBetAction(
             color: 16763904, // Gold color
             timestamp: new Date().toISOString(),
             fields: [
+              { name: "Game", value: gameType, inline: true },
               { name: "Minecraft Username", value: minecraftUsername, inline: true },
               { name: "Discord Tag", value: discordTag, inline: true },
               { name: "Total Bet Amount", value: `$${totalBetAmount}`, inline: true },
-              { name: "Bet Details", value: betDetails },
+              { name: "Bet Details", value: `\`\`\`${betDetails.replace(/\\n/g, '\n')}\`\`\`` },
             ],
           }
         ]
@@ -301,4 +302,102 @@ export async function cashOutMinesAction(betId: string): Promise<{message: strin
 
 
     return { message: `You cashed out successfully! You won $${payout.toFixed(2)}`, payout };
+}
+
+
+export async function playRouletteAction(betId: string): Promise<{ message: string; result: 'win' | 'loss', winningNumber: number }> {
+    const allBets = await readBets();
+    const betIndex = allBets.findIndex(b => b.id === betId);
+
+    if (betIndex === -1 || allBets[betIndex].status !== 'active') {
+        throw new Error('Active bet not found.');
+    }
+
+    const bet = allBets[betIndex];
+    const winningNumber = Math.floor(Math.random() * 37); // 0-36
+    const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+
+    let totalPayout = 0;
+    let winningCondition = false;
+    let resultMessage = `The wheel landed on ${winningNumber}. `;
+
+    const betsPlaced = bet.details.split('\\n');
+
+    betsPlaced.forEach(betDetail => {
+        const wagerMatch = betDetail.match(/Wager: \$([\d.]+)/);
+        const wager = wagerMatch ? parseFloat(wagerMatch[1]) : 0;
+        
+        let individualWin = false;
+        
+        if (betDetail.includes('Color: Red')) {
+            if (redNumbers.includes(winningNumber)) individualWin = true;
+        } else if (betDetail.includes('Color: Black')) {
+            if (winningNumber !== 0 && !redNumbers.includes(winningNumber)) individualWin = true;
+        } else if (betDetail.includes('Even Numbers')) {
+            if (winningNumber !== 0 && winningNumber % 2 === 0) individualWin = true;
+        } else if (betDetail.includes('Odd Numbers')) {
+            if (winningNumber % 2 !== 0) individualWin = true;
+        } else if (betDetail.includes('Numbers 1-18')) {
+            if (winningNumber >= 1 && winningNumber <= 18) individualWin = true;
+        } else if (betDetail.includes('Numbers 19-36')) {
+            if (winningNumber >= 19 && winningNumber <= 36) individualWin = true;
+        } else if (betDetail.includes('Number')) {
+            const numberMatch = betDetail.match(/Number (\d+)/);
+            if (numberMatch && parseInt(numberMatch[1]) === winningNumber) {
+                 totalPayout += wager * 35;
+                 winningCondition = true;
+                 return; // continue to next bet detail
+            }
+        }
+        
+        if (individualWin) {
+            totalPayout += wager * 2;
+            winningCondition = true;
+        }
+    });
+
+
+    bet.status = 'completed';
+    bet.result = winningCondition ? 'win' : 'loss';
+    bet.payout = totalPayout;
+    bet.details = `${bet.details}. Result: ${winningNumber}. Player ${winningCondition ? 'won' : 'lost'}.`;
+
+    if (winningCondition) {
+        resultMessage += `You won $${totalPayout.toFixed(2)}!`;
+    } else {
+        resultMessage += `You lost.`;
+    }
+
+    await writeBets(allBets);
+    revalidatePath('/');
+    revalidatePath('/admin');
+
+    // Notify Discord
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if (webhookUrl) {
+        const discordPayload = {
+            username: "Loler's Gambling House",
+            avatar_url: "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png",
+            embeds: [
+                {
+                    title: `Roulette Result: ${bet.minecraftUsername} ${winningCondition ? 'Won!' : 'Lost.'}`,
+                    description: `Bet ID: ${bet.id}`,
+                    color: winningCondition ? 65340 : 16711680,
+                    timestamp: new Date().toISOString(),
+                    fields: [
+                        { name: "Winning Number", value: `**${winningNumber}**`, inline: true },
+                        { name: "Total Wager", value: `$${bet.wager.toFixed(2)}`, inline: true },
+                        { name: "Total Payout", value: `$${totalPayout.toFixed(2)}`, inline: true },
+                    ],
+                }
+            ]
+        };
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(discordPayload),
+        });
+    }
+
+    return { message: resultMessage, result: winningCondition ? 'win' : 'loss', winningNumber };
 }

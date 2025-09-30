@@ -38,14 +38,14 @@ export const BetProvider = ({ children }: { children: React.ReactNode }) => {
     };
     
     setBets((prevBets) => {
-      // If the slip is empty or the new bet is the same game, add it
+      // If the slip is empty or the new bet is the same game type, add it
       if (prevBets.length === 0 || prevBets[0].game === newBet.game) {
         // Coinflip is single-bet only. Clear slip if adding a new one.
-        if (newBet.game === 'Coinflip') {
+        if (newBet.game === 'Coinflip' || newBet.game === 'Mines') {
            if(prevBets.length > 0) {
                 toast({
                     title: "Bet Slip Updated",
-                    description: "Coinflip bets can't be combined. Your previous bet was replaced.",
+                    description: `${newBet.game} bets can't be combined. Your previous bet was replaced.`,
                 });
            }
            return [newBet];
