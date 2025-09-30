@@ -1,6 +1,4 @@
 
-import { promises as fs } from 'fs';
-import path from 'path';
 import type { Bet } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -13,21 +11,50 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { ConfirmBetButton } from './_components/confirm-bet-button';
-
-const dbPath = path.join(process.cwd(), 'src', 'lib', 'bets.json');
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 async function getBets(): Promise<Bet[]> {
   try {
-    const data = await fs.readFile(dbPath, 'utf-8');
-    return JSON.parse(data).bets || [];
+    const betsCollection = collection(db, 'bets');
+    const q = query(betsCollection, orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(q);
+    
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate().toISOString() || new Date().toISOString(),
+      } as Bet;
+    });
   } catch (error) {
-    console.error('Failed to read bets:', error);
-    return [];
+    console.error('Failed to read bets from Firestore:', error);
+    // On Vercel, this might fail if Firebase isn't configured. Return empty.
+    if (process.env.VERCEL && (error as any).code === 'FAILED_PRECONDITION') {
+        console.warn("Firestore not configured. Returning empty bets array.");
+        return [];
+    }
+    // For other errors, rethrow or handle as appropriate
+    throw new Error("Could not fetch bet data.");
   }
 }
 
 export default async function AdminPage() {
-  const bets = await getBets();
+  let bets: Bet[] = [];
+  try {
+    bets = await getBets();
+  } catch (error) {
+    console.error(error);
+    // Render an error state if bets can't be fetched
+    return (
+        <div className="container mx-auto p-4 md:p-6">
+            <h1 className="text-3xl font-bold text-destructive mb-6">Error Loading Bets</h1>
+            <p>Could not load bet data from the database. Please ensure Firebase is configured correctly.</p>
+        </div>
+    );
+  }
+
   const pendingBets = bets.filter(b => b.status === 'pending');
   const otherBets = bets.filter(b => b.status !== 'pending');
 

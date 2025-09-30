@@ -1,6 +1,4 @@
 
-import { promises as fs } from 'fs';
-import path from 'path';
 import crypto from 'crypto';
 import type { Bet } from '@/lib/types';
 import { BetSlip } from '@/components/bet-slip';
@@ -20,41 +18,14 @@ import { PlayableDragonTowers } from '@/components/playable-dragon-towers';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ShieldCheck, Scale, AlertTriangle } from 'lucide-react';
 import { GameSelector } from '@/components/game-selector';
+import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 
-const dbPath = path.join(process.cwd(), 'src', 'lib', 'bets.json');
 
-async function getBetsData(): Promise<{ activeBet?: Bet, recentResults: (string | number)[] }> {
-  const defaultResponse = { activeBet: undefined, recentResults: [] };
-  const username = ''; // This page is now the main view, not player-specific
-  
-  try {
-    const data = await fs.readFile(dbPath, 'utf-8');
-    const betsData = JSON.parse(data);
-    const bets: Bet[] = betsData.bets || [];
-
-    const activeBet = bets.find(bet => 
-        bet.minecraftUsername.trim().toLowerCase() === username.trim().toLowerCase() && 
-        bet.status === 'active'
-    );
-    
-    const recentResults = bets
-        .filter(b => b.game === 'Roulette' && b.status === 'completed' && b.resultDetails?.winningNumber !== undefined)
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .slice(0, 20)
-        .map(b => b.resultDetails!.winningNumber!);
-
-    return { activeBet, recentResults };
-
-  } catch (error) {
-    if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
-      return defaultResponse;
-    }
-    if (error instanceof SyntaxError) {
-        return defaultResponse;
-    }
-    console.error('Failed to read bets.json:', error);
-    return defaultResponse;
-  }
+// This function is no longer used, but kept for reference
+async function getBetsDataFromFile(): Promise<{ activeBet?: Bet, recentResults: (string | number)[] }> {
+  // ... implementation using fs
+  return { activeBet: undefined, recentResults: [] };
 }
 
 export default async function Home({ searchParams }: { searchParams: { username?: string } }) {
@@ -65,14 +36,29 @@ export default async function Home({ searchParams }: { searchParams: { username?
   async function getActiveBetForPlayer(username: string): Promise<Bet | undefined> {
     if (!username) return undefined;
     try {
-      const data = await fs.readFile(dbPath, 'utf-8');
-      const bets: Bet[] = (JSON.parse(data).bets || []);
-      return bets.find(bet => 
-          bet.minecraftUsername.trim().toLowerCase() === username.trim().toLowerCase() && 
-          bet.status === 'active'
+      const betsCollection = collection(db, 'bets');
+      const q = query(
+          betsCollection, 
+          where('minecraftUsername', '==', username.trim()), 
+          where('status', '==', 'active'),
+          limit(1)
       );
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+        return undefined;
+      }
+      
+      const doc = querySnapshot.docs[0];
+      const data = doc.data();
+      return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt.toDate().toISOString(),
+      } as Bet;
+
     } catch (e) {
-      console.error(e);
+      console.error("Error fetching active bet:", e);
       return undefined;
     }
   }
