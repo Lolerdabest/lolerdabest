@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useBet } from '@/context/bet-provider';
@@ -19,7 +18,7 @@ function SubmitButton() {
   return (
     <Button type="submit" className="w-full font-bold text-lg py-6" disabled={pending}>
       <Send className="mr-2 h-5 w-5" />
-      {pending ? 'Submitting Bet...' : 'Submit Bet for Confirmation'}
+      {pending ? 'Submitting Bet...' : 'Submit Bet'}
     </Button>
   );
 }
@@ -45,7 +44,6 @@ export function BetSlip() {
     }).join('\n');
   }, [bets]);
 
-  // Get the game type from the first bet, since we're not allowing mixed bets
   const gameType = useMemo(() => bets.length > 0 ? bets[0].game : '', [bets]);
 
   useEffect(() => {
@@ -62,33 +60,35 @@ export function BetSlip() {
     }
   }, [state, toast, clearBets]);
 
-
   return (
-      <Card className="border-primary/50 border-2 shadow-lg shadow-primary/20 bg-card h-full flex flex-col">
-        <CardHeader className="sticky top-0 bg-card z-10">
-          <CardTitle className="text-2xl font-bold flex items-center gap-3 animate-text-glow">
+      <Card className="border-primary/50 bg-card/80 backdrop-blur-sm h-full flex flex-col">
+        <CardHeader className="sticky top-0 bg-card/80 backdrop-blur-sm z-10">
+          <CardTitle className="text-2xl font-bold flex items-center gap-3 text-primary animate-text-glow">
             <Ticket />
-            Bet Slip
+            Betting Slip
           </CardTitle>
         </CardHeader>
         <ScrollArea className="flex-grow">
           <CardContent>
             {bets.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">Your bet slip is empty. <br/> Add a bet from a game to get started!</p>
+              <div className="text-muted-foreground text-center py-8 px-4">
+                <p>Your bet slip is empty.</p>
+                <p className="text-sm">Add a bet from a game below to get started!</p>
+              </div>
             ) : (
               <div className="space-y-4">
                 {bets.map((bet) => (
-                  <div key={bet.id} className="flex items-start gap-4 p-2 rounded-lg bg-background/50">
+                  <div key={bet.id} className="flex items-start gap-4 p-3 rounded-lg bg-background/50">
                     <div className="flex-grow">
-                      <p className="font-semibold leading-tight">{bet.game}</p>
+                      <p className="font-semibold leading-tight text-primary">{bet.game}</p>
                       <p className="text-sm text-muted-foreground">{bet.details}</p>
-                      <p className="text-sm">Wager: <span className="font-bold text-primary">${bet.wager.toFixed(2)}</span></p>
+                      <p className="text-sm">Wager: <span className="font-bold text-accent">${bet.wager.toFixed(2)}</span></p>
                       {bet.game !== 'Mines' && <p className="text-xs">Multiplier: <span className="font-semibold">{bet.multiplier.toFixed(2)}x</span></p>}
                     </div>
                     <div className="text-right flex-shrink-0">
                       {bet.game !== 'Mines' ? 
-                        <p className="font-semibold text-primary">Potential: ${bet.payout.toFixed(2)}</p>
-                        : <p className="font-semibold text-primary">Payout Varies</p>
+                        <p className="font-semibold text-accent">Payout: ${bet.payout.toFixed(2)}</p>
+                        : <p className="font-semibold text-accent">Payout Varies</p>
                       }
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeBet(bet.id)}>
                         <Trash2 className="h-4 w-4" />
@@ -102,14 +102,14 @@ export function BetSlip() {
         </ScrollArea>
 
         {bets.length > 0 && (
-          <CardFooter className="flex-col !items-start gap-4 pt-4 border-t mt-auto">
+          <CardFooter className="flex-col !items-start gap-4 pt-4 border-t-2 border-primary/20 mt-auto bg-card/50">
               <div className="w-full space-y-2">
                 <div className="flex justify-between font-bold text-lg">
-                  <span>Total Wager</span>
-                  <span>${totalWager.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Total Wager</span>
+                  <span className="text-accent">${totalWager.toFixed(2)}</span>
                 </div>
               </div>
-            <Separator />
+            <Separator className="bg-primary/20"/>
 
             <form action={formAction} ref={formRef} className="w-full space-y-4">
               <input type="hidden" name="betDetails" value={betDetailsString} />
@@ -123,16 +123,13 @@ export function BetSlip() {
 
               <div className="space-y-2">
                 <Label htmlFor="discordTag">Discord Tag</Label>
-                <Input id="discordTag" name="discordTag" placeholder="yourname" required />
+                <Input id="discordTag" name="discordTag" placeholder="yourname#1234" required />
               </div>
               
               <div className="space-y-2">
                   <Label>Payment Instructions</Label>
                   <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
-                    <p>After submitting, pay the total wager in-game. The house will confirm your payment and roll for you.</p>
-                    <code className="block bg-background/50 p-2 rounded-md mt-2 text-center text-foreground break-all">
-                      /pay lolerdabest69 {totalWager.toFixed(2)}
-                    </code>
+                    <p>After submitting, pay the total wager in-game. An admin will confirm your payment to unlock the game.</p>
                   </div>
               </div>
 

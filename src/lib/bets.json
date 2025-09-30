@@ -1,6 +1,58 @@
 {
   "bets": [
     {
+      "id": "bet-1758684081308-grvt6",
+      "game": "Mines",
+      "details": "[Mines] Grid with 3 mines - Wager: $500000.00",
+      "wager": 500000,
+      "minecraftUsername": "mittu",
+      "discordTag": "Ittu",
+      "status": "completed",
+      "createdAt": "2025-09-24T03:21:21.308Z",
+      "multiplier": 1.21,
+      "payout": 605000,
+      "result": "win"
+    },
+    {
+      "id": "bet-1758684019093-nlubq",
+      "game": "Mines",
+      "details": "[Mines] Grid with 13 mines - Wager: $50.00",
+      "wager": 50,
+      "minecraftUsername": "mittu",
+      "discordTag": "mittu",
+      "status": "completed",
+      "createdAt": "2025-09-24T03:20:19.093Z",
+      "multiplier": 1.1,
+      "payout": 0,
+      "result": "loss"
+    },
+    {
+      "id": "bet-1758683950556-t03bp",
+      "game": "Coinflip",
+      "details": "[Coinflip] Bet on Heads - Wager: $10000.00 (Potential Payout: $19500.00). Result: Tails. Player lost.",
+      "wager": 10000,
+      "minecraftUsername": "mittu ",
+      "discordTag": "mittu",
+      "status": "completed",
+      "createdAt": "2025-09-24T03:19:10.556Z",
+      "multiplier": 0,
+      "payout": 0,
+      "result": "loss"
+    },
+    {
+      "id": "bet-1758683889236-9ctrb",
+      "game": "Mines",
+      "details": "[Mines] Grid with 15 mines - Wager: $50.00",
+      "wager": 50,
+      "minecraftUsername": "mittu ",
+      "discordTag": "Mittu",
+      "status": "completed",
+      "createdAt": "2025-09-24T03:18:09.236Z",
+      "multiplier": 1.21,
+      "payout": 0,
+      "result": "loss"
+    },
+    {
       "id": "bet-1758681606630-g3xyc",
       "game": "Combined",
       "details": "[Mines] Grid with 24 mines - Wager: $5000.00",
