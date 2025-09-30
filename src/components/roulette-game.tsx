@@ -24,6 +24,15 @@ const getNumberColorClass = (n: number) => {
 }
 
 type BetType = 'straight' | 'color' | 'parity' | 'range' | 'dozen' | 'column';
+const betTypeDisplayNames: Record<BetType, string> = {
+    straight: 'Number',
+    color: 'Color',
+    parity: 'Parity',
+    range: 'Range',
+    dozen: 'Dozen',
+    column: 'Column',
+};
+
 
 const CHIP_VALUES = [250, 500, 1000, 5000, 10000, 50000];
 
@@ -53,6 +62,12 @@ export default function RouletteGame() {
       wager: selectedChip,
       multiplier: multiplier,
       payout: value, // The specific bet value ("red", 17, etc)
+    });
+
+    const betTypeName = betTypeDisplayNames[type];
+    toast({
+        title: "Bet Added to Slip",
+        description: `${betTypeName} bet on ${value} for $${selectedChip.toFixed(2)}`,
     });
   };
   
@@ -160,6 +175,3 @@ export default function RouletteGame() {
     </Card>
   );
 }
-
-
-    
