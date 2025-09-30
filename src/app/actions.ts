@@ -183,9 +183,6 @@ export async function placeBetAction(
 }
 
 export async function confirmBetAction(betId: string): Promise<FormState> {
-  if (process.env.VERCEL) {
-    return { message: 'This action is not available in a read-only environment.', success: false };
-  }
   try {
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
@@ -210,9 +207,6 @@ export async function confirmBetAction(betId: string): Promise<FormState> {
 }
 
 export async function playCoinflipAction(betId: string, choice: 'Heads' | 'Tails'): Promise<{ message: string; result: 'win' | 'loss' }> {
-    if (process.env.VERCEL) {
-        throw new Error('This action is not available in a read-only environment.');
-    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -265,9 +259,6 @@ export async function playCoinflipAction(betId: string, choice: 'Heads' | 'Tails
 }
 
 export async function playMinesAction(betId: string, tileIndex: number): Promise<{ message: string; result: 'win' | 'loss' | 'continue', mineHit: boolean, newMultiplier: number }> {
-    if (process.env.VERCEL) {
-        throw new Error('This action is not available in a read-only environment.');
-    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -306,9 +297,6 @@ export async function playMinesAction(betId: string, tileIndex: number): Promise
 
 
 export async function cashOutMinesAction(betId: string): Promise<{message: string; payout: number}> {
-    if (process.env.VERCEL) {
-        throw new Error('This action is not available in a read-only environment.');
-    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -358,9 +346,6 @@ export async function cashOutMinesAction(betId: string): Promise<{message: strin
 }
 
 export async function playDragonTowersAction(betId: string, row: number, choice: number): Promise<{ message: string; result: 'win' | 'loss' | 'continue', newMultiplier: number }> {
-    if (process.env.VERCEL) {
-        throw new Error('This action is not available in a read-only environment.');
-    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -402,9 +387,6 @@ export async function playDragonTowersAction(betId: string, row: number, choice:
 }
 
 export async function cashOutDragonTowersAction(betId: string): Promise<{message: string; payout: number}> {
-    if (process.env.VERCEL) {
-        throw new Error('This action is not available in a read-only environment.');
-    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -506,9 +488,6 @@ export async function playRouletteAction(betId: string): Promise<{
     totalPayout: number;
     message: string;
 }> {
-    if (process.env.VERCEL) {
-        throw new Error('This action is not available in a read-only environment.');
-    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -567,5 +546,3 @@ export async function playRouletteAction(betId: string): Promise<{
         message: totalPayout > 0 ? `Congratulations! You won $${totalPayout.toFixed(2)}` : 'Better luck next time.'
     };
 }
-
-    
