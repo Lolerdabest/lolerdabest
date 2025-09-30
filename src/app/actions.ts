@@ -26,12 +26,15 @@ const dbPath = path.join(process.cwd(), 'src', 'lib', 'bets.json');
 async function readBets(): Promise<Bet[]> {
   try {
     const data = await fs.readFile(dbPath, 'utf-8');
+    // Handle case where file is empty
+    if (!data) {
+      return [];
+    }
     const parsed = JSON.parse(data);
     return parsed.bets || [];
   } catch (error) {
-    // If the file doesn't exist, create it with an empty array and return the empty array.
-    if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
-      await writeBets([]); 
+    // If the file doesn't exist or there's a parsing error, return an empty array.
+    if (error instanceof Error && ((error as NodeJS.ErrnoException).code === 'ENOENT' || error instanceof SyntaxError)) {
       return [];
     }
     console.error('Failed to read bets.json:', error);
@@ -41,6 +44,13 @@ async function readBets(): Promise<Bet[]> {
 }
 
 async function writeBets(bets: Bet[]): Promise<void> {
+  // Vercel has a read-only filesystem, so we can't write in production.
+  // This check prevents the app from crashing on Vercel.
+  if (process.env.VERCEL) {
+    console.warn('Skipping writeBets in Vercel environment.');
+    return;
+  }
+  
   // Ensure the directory exists before writing the file.
   const dir = path.dirname(dbPath);
   try {
