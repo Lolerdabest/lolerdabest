@@ -29,17 +29,25 @@ async function readBets(): Promise<Bet[]> {
     const parsed = JSON.parse(data);
     return parsed.bets || [];
   } catch (error) {
-    // If the file doesn't exist, return an empty array
+    // If the file doesn't exist, create it with an empty array and return the empty array.
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
-      await writeBets([]); // Create the file if it doesn't exist
+      await writeBets([]); 
       return [];
     }
     console.error('Failed to read bets.json:', error);
+    // For other errors, return an empty array to prevent crashes.
     return [];
   }
 }
 
 async function writeBets(bets: Bet[]): Promise<void> {
+  // Ensure the directory exists before writing the file.
+  const dir = path.dirname(dbPath);
+  try {
+    await fs.access(dir);
+  } catch (error) {
+    await fs.mkdir(dir, { recursive: true });
+  }
   await fs.writeFile(dbPath, JSON.stringify({ bets }, null, 2), 'utf-8');
 }
 // --- End Database Functions ---
