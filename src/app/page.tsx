@@ -7,6 +7,7 @@ import { BetProvider } from '@/context/bet-provider';
 import CoinflipGame from '@/components/coinflip-game';
 import MinesGame from '@/components/mines-game';
 import RouletteGame from '@/components/roulette-game';
+import DragonTowersGame from '@/components/dragon-towers-game';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -14,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { PlayableCoinflip } from '@/components/playable-coinflip';
 import { PlayableMines } from '@/components/playable-mines';
 import { PlayableRoulette } from '@/components/playable-roulette';
+import { PlayableDragonTowers } from '@/components/playable-dragon-towers';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ShieldCheck, Scale, AlertTriangle } from 'lucide-react';
 
@@ -56,6 +58,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
             {gameType.includes('Coinflip') && <PlayableCoinflip bet={activeBet} />}
             {gameType.includes('Mines') && <PlayableMines bet={activeBet} />}
             {gameType.includes('Roulette') && <PlayableRoulette bet={activeBet} />}
+            {gameType.includes('Dragon Towers') && <PlayableDragonTowers bet={activeBet} />}
         </main>
       </div>
     );
@@ -95,6 +98,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
               <CoinflipGame />
               <MinesGame />
               <RouletteGame />
+              <DragonTowersGame />
             </div>
             <div className="lg:sticky lg:top-24 space-y-8">
               <BetSlip />

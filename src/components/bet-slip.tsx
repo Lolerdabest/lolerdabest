@@ -39,7 +39,7 @@ export function BetSlip() {
   const betDetailsString = useMemo(() => {
     return bets.map(bet => {
       return `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)}`;
-    }).join('\n');
+    }).join('\\n');
   }, [bets]);
 
   const gameType = useMemo(() => {
@@ -127,7 +127,9 @@ export function BetSlip() {
               <div className="space-y-2">
                   <Label>Payment Instructions</Label>
                   <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
-                    <p>After submitting, pay the total wager in-game. An admin will confirm your payment to unlock the game.</p>
+                    <p>After submitting, pay the total wager in-game:</p>
+                    <code className="font-bold text-primary bg-background/50 px-2 py-1 rounded-md">/pay Lolerdabest69 ${totalWager.toFixed(2)}</code>
+                    <p className="mt-2">An admin will confirm your payment to unlock the game.</p>
                   </div>
               </div>
 

@@ -401,3 +401,93 @@ export async function playRouletteAction(betId: string): Promise<{ message: stri
 
     return { message: resultMessage, result: winningCondition ? 'win' : 'loss', winningNumber };
 }
+
+
+export async function playDragonTowersAction(betId: string, row: number, choice: number): Promise<{ message: string; result: 'win' | 'loss' | 'continue', newMultiplier: number }> {
+    const allBets = await readBets();
+    const betIndex = allBets.findIndex(b => b.id === betId);
+
+    if (betIndex === -1 || allBets[betIndex].status !== 'active') {
+        throw new Error('Active bet not found.');
+    }
+
+    const bet = allBets[betIndex];
+    // This is a simplified simulation. A real implementation would store the bad tile location.
+    const difficultyMatch = bet.details.match(/Difficulty: (\w+)/);
+    const difficulty = difficultyMatch ? difficultyMatch[1] : 'easy';
+    const badTilesPerRow = difficulty === 'easy' ? 1 : difficulty === 'medium' ? 2 : 3;
+    
+    const isBadTile = Math.random() < (badTilesPerRow / 5);
+
+    if (isBadTile) {
+        bet.status = 'completed';
+        bet.result = 'loss';
+        bet.payout = 0;
+        await writeBets(allBets);
+        revalidatePath('/');
+        revalidatePath('/admin');
+        return { message: 'You hit a skull! Game over.', result: 'loss', newMultiplier: 0 };
+    }
+
+    const currentMultiplier = bet.multiplier || 1;
+    const multiplierMap = { easy: 1.2, medium: 1.5, hard: 2.0 };
+    const newMultiplier = parseFloat((currentMultiplier * (multiplierMap[difficulty as keyof typeof multiplierMap] || 1.2)).toFixed(2));
+    bet.multiplier = newMultiplier;
+
+    await writeBets(allBets);
+    revalidatePath('/');
+
+    return {
+        message: 'Safe! Advanced to the next level.',
+        result: 'continue',
+        newMultiplier: newMultiplier
+    };
+}
+
+export async function cashOutDragonTowersAction(betId: string): Promise<{message: string; payout: number}> {
+    const allBets = await readBets();
+    const betIndex = allBets.findIndex(b => b.id === betId);
+
+    if (betIndex === -1 || allBets[betIndex].status !== 'active') {
+        throw new Error('Active bet not found.');
+    }
+
+    const bet = allBets[betIndex];
+    const payout = bet.wager * (bet.multiplier || 1);
+
+    bet.status = 'completed';
+    bet.result = 'win';
+    bet.payout = payout;
+
+    await writeBets(allBets);
+    revalidatePath('/');
+    revalidatePath('/admin');
+
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if(webhookUrl) {
+         const discordPayload = {
+            username: "Loler's Gambling House",
+            avatar_url: "https://raw.githubusercontent.com/Minecraft-Dot-NET/minecraft-assets/master/java-edition/1.20.2/assets/minecraft/textures/item/diamond.png",
+            embeds: [
+                {
+                    title: `Dragon Towers Payout: ${bet.minecraftUsername} Cashed Out!`,
+                    description: `Bet ID: ${bet.id}`,
+                    color: 65340, // Green
+                    timestamp: new Date().toISOString(),
+                    fields: [
+                        { name: "Wager", value: `$${bet.wager.toFixed(2)}`, inline: true },
+                        { name: "Final Multiplier", value: `${bet.multiplier}x`, inline: true },
+                        { name: "Total Payout", value: `$${payout.toFixed(2)}`, inline: true },
+                    ],
+                }
+            ]
+        };
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(discordPayload),
+        });
+    }
+
+    return { message: `You cashed out successfully! You won $${payout.toFixed(2)}`, payout };
+}
