@@ -68,9 +68,9 @@ export function BetSlip() {
   }, [state, toast, clearBets]);
 
   return (
-      <Card className="border-primary/50 bg-card/80 backdrop-blur-sm h-full flex flex-col">
+      <Card className="border-border bg-card/80 backdrop-blur-sm h-full flex flex-col">
         <CardHeader className="sticky top-0 bg-card/80 backdrop-blur-sm z-10">
-          <CardTitle className="text-2xl font-bold flex items-center gap-3 text-primary animate-text-glow">
+          <CardTitle className="text-2xl font-bold flex items-center gap-3 text-primary">
             <Ticket />
             Betting Slip
           </CardTitle>
@@ -89,10 +89,10 @@ export function BetSlip() {
                     <div className="flex-grow">
                       <p className="font-semibold leading-tight text-primary">{bet.game}</p>
                       <p className="text-sm text-muted-foreground">{bet.game === 'Roulette' ? `Bet on: ${bet.payout}` : bet.details}</p>
-                      <p className="text-sm">Wager: <span className="font-bold text-accent">${bet.wager.toFixed(2)}</span></p>
+                      <p className="text-sm">Wager: <span className="font-bold text-foreground">${bet.wager.toFixed(2)}</span></p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                       <p className="font-semibold text-accent">{bet.multiplier}x</p>
+                       <p className="font-semibold">{bet.multiplier}x</p>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeBet(bet.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -105,14 +105,14 @@ export function BetSlip() {
         </ScrollArea>
 
         {bets.length > 0 && (
-          <CardFooter className="flex-col !items-start gap-4 pt-4 border-t-2 border-primary/20 mt-auto bg-card/50">
+          <CardFooter className="flex-col !items-start gap-4 pt-4 border-t-2 border-border mt-auto bg-card/50">
               <div className="w-full space-y-2">
                 <div className="flex justify-between font-bold text-lg">
                   <span className="text-muted-foreground">Total Wager</span>
-                  <span className="text-accent">${totalWager.toFixed(2)}</span>
+                  <span className="text-foreground">${totalWager.toFixed(2)}</span>
                 </div>
               </div>
-            <Separator className="bg-primary/20"/>
+            <Separator className="bg-border"/>
 
             <form action={formAction} ref={formRef} className="w-full space-y-4">
               <input type="hidden" name="betDetails" value={betDetailsString} />

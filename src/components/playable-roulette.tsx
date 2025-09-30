@@ -4,7 +4,7 @@
 import type { Bet } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from './ui/card';
 import { Button } from './ui/button';
-import { useState, useTransition, useEffect, useMemo, useRef } from 'react';
+import { useState, useTransition, useMemo } from 'react';
 import { playRouletteAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
@@ -14,30 +14,29 @@ import { Separator } from './ui/separator';
 
 const ROULETTE_NUMBERS = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
 const RED_NUMBERS = [32, 19, 21, 25, 34, 27, 36, 30, 23, 5, 16, 1, 14, 9, 18, 7, 12, 3];
-const NUMBER_SPACING = 360 / ROULETTE_NUMBERS.length;
 
-const getNumberColorClass = (num: number) => {
-    if (num === 0) return 'bg-green-600';
-    return RED_NUMBERS.includes(num) ? 'bg-red-700' : 'bg-black';
+const getNumberColor = (num: number) => {
+    if (num === 0) return '#22c55e'; // green-500
+    return RED_NUMBERS.includes(num) ? '#ef4444' : '#18181b'; // red-500, gray-900
 };
 
 const RecentNumber = ({ num }: { num: number }) => (
-    <div className={cn("h-6 w-6 md:h-8 md:w-8 flex items-center justify-center rounded-full text-white text-xs md:text-sm font-bold", getNumberColorClass(num))}>
+    <div className={cn("h-6 w-6 md:h-8 md:w-8 flex items-center justify-center rounded-full text-white text-xs md:text-sm font-bold", {
+        'bg-green-500': num === 0,
+        'bg-red-500': RED_NUMBERS.includes(num),
+        'bg-neutral-800': num !== 0 && !RED_NUMBERS.includes(num)
+    })}>
         {num}
     </div>
 );
-
 
 export function PlayableRoulette({ bet, serverSeed }: { bet: Bet; serverSeed: string }) {
     const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
     const [result, setResult] = useState<{ winningNumber: number; totalPayout: number } | null>(null);
-    const [wheelRotation, setWheelRotation] = useState(0);
-    const [ballRotation, setBallRotation] = useState(0);
     const [isSpinning, setIsSpinning] = useState(false);
     const [recentNumbers, setRecentNumbers] = useState<number[]>([]);
-    const ballRef = useRef<HTMLDivElement>(null);
-
+    const [styleSheet, setStyleSheet] = useState<HTMLStyleElement | null>(null);
 
     const parsedBets = useMemo(() => {
         try {
@@ -47,32 +46,45 @@ export function PlayableRoulette({ bet, serverSeed }: { bet: Bet; serverSeed: st
             return [];
         }
     }, [bet.details]);
-
+    
     const handlePlay = () => {
         if (isPending || isSpinning) return;
 
         setIsSpinning(true);
-        // Reset rotations for re-spin feel
-        setWheelRotation(prev => prev + 360 * 2);
-        setBallRotation(prev => prev - 360 * 4);
         
         startTransition(async () => {
             try {
                 const res = await playRouletteAction(bet.id);
                 
                 const winningIndex = ROULETTE_NUMBERS.indexOf(res.winningNumber);
-                const finalAngle = winningIndex * NUMBER_SPACING;
+                const numberAngle = 360 / ROULETTE_NUMBERS.length;
+                const finalAngle = (winningIndex * numberAngle) + (Math.random() * numberAngle) - (numberAngle / 2);
 
-                // More revolutions for a longer spin
-                const wheelRevolutions = 8 + Math.random() * 4;
-                const ballRevolutions = 15 + Math.random() * 5;
+                const spinDuration = 8000; // 8 seconds
+                const wheelRevolutions = 10;
+                const ballRevolutions = 25;
 
-                const finalWheelRotation = (360 * wheelRevolutions) + finalAngle;
-                // Ball spins opposite direction
-                const finalBallRotation = -(360 * ballRevolutions) - finalAngle;
-
-                setWheelRotation(finalWheelRotation);
-                setBallRotation(finalBallRotation);
+                const wheelFinalRotation = (360 * wheelRevolutions) - finalAngle;
+                const ballFinalRotation = (360 * ballRevolutions) - finalAngle;
+                
+                const animationStyle = `
+                    @keyframes spinWheel {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(${wheelFinalRotation}deg); }
+                    }
+                    @keyframes spinBall {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(-${ballFinalRotation}deg); }
+                    }
+                `;
+                
+                let sheet = styleSheet;
+                if (!sheet) {
+                    sheet = document.createElement('style');
+                    document.head.appendChild(sheet);
+                    setStyleSheet(sheet);
+                }
+                sheet.innerHTML = animationStyle;
 
                 setTimeout(() => {
                     setResult(res);
@@ -83,7 +95,7 @@ export function PlayableRoulette({ bet, serverSeed }: { bet: Bet; serverSeed: st
                         description: `The ball landed on ${res.winningNumber}.`,
                         variant: res.totalPayout > bet.wager ? 'default' : 'destructive'
                     });
-                }, 8000); // Match animation duration
+                }, spinDuration); 
 
             } catch (error) {
                 setIsSpinning(false);
@@ -134,45 +146,44 @@ export function PlayableRoulette({ bet, serverSeed }: { bet: Bet; serverSeed: st
             </div>
             
              <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] flex items-center justify-center">
-                {/* Pointer */}
-                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white z-30"></div>
-
-                {/* Wheel */}
-                 <div 
-                    className="absolute w-[90%] h-[90%] md:w-[95%] md:h-[95%] rounded-full border-[16px] md:border-[24px] border-yellow-800 bg-neutral-900 shadow-2xl transition-transform duration-[7500ms] ease-out"
-                    style={{ transform: `rotate(${wheelRotation}deg)` }}
+                <div 
+                    className="absolute w-full h-full rounded-full border-8 border-yellow-800/50 bg-neutral-900/50"
                 >
-                    {ROULETTE_NUMBERS.map((num, i) => (
-                        <div 
-                            key={num} 
-                            className="absolute top-0 left-1/2 w-px h-1/2 origin-bottom" 
-                            style={{ transform: `translateX(-50%) rotate(${i * NUMBER_SPACING}deg)`}}
-                        >
-                             <div className={cn("absolute top-[-2px] md:top-0 left-1/2 -translate-x-1/2 w-[22px] h-[22px] md:w-[32px] md:h-[32px] flex items-center justify-center text-white font-bold text-sm md:text-base", getNumberColorClass(num))}>
-                                <span style={{ transform: `rotate(${-i * NUMBER_SPACING}deg) translateY(3px)` }}>{num}</span>
+                    <div 
+                        className="w-full h-full rounded-full"
+                        style={{
+                            animation: isSpinning ? 'spinWheel 8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards' : 'none'
+                        }}
+                    >
+                        {ROULETTE_NUMBERS.map((num, i) => (
+                            <div 
+                                key={num}
+                                className="absolute top-0 left-1/2 w-px h-1/2 origin-bottom flex justify-center"
+                                style={{ transform: `rotate(${i * (360 / ROULETTE_NUMBERS.length)}deg)`}}
+                            >
+                                <div
+                                    className={cn("w-8 h-8 md:w-10 md:h-10 flex items-center justify-center text-white font-bold text-sm md:text-base rounded-t-full")}
+                                    style={{
+                                        backgroundColor: getNumberColor(num),
+                                        transform: 'translateY(-100%)',
+                                    }}
+                                >
+                                    <span style={{ transform: `rotate(${-i * (360 / ROULETTE_NUMBERS.length)}deg)` }}>{num}</span>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                     {/* Inner lines */}
-                    {ROULETTE_NUMBERS.map((_, i) => (
-                         <div key={`line-${i}`} className="absolute top-0 left-1/2 w-px h-1/2 bg-white/10 origin-bottom" style={{ transform: `translateX(-50%) rotate(${i * NUMBER_SPACING - (NUMBER_SPACING / 2)}deg)`}} />
-                    ))}
+                        ))}
+                    </div>
                 </div>
 
-                {/* Ball Track */}
-                <div className="absolute w-[100%] h-[100%] md:w-[105%] md:h-[105%] rounded-full"
+                <div 
+                    className="absolute w-[80%] h-[80%] rounded-full"
                     style={{
-                        transform: `rotate(${ballRotation}deg)`,
-                        transition: 'transform 8s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                        animation: isSpinning ? 'spinBall 8s cubic-bezier(0.3, 0.7, 0.4, 1) forwards' : 'none',
                     }}
                 >
-                     <div 
-                        ref={ballRef}
-                        className="absolute top-[calc(50%-8px)] left-0 w-4 h-4 bg-slate-200 rounded-full z-20" 
-                    />
+                    <div className="absolute top-1/2 left-0 -mt-2 w-4 h-4 bg-slate-200 rounded-full z-20" />
                 </div>
                
-                 {/* Center piece */}
                 <div className="absolute w-20 h-20 md:w-32 md:h-32 bg-yellow-800 rounded-full border-4 border-yellow-600 flex items-center justify-center shadow-inner">
                     <div className="w-10 h-10 md:w-16 md:h-16 bg-yellow-700 rounded-full" />
                 </div>
@@ -199,5 +210,3 @@ export function PlayableRoulette({ bet, serverSeed }: { bet: Bet; serverSeed: st
         </div>
     );
 }
-
-    

@@ -5,48 +5,48 @@
 
 @layer base {
   :root {
-    --background: 266 30% 8%; /* Dark Desaturated Purple */
-    --foreground: 210 20% 98%;
-    --card: 266 30% 12%; /* Slightly lighter purple for cards */
-    --card-foreground: 210 20% 98%;
-    --popover: 266 30% 8%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 288 84% 54%; /* Bright Saturated Purple */
-    --primary-foreground: 210 20% 98%;
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 215 25% 65.1%;
-    --accent: 4 75% 58%; /* Bright Coral */
-    --accent-foreground: 210 20% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 288 84% 34%; /* Brighter purple for borders */
-    --input: 266 30% 15%;
-    --ring: 288 84% 64%;
+    --background: 222 47% 11%; /* Stake.com dark blue-gray */
+    --foreground: 210 40% 98%;
+    --card: 222 47% 14%; /* Slightly lighter gray for cards */
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%; /* Stake.com blue */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 215 25% 65%;
+    --accent: 217 91% 60%; /* Use blue for accent */
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 28% 22%; /* Border color to complement theme */
+    --input: 215 28% 17%;
+    --ring: 217 91% 60%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 266 30% 8%;
-    --foreground: 210 20% 98%;
-    --card: 266 30% 12%;
-    --card-foreground: 210 20% 98%;
-    --popover: 266 30% 8%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 288 84% 54%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 215 25% 65.1%;
-    --accent: 4 75% 58%;
-    --accent-foreground: 210 20% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 288 84% 34%;
-    --input: 266 30% 15%;
-    --ring: 288 84% 64%;
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 215 25% 65%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 28% 22%;
+    --input: 215 28% 17%;
+    --ring: 217 91% 60%;
   }
 }
 
@@ -75,24 +75,24 @@
     background: linear-gradient(
       to right,
       hsl(var(--background)),
-      hsl(var(--primary) / 0.1),
+      hsl(var(--primary) / 0.05),
       hsl(var(--background)),
       hsl(var(--background))
     );
     background-size: 200%;
-    animation: background-pan 15s linear infinite;
+    animation: background-pan 25s linear infinite;
   }
   
   @keyframes text-glow {
     0%, 100% {
-      text-shadow: 0 0 8px hsl(var(--primary) / 0.6);
+      text-shadow: 0 0 5px hsl(var(--primary) / 0.5);
     }
     50% {
-      text-shadow: 0 0 16px hsl(var(--primary) / 1);
+      text-shadow: 0 0 10px hsl(var(--primary) / 0.8);
     }
   }
   .animate-text-glow {
-    animation: text-glow 3s ease-in-out infinite;
+    animation: text-glow 4s ease-in-out infinite;
   }
 
   /* Hide scrollbar for WebKit browsers */
@@ -105,4 +105,3 @@
     scrollbar-width: none; /* Firefox */
   }
 }
-

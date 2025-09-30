@@ -72,7 +72,7 @@ export default function RouletteGame() {
   };
   
   return (
-    <Card className="border-primary/30">
+    <Card className="border-border">
       <CardHeader>
         <CardTitle className="flex items-center gap-3 text-2xl font-bold">
           <Dot />
@@ -154,7 +154,7 @@ export default function RouletteGame() {
              <ToggleGroup type="single" value={String(selectedChip)} onValueChange={(value) => value && setSelectedChip(Number(value))} className="grid grid-cols-6 gap-2">
                 {CHIP_VALUES.map(value => (
                     <ToggleGroupItem key={value} value={String(value)} className="w-full h-12 flex items-center justify-center rounded-full border-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground font-bold">
-                        {value > 1000 ? `${value/1000}k` : value}
+                        {value >= 1000 ? `${value/1000}k` : value}
                     </ToggleGroupItem>
                 ))}
              </ToggleGroup>

@@ -32,12 +32,11 @@ export function GameSelector() {
             href={`#${game.id}`}
             className={cn(
               'flex flex-col items-center justify-center gap-2 flex-shrink-0 w-28 h-28 rounded-lg transition-all duration-300',
-              'bg-card/50 border-2 border-transparent',
-              'hover:bg-primary/20 hover:border-primary',
+              'bg-card/50 border-2',
+              'hover:bg-primary/10 hover:border-primary/50',
               {
-                'bg-primary/20 border-primary text-primary':
-                  game.id === currentGameId,
-                'text-muted-foreground': game.id !== currentGameId,
+                'border-primary text-primary': game.id === currentGameId,
+                'border-transparent text-muted-foreground': game.id !== currentGameId,
               }
             )}
           >

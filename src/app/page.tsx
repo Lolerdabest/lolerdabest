@@ -84,7 +84,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
     return (
        <div className="flex flex-col min-h-screen">
         <main className="flex-1 container mx-auto p-4 md:p-6 pt-12">
-            <h2 className="text-2xl font-bold text-center text-primary mb-4 animate-text-glow">Welcome, {activeBet.minecraftUsername}!</h2>
+            <h2 className="text-2xl font-bold text-center text-primary mb-4">Welcome, {activeBet.minecraftUsername}!</h2>
             <p className="text-center text-muted-foreground mb-8">Your bet has been confirmed. It's time to play!</p>
             {gameType.includes('Coinflip') && <PlayableCoinflip bet={activeBet} />}
             {gameType.includes('Mines') && <PlayableMines bet={activeBet} />}
@@ -99,7 +99,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
     <BetProvider>
       <div className="flex flex-col">
         <main className="flex-1 container mx-auto p-4 md:p-6 pt-12">
-           <Card className="max-w-2xl mx-auto mb-8 border-primary/50 shadow-lg shadow-primary/10">
+           <Card className="max-w-2xl mx-auto mb-8 border-border shadow-lg shadow-primary/5">
             <CardHeader>
               <CardTitle className="text-2xl text-center">Find Your Active Game</CardTitle>
               <CardDescription className="text-center text-muted-foreground pt-2">
@@ -176,5 +176,3 @@ export default async function Home({ searchParams }: { searchParams: { username?
 }
 
 export const dynamic = 'force-dynamic';
-
-    

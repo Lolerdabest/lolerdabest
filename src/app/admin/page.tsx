@@ -33,9 +33,9 @@ export default async function AdminPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6">
-      <h1 className="text-3xl font-bold text-primary mb-6 animate-text-glow">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold text-primary mb-6">Admin Dashboard</h1>
 
-      <Card className="mb-8 border-primary/50">
+      <Card className="mb-8 border-border">
         <CardHeader>
           <CardTitle>Pending Confirmation</CardTitle>
         </CardHeader>
