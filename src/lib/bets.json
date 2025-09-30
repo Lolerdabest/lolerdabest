@@ -1,6 +1,18 @@
 {
   "bets": [
     {
+      "id": "bet-1759251635165-1biwl",
+      "game": "Roulette",
+      "details": "[{\"type\":\"color\",\"value\":\"black\",\"wager\":250}]",
+      "wager": 250,
+      "minecraftUsername": "lolerdabest69",
+      "discordTag": "mittu1010",
+      "status": "pending",
+      "createdAt": "2025-09-30T17:00:35.165Z",
+      "multiplier": 1,
+      "payout": 0
+    },
+    {
       "id": "bet-1759242857458-87ukw",
       "game": "Roulette",
       "details": "[{\"type\":\"color\",\"value\":\"black\",\"wager\":250}]",
