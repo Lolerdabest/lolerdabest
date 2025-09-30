@@ -24,34 +24,44 @@ export type FormState = {
 const dbPath = path.join(process.cwd(), 'src', 'lib', 'bets.json');
 
 async function readBets(): Promise<Bet[]> {
-  try {
-    const data = await fs.readFile(dbPath, 'utf-8');
-    // Handle case where file is empty
-    if (!data) {
+  // In a Vercel environment, the filesystem is read-only after build.
+  // We should not expect to read dynamically updated bets.
+  // If the file doesn't exist at build time, return empty.
+  if (process.env.VERCEL) {
+    try {
+      const data = await fs.readFile(dbPath, 'utf-8');
+      return JSON.parse(data).bets || [];
+    } catch (error) {
+      // If file doesn't exist or is empty on Vercel, it's not an error.
+      // Return an empty array.
       return [];
     }
-    const parsed = JSON.parse(data);
-    return parsed.bets || [];
+  }
+
+  // Local development logic
+  try {
+    const data = await fs.readFile(dbPath, 'utf-8');
+    return JSON.parse(data).bets || [];
   } catch (error) {
-    // If the file doesn't exist or there's a parsing error, return an empty array.
-    if (error instanceof Error && ((error as NodeJS.ErrnoException).code === 'ENOENT' || error instanceof SyntaxError)) {
+    if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+      // If file doesn't exist locally, create it.
+      await writeBets([]);
       return [];
     }
     console.error('Failed to read bets.json:', error);
-    // For other errors, return an empty array to prevent crashes.
     return [];
   }
 }
 
 async function writeBets(bets: Bet[]): Promise<void> {
-  // Vercel has a read-only filesystem, so we can't write in production.
+  // Vercel has a read-only filesystem, so we must not write in production.
   // This check prevents the app from crashing on Vercel.
   if (process.env.VERCEL) {
     console.warn('Skipping writeBets in Vercel environment.');
     return;
   }
   
-  // Ensure the directory exists before writing the file.
+  // Ensure the directory exists before writing the file for local dev.
   const dir = path.dirname(dbPath);
   try {
     await fs.access(dir);
@@ -166,12 +176,26 @@ export async function placeBetAction(
      console.warn('Discord webhook URL is not configured.');
   }
     
-  revalidatePath('/admin');
-  revalidatePath('/');
+  // Because the filesystem is read-only on Vercel, revalidating paths that read
+  // from bets.json won't show new bets. We only revalidate for local dev.
+  if (!process.env.VERCEL) {
+    revalidatePath('/admin');
+    revalidatePath('/');
+  }
+
+  // On Vercel, even though we can't save the bet, we can still show a success message.
+  // The Discord notification (if configured) will still work.
+  if (process.env.VERCEL) {
+    return { message: 'Bet submitted! The house has been notified on Discord.', success: true };
+  }
+
   return { message: `Bet submitted! Please pay in-game now. The house will confirm and grant you access to play.`, success: true };
 }
 
 export async function confirmBetAction(betId: string): Promise<FormState> {
+  if (process.env.VERCEL) {
+    return { message: 'This action is not available in this hosting environment.', success: false };
+  }
   try {
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
@@ -214,7 +238,7 @@ export async function playCoinflipAction(betId: string, choice: 'Heads' | 'Tails
     bet.details = `${bet.details}. Result: ${outcome}. Player ${result === 'win' ? 'won' : 'lost'}.`;
 
     await writeBets(allBets);
-    revalidatePath('/admin');
+    if (!process.env.VERCEL) revalidatePath('/admin');
     
     // Notify Discord
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
@@ -266,7 +290,7 @@ export async function playMinesAction(betId: string, tileIndex: number): Promise
         bet.result = 'loss';
         bet.payout = 0;
         await writeBets(allBets);
-        revalidatePath('/admin');
+        if (!process.env.VERCEL) revalidatePath('/admin');
         return { message: 'You hit a mine! Game over.', result: 'loss', mineHit: true, newMultiplier: 0 };
     }
 
@@ -301,7 +325,7 @@ export async function cashOutMinesAction(betId: string): Promise<{message: strin
     bet.payout = payout;
 
     await writeBets(allBets);
-    revalidatePath('/admin');
+    if (!process.env.VERCEL) revalidatePath('/admin');
 
      // Notify Discord
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
@@ -357,7 +381,7 @@ export async function playDragonTowersAction(betId: string, row: number, choice:
         bet.result = 'loss';
         bet.payout = 0;
         await writeBets(allBets);
-        revalidatePath('/admin');
+        if (!process.env.VERCEL) revalidatePath('/admin');
         return { message: 'You hit a skull! Game over.', result: 'loss', newMultiplier: 0 };
     }
 
@@ -391,7 +415,7 @@ export async function cashOutDragonTowersAction(betId: string): Promise<{message
     bet.payout = payout;
 
     await writeBets(allBets);
-    revalidatePath('/admin');
+    if (!process.env.VERCEL) revalidatePath('/admin');
     
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if(webhookUrl) {
@@ -501,7 +525,7 @@ export async function playRouletteAction(betId: string): Promise<{
     bet.payout = totalPayout;
     
     await writeBets(allBets);
-    revalidatePath('/admin');
+    if (!process.env.VERCEL) revalidatePath('/admin');
     
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if (webhookUrl) {
