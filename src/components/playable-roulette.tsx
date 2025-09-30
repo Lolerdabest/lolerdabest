@@ -179,7 +179,3 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
     </Card>
   );
 }
-
-    
-
-    
