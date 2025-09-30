@@ -1,6 +1,19 @@
 {
   "bets": [
     {
+      "id": "bet-1759237596337-mrs3j",
+      "game": "Roulette",
+      "details": "[Roulette] Even Numbers - Wager: $10.00. Result: 19. Player lost.",
+      "wager": 10,
+      "minecraftUsername": "Lolerdabest69 ",
+      "discordTag": "Mittu",
+      "status": "completed",
+      "createdAt": "2025-09-30T13:06:36.337Z",
+      "multiplier": 1,
+      "payout": 0,
+      "result": "loss"
+    },
+    {
       "id": "bet-1759237389113-2prqe",
       "game": "Roulette",
       "details": "[Roulette] Color: Black - Wager: $10.00. Result: 8. Player won.",
