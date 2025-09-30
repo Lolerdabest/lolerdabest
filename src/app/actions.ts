@@ -240,7 +240,7 @@ export async function playMinesAction(betId: string, tileIndex: number): Promise
     bet.multiplier = newMultiplier;
 
     await writeBets(allBets);
-    revalidatePath('/'); 
+    // DO NOT revalidate path here, it causes the page to reload prematurely
 
     return {
         message: 'Safe! Multiplier increased.',

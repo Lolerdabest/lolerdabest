@@ -4,7 +4,7 @@
 import type { Bet } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from './ui/card';
 import { Button } from './ui/button';
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { playRouletteAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
@@ -21,36 +21,39 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<{ message: string; result: 'win' | 'loss'; winningNumber: number } | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [finalAngle, setFinalAngle] = useState<number | null>(null);
-
+  const [finalAngle, setFinalAngle] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+  
   const { toast } = useToast();
 
   const handlePlay = () => {
-    setIsSpinning(true);
-    setFinalAngle(null);
-    setResult(null);
+    if (isSpinning || showResult) return;
 
+    setIsSpinning(true);
+    setShowResult(false);
+    
     startTransition(async () => {
       try {
         const res = await playRouletteAction(bet.id);
         
         const winningIndex = numbers.indexOf(res.winningNumber);
         const segmentAngle = 360 / numbers.length;
-        const randomOffset = (Math.random() - 0.5) * segmentAngle * 0.8;
-        const baseAngle = winningIndex * segmentAngle + randomOffset;
-        const totalAngle = 360 * 10 + baseAngle; // 10 full rotations + final position
-        
+        const randomOffset = (Math.random() - 0.5) * segmentAngle * 0.9;
+        const targetAngle = winningIndex * segmentAngle + randomOffset;
+        const totalAngle = (finalAngle % 360) + (360 * 10) + (360 - (finalAngle % 360)) - targetAngle;
+
         setFinalAngle(totalAngle);
         
         setTimeout(() => {
           setResult(res);
           setIsSpinning(false);
+          setShowResult(true);
           toast({
             title: res.result === 'win' ? 'You Won!' : 'You Lost.',
             description: res.message,
             variant: res.result === 'win' ? 'default' : 'destructive'
           });
-        }, 8000); // 8s for the animation to complete
+        }, 8000); 
 
       } catch (error) {
         setIsSpinning(false);
@@ -62,17 +65,17 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
       }
     });
   };
-
-  if (result && !isSpinning) {
+  
+  if (showResult && result) {
     return (
-       <Alert variant={result.result === 'win' ? 'default' : 'destructive'} className="max-w-md mx-auto">
-        {result.result === 'win' ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
-        <AlertTitle>{result.result === 'win' ? 'Congratulations!' : 'Better Luck Next Time!'}</AlertTitle>
-        <AlertDescription>
-          {result.message}
-          <Button onClick={() => window.location.href = '/'} className="w-full mt-4">Play Again</Button>
-        </AlertDescription>
-      </Alert>
+      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+        <Alert variant={result.result === 'win' ? 'default' : 'destructive'} className="max-w-md mx-auto">
+            {result.result === 'win' ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+            <AlertTitle>{result.result === 'win' ? 'Congratulations!' : 'Better Luck Next Time!'}</AlertTitle>
+            <AlertDescription>{result.message}</AlertDescription>
+        </Alert>
+        <Button onClick={() => window.location.href = '/'} className="w-full max-w-md mt-4">Play Again</Button>
+      </div>
     )
   }
 
@@ -86,90 +89,92 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
       <CardContent className="text-center space-y-6 flex flex-col items-center justify-center">
         
         <div className="relative w-80 h-80 md:w-96 md:h-96">
-            {/* Pointer */}
-            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-[16px] border-t-accent z-50"></div>
-            
-            {/* Outer Rim */}
-            <div className="w-full h-full rounded-full bg-[#A0522D] border-8 border-[#8B4513] flex items-center justify-center shadow-inner">
-                {/* Spinning Wheel */}
-                <div 
-                    className="relative w-[95%] h-[95%] rounded-full transition-transform duration-[8000ms] ease-out"
-                    style={{ transform: finalAngle !== null ? `rotate(-${finalAngle}deg)` : 'rotate(0deg)' }}
-                >
-                     {/* Pockets */}
-                    {numbers.map((n, i) => {
-                       const angle = i * segmentAngle;
-                       const color = numberColors[n];
-                       return (
-                         <div
+            <div className="absolute w-full h-full border-[1.5rem] border-[#8B4513] rounded-full z-10 shadow-inner"></div>
+            <div 
+                className={cn(
+                    "relative w-full h-full rounded-full transition-transform duration-[8000ms] ease-out",
+                )}
+                style={{ transform: `rotate(-${finalAngle}deg)` }}
+            >
+                {numbers.map((n, i) => {
+                    const angle = i * segmentAngle;
+                    const color = numberColors[n];
+                    return (
+                        <div
                             key={n}
                             className="absolute top-0 left-0 w-full h-full"
-                            style={{
-                                transform: `rotate(${angle}deg)`,
-                                clipPath: `polygon(50% 50%, 0% 0%, 100% 0%)`,
-                            }}
-                         >
-                           <div 
+                            style={{ transform: `rotate(${angle}deg)` }}
+                        >
+                            <div
+                                style={{
+                                    clipPath: `polygon(50% 50%, 0% 0%, ${Math.tan(segmentAngle * Math.PI / 180) * 50}% 0, 50% 50%)`,
+                                    transformOrigin: '50% 50%',
+                                }}
                                 className={cn(
                                     "absolute w-full h-full",
                                     color === 'red' && 'bg-[#C00]',
                                     color === 'black' && 'bg-black',
                                     color === 'green' && 'bg-[#080]'
                                 )}
-                           >
-                                <div 
-                                    className="absolute w-full h-1/2 flex items-start justify-center pt-1" 
-                                    style={{ transform: `rotate(${segmentAngle / 2}deg)` }}
-                                >
-                                    <span 
-                                        className="text-white text-sm font-bold"
-                                        style={{ transform: `rotate(-${angle + (segmentAngle/2)}deg)`}}
-                                    >
-                                        {n}
-                                    </span>
-                                </div>
-                           </div>
-                         </div>
-                       )
-                    })}
-                </div>
-                
-                {/* Center Spinner */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-[#DAA520] rounded-full z-20 flex items-center justify-center border-4 border-[#B8860B] shadow-lg">
-                    <div className="w-4 h-4 bg-[#8B4513] rounded-full"></div>
-                </div>
+                            />
+                            <div 
+                                className="absolute w-full h-1/2 flex items-start justify-center pt-2 text-white text-sm font-bold"
+                                style={{
+                                    transform: `rotate(${segmentAngle / 2}deg) translateY(-0.5rem)`,
+                                }}
+                            >
+                                <span style={{ transform: `rotate(-${angle + segmentAngle / 2}deg)`}}>
+                                    {n}
+                                </span>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+            
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-[#DAA520] rounded-full z-20 flex items-center justify-center border-4 border-[#B8860B] shadow-lg">
+                <div className="w-6 h-6 bg-[#8B4513] rounded-full"></div>
+            </div>
 
-                {/* Ball */}
-                {!result && (
-                    <div 
-                        className={cn(
-                            "absolute w-5 h-5 bg-slate-200 rounded-full top-[12px] left-1/2 -translate-x-1/2 z-30 shadow-md",
-                            isSpinning && "animate-roulette-ball"
-                        )}
-                        style={{
-                            animationDuration: isSpinning ? '2s' : '0s'
-                        }}
-                    />
-                )}
-                 <style jsx>{`
-                    @keyframes roulette-ball {
-                        0% { transform: rotate(0deg) translateY(-145px) rotate(0deg); }
-                        100% { transform: rotate(360deg) translateY(-145px) rotate(-360deg); }
+            <div className="absolute top-0 left-0 w-full h-full z-30 pointer-events-none">
+                 <div className={cn(
+                    "absolute w-4 h-4 bg-slate-200 rounded-full shadow-md transition-transform duration-[7500ms] ease-out",
+                    isSpinning ? "animate-roulette-ball-spin" : ""
+                    )}
+                    style={{
+                        transform: isSpinning ? `rotate(${finalAngle}deg)`: `rotate(0deg)`,
+                        animationName: isSpinning ? 'roulette-ball-spin' : 'none'
+                    }}
+                ></div>
+            </div>
+             <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-[16px] border-t-accent z-40"></div>
+
+             <style jsx>{`
+                @keyframes roulette-ball-spin {
+                    0% {
+                        transform: rotate(0deg) translateY(-145px) rotate(0deg) scale(1);
                     }
-                    .animate-roulette-ball {
-                        animation-name: roulette-ball;
-                        animation-timing-function: linear;
-                        animation-iteration-count: infinite;
+                    90% {
+                        transform: rotate(${finalAngle + 360}deg) translateY(-145px) rotate(-${finalAngle + 360}deg) scale(1.1);
                     }
-                     @media (min-width: 768px) {
-                        @keyframes roulette-ball {
-                            0% { transform: rotate(0deg) translateY(-175px) rotate(0deg); }
-                            100% { transform: rotate(360deg) translateY(-175px) rotate(-360deg); }
+                    100% {
+                         transform: rotate(${finalAngle}deg) translateY(-110px) rotate(-${finalAngle}deg) scale(1);
+                    }
+                }
+                 @media (min-width: 768px) {
+                    @keyframes roulette-ball-spin {
+                        0% {
+                            transform: rotate(0deg) translateY(-175px) rotate(0deg) scale(1);
+                        }
+                        90% {
+                             transform: rotate(${finalAngle + 360}deg) translateY(-175px) rotate(-${finalAngle + 360}deg) scale(1.1);
+                        }
+                        100% {
+                             transform: rotate(${finalAngle}deg) translateY(-135px) rotate(-${finalAngle}deg) scale(1);
                         }
                     }
-                `}</style>
-
-            </div>
+                }
+            `}</style>
         </div>
 
 
@@ -191,3 +196,4 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
     </Card>
   );
 }
+
