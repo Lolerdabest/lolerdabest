@@ -25,33 +25,27 @@ const dbPath = path.join(process.cwd(), 'src', 'lib', 'bets.json');
 
 async function readBets(): Promise<Bet[]> {
   try {
-    // In a deployed environment like Vercel, fs is read-only.
-    // We should attempt to read the file as it was at build time.
     const data = await fs.readFile(dbPath, 'utf-8');
-    // Handle cases where the file might be empty or malformed at build time.
     return JSON.parse(data || '{ "bets": [] }').bets || [];
   } catch (error) {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
-      // File doesn't exist, which is common in a fresh local setup.
-      // Create it for local development.
-      await writeBets([]);
+      // In a read-only env, we can't write, so we return an empty array.
+      if (!process.env.VERCEL) {
+        await writeBets([]);
+      }
       return [];
     }
-    // For other errors (like SyntaxError), log it and return empty.
     console.error('Failed to read or parse bets.json:', error);
     return [];
   }
 }
 
 async function writeBets(bets: Bet[]): Promise<void> {
-  // Vercel has a read-only filesystem at runtime. Writing files will fail.
-  // This operation should only be used in a local development environment.
   if (process.env.VERCEL) {
-    console.warn('Skipping writeBets in Vercel environment due to read-only filesystem.');
+    console.warn('Skipping writeBets in a read-only environment.');
     return;
   }
   
-  // Ensure the directory exists before writing the file for local dev.
   const dir = path.dirname(dbPath);
   try {
     await fs.access(dir);
@@ -109,16 +103,11 @@ export async function placeBetAction(
   };
 
   try {
-    // In a read-only environment, we can't save the bet, but we can still proceed
-    // with notifications, etc.
-    if (!process.env.VERCEL) {
-      const allBets = await readBets();
-      allBets.unshift(newBet);
-      await writeBets(allBets);
-    }
+    const allBets = await readBets();
+    allBets.unshift(newBet);
+    await writeBets(allBets);
   } catch (error) {
      console.error('Failed to save bet:', error);
-     // Only fail if not on Vercel. On Vercel, this is expected.
      if (!process.env.VERCEL) {
         return { message: 'Failed to save bet data. Please try again.', success: false };
      }
@@ -152,7 +141,6 @@ export async function placeBetAction(
         ]
       };
 
-      // Use application/json content type for modern webhooks
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -166,7 +154,7 @@ export async function placeBetAction(
       }
     } catch (error) {
        console.error('Bet submission to Discord failed:', error);
-       // Non-fatal, so we don't return an error to the user
+       // Non-fatal
     }
   } else {
      console.warn('Discord webhook URL is not configured.');
@@ -175,11 +163,7 @@ export async function placeBetAction(
   revalidatePath('/admin');
   revalidatePath('/');
 
-  if (process.env.VERCEL) {
-    return { message: 'Bet submitted! The house has been notified on Discord.', success: true };
-  }
-
-  return { message: `Bet submitted! Please pay in-game now. The house will confirm and grant you access to play.`, success: true };
+  return { message: `Bet submitted! The house has been notified.`, success: true };
 }
 
 export async function confirmBetAction(betId: string): Promise<FormState> {
@@ -202,6 +186,10 @@ export async function confirmBetAction(betId: string): Promise<FormState> {
     return { message: 'Bet confirmed! The player can now play.', success: true };
   } catch (error) {
     console.error('Failed to confirm bet:', error);
+    if (process.env.VERCEL) {
+        revalidatePath('/admin');
+        return { message: 'This action is not available in a read-only environment, but the page will refresh.', success: true };
+    }
     return { message: 'Failed to update bet status.', success: false };
   }
 }
