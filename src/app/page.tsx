@@ -19,6 +19,7 @@ import { PlayableRoulette } from '@/components/playable-roulette';
 import { PlayableDragonTowers } from '@/components/playable-dragon-towers';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ShieldCheck, Scale, AlertTriangle } from 'lucide-react';
+import { GameSelector } from '@/components/game-selector';
 
 const dbPath = path.join(process.cwd(), 'src', 'lib', 'bets.json');
 
@@ -98,7 +99,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
     <BetProvider>
       <div className="flex flex-col">
         <main className="flex-1 container mx-auto p-4 md:p-6 pt-12">
-           <Card className="max-w-2xl mx-auto mb-12 border-primary/50 shadow-lg shadow-primary/10">
+           <Card className="max-w-2xl mx-auto mb-8 border-primary/50 shadow-lg shadow-primary/10">
             <CardHeader>
               <CardTitle className="text-2xl text-center">Find Your Active Game</CardTitle>
               <CardDescription className="text-center text-muted-foreground pt-2">
@@ -123,12 +124,14 @@ export default async function Home({ searchParams }: { searchParams: { username?
             </CardContent>
           </Card>
           
-          <div className="grid lg:grid-cols-[1fr_420px] gap-8 items-start">
+          <GameSelector />
+
+          <div className="grid lg:grid-cols-[1fr_420px] gap-8 items-start mt-8">
             <div className="space-y-8">
-              <CoinflipGame />
-              <MinesGame />
-              <RouletteGame />
-              <DragonTowersGame />
+              <div id="roulette"><RouletteGame /></div>
+              <div id="coinflip"><CoinflipGame /></div>
+              <div id="mines"><MinesGame /></div>
+              <div id="towers"><DragonTowersGame /></div>
             </div>
             <div className="lg:sticky lg:top-24 space-y-8">
               <BetSlip />
