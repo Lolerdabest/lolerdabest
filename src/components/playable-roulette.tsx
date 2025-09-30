@@ -29,9 +29,14 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
 
   const handlePlay = () => {
     setSpinning(true);
-    setWheelAngle(prev => prev + 360 * 2); // Spin the wheel
-    setBallAngle(prev => prev - 360 * 10); // Start the ball spinning opposite
-
+    // Reset angles and start a new spin
+    const currentWheelAngle = wheelAngle % 360;
+    const currentBallAngle = ballAngle % 360;
+    
+    // Add multiple rotations for visual effect
+    setWheelAngle(currentWheelAngle + 360 * 2); 
+    setBallAngle(currentBallAngle - 360 * 10); 
+    
     startTransition(async () => {
       try {
         const res = await playRouletteAction(bet.id);
@@ -40,9 +45,8 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
         const segmentAngle = 360 / numbers.length;
         
         // Calculate the final angle for the ball to land on the winning number
-        // Base angle for the segment + random offset within segment + several full rotations
-        const finalAngle = (ballAngle - (ballAngle % 360)) - (winningIndex * segmentAngle) - (segmentAngle / 2) - 360 * 2;
-        
+        const finalAngle = (ballAngle - (ballAngle % (360 * 2))) - (winningIndex * segmentAngle) - (segmentAngle / 2);
+
         // This timeout lets the initial spin happen before we 'land' the ball
         setTimeout(() => {
           setBallAngle(finalAngle);
@@ -162,5 +166,6 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
     </Card>
   );
 }
+    
 
     
