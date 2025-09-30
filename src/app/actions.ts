@@ -484,5 +484,3 @@ export async function cashOutDragonTowersAction(betId: string): Promise<{message
 
     return { message: `You cashed out successfully! You won $${payout.toFixed(2)}`, payout };
 }
-
-    

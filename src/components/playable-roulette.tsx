@@ -4,7 +4,7 @@
 import type { Bet } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from './ui/card';
 import { Button } from './ui/button';
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition } from 'react';
 import { playRouletteAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
@@ -12,7 +12,7 @@ import { CheckCircle, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from './ui/separator';
 
-
+// European Roulette Wheel Order
 const numbers = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
 const numberColors: { [key: number]: string } = {
     0: 'bg-green-600',
@@ -45,6 +45,7 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
         const res = await playRouletteAction(bet.id);
         
         const winningIndex = numbers.indexOf(res.winningNumber);
+        // Calculate the final angle for the wheel to stop at the winning number
         const targetAngle = 360 - (winningIndex * segmentAngle);
         
         // Random additional spins for visual variety

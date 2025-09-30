@@ -112,7 +112,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
                 <AccordionTrigger className="text-lg font-semibold"><Scale className="mr-2 h-5 w-5 text-primary"/> Fair Play &amp; Odds</AccordionTrigger>
                 <AccordionContent className="text-muted-foreground space-y-2">
                   <p>All games offered are based on provably fair algorithms. The outcome of each game is determined by cryptographic seeds that ensure neither the player nor the house can manipulate the results.</p>
-                  <p>Odds are transparent. Coinflip has a ~50% chance of winning with a 1.95x payout. The Mines payout multiplier increases with each safe tile revealed, with the risk determined by the number of mines selected.</p>
+                  <p>Odds are transparent. Coinflip has a ~50% chance of winning with a 1.9x payout. The Mines payout multiplier increases with each safe tile revealed, with the risk determined by the number of mines selected. Roulette payouts vary by bet type. Dragon Towers payouts increase as you climb the tower.</p>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">
