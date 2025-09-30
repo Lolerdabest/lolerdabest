@@ -13,6 +13,7 @@ const betSchema = z.object({
   betDetails: z.string().min(1, { message: "Bet details are missing." }),
   totalBetAmount: z.string(),
   gameType: z.string(), // Added gameType to the schema
+  avatar: z.instanceof(File).optional(),
 });
 
 export type FormState = {
@@ -55,6 +56,7 @@ export async function placeBetAction(
     betDetails: formData.get('betDetails'),
     totalBetAmount: formData.get('totalBetAmount'),
     gameType: formData.get('gameType'),
+    avatar: formData.get('avatar'),
   };
   
   const validatedFields = betSchema.safeParse(rawFormData);
@@ -66,7 +68,7 @@ export async function placeBetAction(
     };
   }
 
-  const { minecraftUsername, discordTag, betDetails, totalBetAmount, gameType } = validatedFields.data;
+  const { minecraftUsername, discordTag, betDetails, totalBetAmount, gameType, avatar } = validatedFields.data;
 
   // Enforce minimum bet for Roulette
   const wagerAmount = parseFloat(totalBetAmount);
@@ -112,6 +114,7 @@ export async function placeBetAction(
             description: `Waiting for payment confirmation from the house. Bet ID: ${newBet.id}`,
             color: 16763904, // Gold color
             timestamp: new Date().toISOString(),
+            thumbnail: avatar ? { url: `attachment://${avatar.name}` } : undefined,
             fields: [
               { name: "Game", value: gameType, inline: true },
               { name: "Minecraft Username", value: minecraftUsername, inline: true },
@@ -119,17 +122,28 @@ export async function placeBetAction(
               { name: "Total Bet Amount", value: `$${totalBetAmount}`, inline: true },
               { name: "Bet Details", value: `\`\`\`${betDetails.replace(/\\n/g, '\n')}\`\`\`` },
             ],
+            author: {
+                name: minecraftUsername,
+                icon_url: `https://mc-heads.net/avatar/${minecraftUsername}`
+            }
           }
         ]
       };
 
+      const discordFormData = new FormData();
+      discordFormData.append('payload_json', JSON.stringify(discordPayload));
+      if (avatar) {
+          discordFormData.append('file1', avatar, avatar.name);
+      }
+
       const response = await fetch(webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(discordPayload),
+        body: discordFormData,
       });
 
+
       if (!response.ok) {
+        console.error(await response.json());
         throw new Error(`Failed to send bet to Discord. Status: ${response.status}`);
       }
     } catch (error) {
@@ -162,7 +176,6 @@ export async function confirmBetAction(betId: string): Promise<FormState> {
     await writeBets(allBets);
 
     revalidatePath('/admin');
-    revalidatePath('/');
     return { message: 'Bet confirmed! The player can now play.', success: true };
   } catch (error) {
     console.error('Failed to confirm bet:', error);
@@ -189,6 +202,7 @@ export async function playCoinflipAction(betId: string, choice: 'Heads' | 'Tails
     bet.details = `${bet.details}. Result: ${outcome}. Player ${result === 'win' ? 'won' : 'lost'}.`;
 
     await writeBets(allBets);
+    revalidatePath('/admin');
     
     // Notify Discord
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
@@ -240,6 +254,7 @@ export async function playMinesAction(betId: string, tileIndex: number): Promise
         bet.result = 'loss';
         bet.payout = 0;
         await writeBets(allBets);
+        revalidatePath('/admin');
         return { message: 'You hit a mine! Game over.', result: 'loss', mineHit: true, newMultiplier: 0 };
     }
 
@@ -274,6 +289,7 @@ export async function cashOutMinesAction(betId: string): Promise<{message: strin
     bet.payout = payout;
 
     await writeBets(allBets);
+    revalidatePath('/admin');
 
      // Notify Discord
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
@@ -329,6 +345,7 @@ export async function playDragonTowersAction(betId: string, row: number, choice:
         bet.result = 'loss';
         bet.payout = 0;
         await writeBets(allBets);
+        revalidatePath('/admin');
         return { message: 'You hit a skull! Game over.', result: 'loss', newMultiplier: 0 };
     }
 
@@ -362,6 +379,7 @@ export async function cashOutDragonTowersAction(betId: string): Promise<{message
     bet.payout = payout;
 
     await writeBets(allBets);
+    revalidatePath('/admin');
     
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if(webhookUrl) {
@@ -471,6 +489,7 @@ export async function playRouletteAction(betId: string): Promise<{
     bet.payout = totalPayout;
     
     await writeBets(allBets);
+    revalidatePath('/admin');
     
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if (webhookUrl) {
@@ -504,5 +523,3 @@ export async function playRouletteAction(betId: string): Promise<{
         message: totalPayout > 0 ? `Congratulations! You won $${totalPayout.toFixed(2)}` : 'Better luck next time.'
     };
 }
-
-    
