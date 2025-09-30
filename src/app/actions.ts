@@ -179,7 +179,6 @@ export async function playCoinflipAction(betId: string, choice: 'Heads' | 'Tails
     bet.details = `${bet.details}. Result: ${outcome}. Player ${result === 'win' ? 'won' : 'lost'}.`;
 
     await writeBets(allBets);
-    revalidatePath('/');
     revalidatePath('/admin');
 
     // Notify Discord
@@ -232,7 +231,6 @@ export async function playMinesAction(betId: string, tileIndex: number): Promise
         bet.result = 'loss';
         bet.payout = 0;
         await writeBets(allBets);
-        revalidatePath('/');
         revalidatePath('/admin');
         return { message: 'You hit a mine! Game over.', result: 'loss', mineHit: true, newMultiplier: 0 };
     }
@@ -269,7 +267,6 @@ export async function cashOutMinesAction(betId: string): Promise<{message: strin
     bet.payout = payout;
 
     await writeBets(allBets);
-    revalidatePath('/');
     revalidatePath('/admin');
 
      // Notify Discord
@@ -368,7 +365,6 @@ export async function playRouletteAction(betId: string): Promise<{ message: stri
     }
 
     await writeBets(allBets);
-    revalidatePath('/');
     revalidatePath('/admin');
 
     // Notify Discord
@@ -425,7 +421,6 @@ export async function playDragonTowersAction(betId: string, row: number, choice:
         bet.result = 'loss';
         bet.payout = 0;
         await writeBets(allBets);
-        revalidatePath('/');
         revalidatePath('/admin');
         return { message: 'You hit a skull! Game over.', result: 'loss', newMultiplier: 0 };
     }
@@ -436,7 +431,6 @@ export async function playDragonTowersAction(betId: string, row: number, choice:
     bet.multiplier = newMultiplier;
 
     await writeBets(allBets);
-    revalidatePath('/');
 
     return {
         message: 'Safe! Advanced to the next level.',
@@ -461,7 +455,6 @@ export async function cashOutDragonTowersAction(betId: string): Promise<{message
     bet.payout = payout;
 
     await writeBets(allBets);
-    revalidatePath('/');
     revalidatePath('/admin');
 
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;

@@ -70,7 +70,7 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
         <AlertTitle>{result.result === 'win' ? 'Congratulations!' : 'Better Luck Next Time!'}</AlertTitle>
         <AlertDescription>
           {result.message}
-          <Button onClick={() => window.location.reload()} className="w-full mt-4">Play Again</Button>
+          <Button onClick={() => window.location.href = '/'} className="w-full mt-4">Play Again</Button>
         </AlertDescription>
       </Alert>
     )
