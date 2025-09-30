@@ -14,4 +14,10 @@ export interface Bet {
   status: BetStatus;
   createdAt: string; // ISO 8601 date string
   result?: 'win' | 'loss';
+  resultDetails?: {
+    winningNumber?: number;
+    [key: string]: any;
+  }
 }
+
+    

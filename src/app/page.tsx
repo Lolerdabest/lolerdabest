@@ -1,12 +1,13 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import type { Bet } from '@/lib/types';
 import { BetSlip } from '@/components/bet-slip';
 import { BetProvider } from '@/context/bet-provider';
 import CoinflipGame from '@/components/coinflip-game';
 import MinesGame from '@/components/mines-game';
-import LimboGame from '@/components/limbo-game';
+import RouletteGame from '@/components/roulette-game';
 import DragonTowersGame from '@/components/dragon-towers-game';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,39 +15,68 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Label } from '@/components/ui/label';
 import { PlayableCoinflip } from '@/components/playable-coinflip';
 import { PlayableMines } from '@/components/playable-mines';
-import { PlayableLimbo } from '@/components/playable-limbo';
+import { PlayableRoulette } from '@/components/playable-roulette';
 import { PlayableDragonTowers } from '@/components/playable-dragon-towers';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ShieldCheck, Scale, AlertTriangle } from 'lucide-react';
 
 const dbPath = path.join(process.cwd(), 'src', 'lib', 'bets.json');
 
-async function getActiveBetForPlayer(username: string): Promise<Bet | undefined> {
-  if (!username) return undefined;
+async function getBetsData(): Promise<{ activeBet?: Bet, recentResults: (string | number)[] }> {
+  const defaultResponse = { activeBet: undefined, recentResults: [] };
+  const username = ''; // This page is now the main view, not player-specific
+  
   try {
     const data = await fs.readFile(dbPath, 'utf-8');
     const betsData = JSON.parse(data);
     const bets: Bet[] = betsData.bets || [];
-    return bets.find(bet => 
+
+    const activeBet = bets.find(bet => 
         bet.minecraftUsername.trim().toLowerCase() === username.trim().toLowerCase() && 
         bet.status === 'active'
     );
+    
+    const recentResults = bets
+        .filter(b => b.game === 'Roulette' && b.status === 'completed' && b.resultDetails?.winningNumber !== undefined)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 20)
+        .map(b => b.resultDetails!.winningNumber!);
+
+    return { activeBet, recentResults };
+
   } catch (error) {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
-      return undefined;
+      return defaultResponse;
     }
     if (error instanceof SyntaxError) {
-        return undefined;
+        return defaultResponse;
     }
     console.error('Failed to read bets.json:', error);
-    return undefined;
+    return defaultResponse;
   }
 }
 
 export default async function Home({ searchParams }: { searchParams: { username?: string } }) {
   const username = searchParams.username || '';
+  const serverSeed = crypto.createHash('sha256').update(process.env.ROULETTE_SECRET_SEED || 'default-secret').digest('hex');
+
+  // Fetch active bet for a specific user if username is provided
+  async function getActiveBetForPlayer(username: string): Promise<Bet | undefined> {
+    if (!username) return undefined;
+    try {
+      const data = await fs.readFile(dbPath, 'utf-8');
+      const bets: Bet[] = (JSON.parse(data).bets || []);
+      return bets.find(bet => 
+          bet.minecraftUsername.trim().toLowerCase() === username.trim().toLowerCase() && 
+          bet.status === 'active'
+      );
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  }
+
   const activeBet = await getActiveBetForPlayer(username);
-  const serverSeed = "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"; // Example static seed
 
   if (activeBet) {
     const gameType = activeBet.game;
@@ -57,7 +87,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
             <p className="text-center text-muted-foreground mb-8">Your bet has been confirmed. It's time to play!</p>
             {gameType.includes('Coinflip') && <PlayableCoinflip bet={activeBet} />}
             {gameType.includes('Mines') && <PlayableMines bet={activeBet} />}
-            {gameType.includes('Limbo') && <PlayableLimbo bet={activeBet} />}
+            {gameType.includes('Roulette') && <PlayableRoulette bet={activeBet} serverSeed={serverSeed} />}
             {gameType.includes('Dragon Towers') && <PlayableDragonTowers bet={activeBet} />}
         </main>
       </div>
@@ -97,7 +127,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
             <div className="space-y-8">
               <CoinflipGame />
               <MinesGame />
-              <LimboGame />
+              <RouletteGame />
               <DragonTowersGame />
             </div>
             <div className="lg:sticky lg:top-24 space-y-8">
@@ -123,6 +153,7 @@ export default async function Home({ searchParams }: { searchParams: { username?
                     <p className="text-sm font-semibold">Current Server Seed (Hashed):</p>
                     <code className="text-xs break-all">{serverSeed}</code>
                   </div>
+                   <p className="text-sm mt-2">At the end of a round, you can verify the result using the revealed server seed, the client seed (your username), and a round nonce (the bet ID).</p>
                 </AccordionContent>
               </AccordionItem>
                <AccordionItem value="item-3">
@@ -142,3 +173,5 @@ export default async function Home({ searchParams }: { searchParams: { username?
 }
 
 export const dynamic = 'force-dynamic';
+
+    

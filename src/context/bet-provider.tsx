@@ -13,7 +13,7 @@ export interface TempBet {
   details: string; 
   wager: number;
   multiplier: number;
-  payout: number;
+  payout: any; // Can be string or number depending on game
 }
 
 
@@ -34,23 +34,37 @@ export const BetProvider = ({ children }: { children: React.ReactNode }) => {
   const addBet = useCallback((bet: Omit<TempBet, 'id'>) => {
     const newBet: TempBet = {
       ...bet,
-      id: `${bet.game.replace(/\s/g, '-')}-${Date.now()}`,
+      id: `${bet.game.replace(/\s/g, '-')}-${Date.now()}-${Math.random()}`,
     };
     
     setBets((prevBets) => {
-      // If the slip is empty or the new bet is the same game type, add it
-      if (prevBets.length === 0 || prevBets[0].game === newBet.game) {
-        // Coinflip, Mines, Limbo and Dragon Towers are single-bet only. Clear slip if adding a new one.
-        if (['Coinflip', 'Mines', 'Dragon Towers', 'Limbo'].includes(newBet.game)) {
-           if(prevBets.length > 0) {
-                toast({
-                    title: "Bet Slip Updated",
-                    description: `${newBet.game} bets can't be combined. Your previous bet was replaced.`,
-                });
-           }
-           return [newBet];
+      // For roulette, allow multiple bets. For other games, replace.
+      if (newBet.game === 'Roulette') {
+        // If the slip is empty or already contains roulette bets, add it.
+        if (prevBets.length === 0 || prevBets[0].game === 'Roulette') {
+            return [...prevBets, newBet];
+        } else {
+            // If other game type is present, clear and add roulette bet.
+             toast({
+                title: "Bet Slip Cleared",
+                description: "You cannot mix different game types. Your previous bet was removed.",
+             });
+             return [newBet];
         }
-        return [...prevBets, newBet];
+      }
+
+      // For single-bet games like Coinflip, Mines, etc.
+      if (prevBets.length === 0 || prevBets[0].game === newBet.game) {
+        if(['Coinflip', 'Mines', 'Dragon Towers'].includes(newBet.game)) {
+            if(prevBets.length > 0) {
+                 toast({
+                     title: "Bet Slip Updated",
+                     description: `${newBet.game} bets can't be combined. Your previous bet was replaced.`,
+                 });
+            }
+            return [newBet];
+         }
+         return [...prevBets, newBet];
       }
       
       // If different game type, clear the slip and add the new one

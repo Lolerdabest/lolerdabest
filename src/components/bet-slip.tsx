@@ -37,19 +37,18 @@ export function BetSlip() {
   const [state, formAction] = useFormState(placeBetAction, initialState);
 
   const betDetailsString = useMemo(() => {
+    // For Roulette, we need to serialize the complex bet object
+    if (bets.length > 0 && bets[0].game === 'Roulette') {
+        const betData = bets.map(b => ({type: b.details, value: b.payout, wager: b.wager}))
+        return JSON.stringify(betData);
+    }
     return bets.map(bet => {
-      // For Limbo, the main detail is the target multiplier.
-      if (bet.game === 'Limbo') {
-          return `Target: ${bet.multiplier.toFixed(2)}x`;
-      }
       return `[${bet.game}] ${bet.details} - Wager: $${bet.wager.toFixed(2)}`;
     }).join('\\n');
   }, [bets]);
 
   const gameType = useMemo(() => {
       if (bets.length === 0) return '';
-      // Limbo bets can be combined with other single-game bets if needed in future
-      // but for now, we treat it as a single game type for clarity
       if (bets.length > 0) return bets[0].game;
       return 'Combined';
   }, [bets]);
@@ -89,11 +88,11 @@ export function BetSlip() {
                   <div key={bet.id} className="flex items-start gap-4 p-3 rounded-lg bg-background/50">
                     <div className="flex-grow">
                       <p className="font-semibold leading-tight text-primary">{bet.game}</p>
-                      <p className="text-sm text-muted-foreground">{bet.game === 'Limbo' ? `Target: ${bet.multiplier}x` : bet.details}</p>
+                      <p className="text-sm text-muted-foreground">{bet.game === 'Roulette' ? `Bet on: ${bet.details} - ${bet.payout}` : bet.details}</p>
                       <p className="text-sm">Wager: <span className="font-bold text-accent">${bet.wager.toFixed(2)}</span></p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="font-semibold text-accent">Payout: ${bet.payout.toFixed(2)}</p>
+                      <p className="font-semibold text-accent">Payout: ${bet.multiplier.toFixed(2)}</p>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeBet(bet.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
