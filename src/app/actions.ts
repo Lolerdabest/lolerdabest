@@ -24,40 +24,30 @@ export type FormState = {
 const dbPath = path.join(process.cwd(), 'src', 'lib', 'bets.json');
 
 async function readBets(): Promise<Bet[]> {
-  // In a Vercel environment, the filesystem is read-only after build.
-  // We should not expect to read dynamically updated bets.
-  // If the file doesn't exist at build time, return empty.
-  if (process.env.VERCEL) {
-    try {
-      const data = await fs.readFile(dbPath, 'utf-8');
-      return JSON.parse(data).bets || [];
-    } catch (error) {
-      // If file doesn't exist or is empty on Vercel, it's not an error.
-      // Return an empty array.
-      return [];
-    }
-  }
-
-  // Local development logic
   try {
+    // In a deployed environment like Vercel, fs is read-only.
+    // We should attempt to read the file as it was at build time.
     const data = await fs.readFile(dbPath, 'utf-8');
-    return JSON.parse(data).bets || [];
+    // Handle cases where the file might be empty or malformed at build time.
+    return JSON.parse(data || '{ "bets": [] }').bets || [];
   } catch (error) {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
-      // If file doesn't exist locally, create it.
+      // File doesn't exist, which is common in a fresh local setup.
+      // Create it for local development.
       await writeBets([]);
       return [];
     }
-    console.error('Failed to read bets.json:', error);
+    // For other errors (like SyntaxError), log it and return empty.
+    console.error('Failed to read or parse bets.json:', error);
     return [];
   }
 }
 
 async function writeBets(bets: Bet[]): Promise<void> {
-  // Vercel has a read-only filesystem, so we must not write in production.
-  // This check prevents the app from crashing on Vercel.
+  // Vercel has a read-only filesystem at runtime. Writing files will fail.
+  // This operation should only be used in a local development environment.
   if (process.env.VERCEL) {
-    console.warn('Skipping writeBets in Vercel environment.');
+    console.warn('Skipping writeBets in Vercel environment due to read-only filesystem.');
     return;
   }
   
@@ -119,12 +109,19 @@ export async function placeBetAction(
   };
 
   try {
-    const allBets = await readBets();
-    allBets.unshift(newBet);
-    await writeBets(allBets);
+    // In a read-only environment, we can't save the bet, but we can still proceed
+    // with notifications, etc.
+    if (!process.env.VERCEL) {
+      const allBets = await readBets();
+      allBets.unshift(newBet);
+      await writeBets(allBets);
+    }
   } catch (error) {
      console.error('Failed to save bet:', error);
-     return { message: 'Failed to save bet data. Please try again.', success: false };
+     // Only fail if not on Vercel. On Vercel, this is expected.
+     if (!process.env.VERCEL) {
+        return { message: 'Failed to save bet data. Please try again.', success: false };
+     }
   }
 
 
@@ -155,12 +152,11 @@ export async function placeBetAction(
         ]
       };
 
-      const discordFormData = new FormData();
-      discordFormData.append('payload_json', JSON.stringify(discordPayload));
-
+      // Use application/json content type for modern webhooks
       const response = await fetch(webhookUrl, {
         method: 'POST',
-        body: discordFormData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(discordPayload),
       });
 
 
@@ -176,15 +172,9 @@ export async function placeBetAction(
      console.warn('Discord webhook URL is not configured.');
   }
     
-  // Because the filesystem is read-only on Vercel, revalidating paths that read
-  // from bets.json won't show new bets. We only revalidate for local dev.
-  if (!process.env.VERCEL) {
-    revalidatePath('/admin');
-    revalidatePath('/');
-  }
+  revalidatePath('/admin');
+  revalidatePath('/');
 
-  // On Vercel, even though we can't save the bet, we can still show a success message.
-  // The Discord notification (if configured) will still work.
   if (process.env.VERCEL) {
     return { message: 'Bet submitted! The house has been notified on Discord.', success: true };
   }
@@ -194,7 +184,7 @@ export async function placeBetAction(
 
 export async function confirmBetAction(betId: string): Promise<FormState> {
   if (process.env.VERCEL) {
-    return { message: 'This action is not available in this hosting environment.', success: false };
+    return { message: 'This action is not available in a read-only environment.', success: false };
   }
   try {
     const allBets = await readBets();
@@ -220,6 +210,9 @@ export async function confirmBetAction(betId: string): Promise<FormState> {
 }
 
 export async function playCoinflipAction(betId: string, choice: 'Heads' | 'Tails'): Promise<{ message: string; result: 'win' | 'loss' }> {
+    if (process.env.VERCEL) {
+        throw new Error('This action is not available in a read-only environment.');
+    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -238,7 +231,7 @@ export async function playCoinflipAction(betId: string, choice: 'Heads' | 'Tails
     bet.details = `${bet.details}. Result: ${outcome}. Player ${result === 'win' ? 'won' : 'lost'}.`;
 
     await writeBets(allBets);
-    if (!process.env.VERCEL) revalidatePath('/admin');
+    revalidatePath('/admin');
     
     // Notify Discord
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
@@ -272,6 +265,9 @@ export async function playCoinflipAction(betId: string, choice: 'Heads' | 'Tails
 }
 
 export async function playMinesAction(betId: string, tileIndex: number): Promise<{ message: string; result: 'win' | 'loss' | 'continue', mineHit: boolean, newMultiplier: number }> {
+    if (process.env.VERCEL) {
+        throw new Error('This action is not available in a read-only environment.');
+    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -290,7 +286,7 @@ export async function playMinesAction(betId: string, tileIndex: number): Promise
         bet.result = 'loss';
         bet.payout = 0;
         await writeBets(allBets);
-        if (!process.env.VERCEL) revalidatePath('/admin');
+        revalidatePath('/admin');
         return { message: 'You hit a mine! Game over.', result: 'loss', mineHit: true, newMultiplier: 0 };
     }
 
@@ -310,6 +306,9 @@ export async function playMinesAction(betId: string, tileIndex: number): Promise
 
 
 export async function cashOutMinesAction(betId: string): Promise<{message: string; payout: number}> {
+    if (process.env.VERCEL) {
+        throw new Error('This action is not available in a read-only environment.');
+    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -325,7 +324,7 @@ export async function cashOutMinesAction(betId: string): Promise<{message: strin
     bet.payout = payout;
 
     await writeBets(allBets);
-    if (!process.env.VERCEL) revalidatePath('/admin');
+    revalidatePath('/admin');
 
      // Notify Discord
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
@@ -359,6 +358,9 @@ export async function cashOutMinesAction(betId: string): Promise<{message: strin
 }
 
 export async function playDragonTowersAction(betId: string, row: number, choice: number): Promise<{ message: string; result: 'win' | 'loss' | 'continue', newMultiplier: number }> {
+    if (process.env.VERCEL) {
+        throw new Error('This action is not available in a read-only environment.');
+    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -381,7 +383,7 @@ export async function playDragonTowersAction(betId: string, row: number, choice:
         bet.result = 'loss';
         bet.payout = 0;
         await writeBets(allBets);
-        if (!process.env.VERCEL) revalidatePath('/admin');
+        revalidatePath('/admin');
         return { message: 'You hit a skull! Game over.', result: 'loss', newMultiplier: 0 };
     }
 
@@ -400,6 +402,9 @@ export async function playDragonTowersAction(betId: string, row: number, choice:
 }
 
 export async function cashOutDragonTowersAction(betId: string): Promise<{message: string; payout: number}> {
+    if (process.env.VERCEL) {
+        throw new Error('This action is not available in a read-only environment.');
+    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -415,7 +420,7 @@ export async function cashOutDragonTowersAction(betId: string): Promise<{message
     bet.payout = payout;
 
     await writeBets(allBets);
-    if (!process.env.VERCEL) revalidatePath('/admin');
+    revalidatePath('/admin');
     
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if(webhookUrl) {
@@ -501,6 +506,9 @@ export async function playRouletteAction(betId: string): Promise<{
     totalPayout: number;
     message: string;
 }> {
+    if (process.env.VERCEL) {
+        throw new Error('This action is not available in a read-only environment.');
+    }
     const allBets = await readBets();
     const betIndex = allBets.findIndex(b => b.id === betId);
 
@@ -525,7 +533,7 @@ export async function playRouletteAction(betId: string): Promise<{
     bet.payout = totalPayout;
     
     await writeBets(allBets);
-    if (!process.env.VERCEL) revalidatePath('/admin');
+    revalidatePath('/admin');
     
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if (webhookUrl) {
@@ -559,3 +567,5 @@ export async function playRouletteAction(betId: string): Promise<{
         message: totalPayout > 0 ? `Congratulations! You won $${totalPayout.toFixed(2)}` : 'Better luck next time.'
     };
 }
+
+    
