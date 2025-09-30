@@ -12,7 +12,6 @@ import { CheckCircle, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from './ui/separator';
 
-
 const numbers = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
 const numberColors: { [key: number]: 'red' | 'black' | 'green' } = {
   0: 'green', 1: 'red', 2: 'black', 3: 'red', 4: 'black', 5: 'red', 6: 'black', 7: 'red', 8: 'black', 9: 'red', 10: 'black', 11: 'black', 12: 'red', 13: 'black', 14: 'red', 15: 'black', 16: 'red', 17: 'black', 18: 'red', 19: 'red', 20: 'black', 21: 'red', 22: 'black', 23: 'red', 24: 'black', 25: 'red', 26: 'black', 27: 'red', 28: 'black', 29: 'black', 30: 'red', 31: 'black', 32: 'red', 33: 'black', 34: 'red', 35: 'black', 36: 'red',
@@ -21,7 +20,7 @@ const numberColors: { [key: number]: 'red' | 'black' | 'green' } = {
 const getNumberColorClass = (num: number) => {
     const color = numberColors[num];
     if (color === 'red') return 'bg-red-700 text-white';
-    if (color === 'black') return 'bg-gray-800 text-white';
+    if (color === 'black') return 'bg-gray-900 text-white';
     return 'bg-green-600 text-white';
 }
 
@@ -29,8 +28,7 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<{ message: string; result: 'win' | 'loss'; winningNumber: number } | null>(null);
   const [spinning, setSpinning] = useState(false);
-  const [finalAngle, setFinalAngle] = useState(0);
-  const { toast } = useToast();
+  const [ballAngle, setBallAngle] = useState(0);
 
   const handlePlay = () => {
     setSpinning(true);
@@ -40,9 +38,10 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
         
         const winningIndex = numbers.indexOf(res.winningNumber);
         const segmentAngle = 360 / numbers.length;
-        // Add random offset within the segment and multiple rotations
-        const angle = (360 * 5) + (winningIndex * segmentAngle) + (Math.random() * segmentAngle * 0.8 - segmentAngle * 0.4);
-        setFinalAngle(angle);
+        // Add random offset within the segment and multiple rotations for the ball
+        const finalAngle = (360 * 8) + (winningIndex * segmentAngle) + (Math.random() * (segmentAngle * 0.8) - (segmentAngle * 0.4));
+        
+        setBallAngle(finalAngle);
 
         setTimeout(() => {
             setResult(res);
@@ -52,7 +51,7 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
                 variant: res.result === 'win' ? 'default' : 'destructive'
             });
             setSpinning(false);
-        }, 5000); // Wait for animation to finish
+        }, 7000); // Wait for animation to finish
 
       } catch (error) {
         setSpinning(false);
@@ -78,27 +77,45 @@ export function PlayableRoulette({ bet }: { bet: Bet }) {
     )
   }
 
+  const segmentAngle = 360 / numbers.length;
+
   return (
     <Card className="max-w-2xl mx-auto border-primary/50 overflow-hidden">
       <CardHeader>
         <CardTitle className="text-center">Your Roulette Bet</CardTitle>
       </CardHeader>
       <CardContent className="text-center space-y-6">
-        <div className="relative w-80 h-80 mx-auto mb-8">
-            <div 
-                className="absolute w-full h-full rounded-full border-8 border-primary/50 transition-transform duration-[5000ms] ease-out"
-                style={{
-                    transform: `rotate(${finalAngle}deg)`,
-                    background: `conic-gradient(from 0deg, ${numbers.map((n, i) => `${numberColors[n]} ${i * (360/numbers.length)}deg ${(i+1) * (360/numbers.length)}deg`).join(', ')})`
-                }}
+        <div className="relative w-80 h-80 md:w-96 md:h-96 mx-auto mb-8 flex items-center justify-center">
+            {/* Wheel */}
+            <div className="absolute w-full h-full rounded-full"
+                 style={{ background: `conic-gradient(from -${segmentAngle/2}deg, ${numbers.map((n, i) => `${numberColors[n]} ${i * segmentAngle}deg, ${numberColors[n]} ${(i + 1) * segmentAngle}deg`).join(', ')})` }}
             >
-               {numbers.map((n, i) => {
-                   const angle = i * (360 / numbers.length);
-                   return <div key={i} className="absolute w-1/2 h-1/2 top-0 left-1/2 origin-[0%_100%]" style={{transform: `rotate(${angle}deg)`}}><span className="absolute -top-4 left-1/2 -translate-x-1/2 text-white font-bold text-sm" style={{transform: `translateX(-50%) rotate(90deg)`}}>{n}</span></div>
-               })}
+                {numbers.map((n, i) => {
+                   const angle = i * segmentAngle;
+                   return (
+                     <div key={i} className="absolute w-full h-full" style={{ transform: `rotate(${angle}deg)`}}>
+                       <div className="absolute w-1/2 left-1/2 -top-1 origin-[0%_100%] text-white text-sm font-bold flex justify-center items-start" style={{transform: 'translateX(-50%)', height: '50%'}}>
+                          <span style={{transform: `rotate(-90deg) translateY(-10px)`}}>{n}</span>
+                       </div>
+                     </div>
+                   )
+                })}
             </div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-card border-4 border-primary z-10"></div>
-             <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-16 border-t-accent z-20" style={{borderTopWidth: '16px'}}></div>
+
+             {/* Center Spinner */}
+            <div className="absolute w-20 h-20 bg-yellow-400 rounded-full z-20 flex items-center justify-center">
+                <div className="w-4 h-4 bg-yellow-600 rounded-full"></div>
+            </div>
+            <div className="absolute w-1 h-24 bg-yellow-400 z-10" style={{ transform: 'rotate(45deg)'}}></div>
+            <div className="absolute w-1 h-24 bg-yellow-400 z-10" style={{ transform: 'rotate(-45deg)'}}></div>
+           
+            {/* Ball */}
+            <div className="absolute w-full h-full" style={{transform: `rotate(${ballAngle}deg)`, transition: spinning ? 'transform 7s cubic-bezier(0.2, 0.8, 0.7, 1)' : 'none'}}>
+                <div className="absolute w-5 h-5 bg-white rounded-full top-[10px] left-1/2 -translate-x-1/2 z-30" />
+            </div>
+
+             {/* Pointer */}
+             <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-16 border-t-accent z-40" style={{borderTopWidth: '16px'}}></div>
         </div>
 
         <div className="bg-muted p-4 rounded-lg">

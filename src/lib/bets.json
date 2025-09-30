@@ -3,14 +3,15 @@
     {
       "id": "bet-1759236405644-anjdh",
       "game": "Roulette",
-      "details": "[Roulette] Color: Black - Wager: $10.00",
+      "details": "[Roulette] Color: Black - Wager: $10.00. Result: 7. Player lost.",
       "wager": 10,
       "minecraftUsername": "Lolerdabest69 ",
       "discordTag": "Mittu",
-      "status": "active",
+      "status": "completed",
       "createdAt": "2025-09-30T12:46:45.644Z",
       "multiplier": 1,
-      "payout": 0
+      "payout": 0,
+      "result": "loss"
     },
     {
       "id": "bet-1759235983465-vjp8o",

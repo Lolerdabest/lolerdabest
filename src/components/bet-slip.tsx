@@ -129,7 +129,7 @@ export function BetSlip() {
                   <div className="p-3 rounded-md bg-muted/50 text-muted-foreground text-sm">
                     <p>After submitting, pay the total wager in-game:</p>
                     <code className="font-bold text-primary bg-background/50 px-2 py-1 rounded-md">/pay Lolerdabest69 ${totalWager.toFixed(2)}</code>
-                    <p className="mt-2">An admin will confirm your payment to unlock the game.</p>
+                    <p className="mt-2">You will be notified on Discord when your payment is confirmed. Then, enter your name on the main page to play.</p>
                   </div>
               </div>
 

@@ -103,9 +103,6 @@ export default function CoinflipGame() {
           Add Bet to Slip
         </Button>
       </CardContent>
-      <CardFooter className="min-h-[80px] flex items-center justify-center bg-muted/30">
-        <p className="text-center text-muted-foreground">Pay in-game to play: <code className="text-primary">/pay Lolerdabest69 [amount]</code><br/>An admin will confirm your payment to unlock the game.</p>
-      </CardFooter>
     </Card>
   );
 }
