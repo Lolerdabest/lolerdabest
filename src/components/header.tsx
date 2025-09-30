@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import { Swords } from 'lucide-react';
+import { Logo } from './logo';
 
 export function Header() {
   return (
@@ -8,14 +8,14 @@ export function Header() {
       <div className="container mx-auto flex flex-col items-center justify-center gap-2 text-center">
         <Link href="/" className="flex items-center gap-4 group">
           <div className="p-3 bg-card border-2 border-border rounded-full">
-            <Swords className="w-8 h-8 text-primary" />
+            <Logo className="w-8 h-8" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-foreground group-hover:text-primary transition-colors">
-            MineMarket
+            Curated
           </h1>
         </Link>
         <p className="text-sm text-muted-foreground font-medium tracking-wider">
-          Your one-stop shop for Minecraft dominance.
+          Curated games for you.
         </p>
       </div>
     </header>

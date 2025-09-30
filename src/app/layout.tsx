@@ -5,8 +5,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/header';
 
 export const metadata: Metadata = {
-  title: "MineMarket",
-  description: 'Place your bets and win big!',
+  title: "Curated",
+  description: 'Curated games for you',
 };
 
 export default function RootLayout({
